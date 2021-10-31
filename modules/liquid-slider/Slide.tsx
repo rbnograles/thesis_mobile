@@ -31,25 +31,24 @@ const styles = StyleSheet.create({
 export interface SlideProps {
   slide: {
     color: string;
-    lighterColor: string;
     title: string;
     description: string;
     picture: ReturnType<typeof require>;
   };
 }
 
-const Slide = ({ slide: { picture, color, lighterColor, title, description } }: SlideProps) => {
+const Slide = ({ slide: { picture, color, title, description } }: SlideProps) => {
   return (
     <>
       <Svg style={StyleSheet.absoluteFill}>
         <Defs>
           <RadialGradient id="gradient" cx="50%" cy="35%">
-            <Stop offset="0%" stopColor={lighterColor} />
             <Stop offset="100%" stopColor={color} />
           </RadialGradient>
         </Defs>
         <Rect x={0} y={0} width={width} height={height} fill="url(#gradient)" />
       </Svg>
+      {/* content */}
       <View style={styles.container}>
         <Image source={picture} style={styles.image} />
         <View>
