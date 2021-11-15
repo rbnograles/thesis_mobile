@@ -4,8 +4,10 @@ import { Vector } from 'react-native-redash';
 import { Feather as Icon } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 
+// side action impors
 import { Side } from './Wave';
 
+// constants
 const { width } = Dimensions.get('screen');
 const RADIUS = 25;
 
