@@ -24,7 +24,7 @@ const App = () => {
         />
         <Text style={agreementCheckBoxContainer.label}>I have read and agreed to the Terms and Conditions</Text>
       </View>
-      <Button title="Next" buttonStyle={buttonOrientation.landingButtons} disabled={!isChecked} />
+      <Button title="Continue" buttonStyle={buttonOrientation.landingButtons} disabled={!isChecked} />
     </SafeAreaView>
   );
 };
