@@ -1,12 +1,12 @@
-import { Colors } from '../modules/styles/Colors';
+import { Colors } from '../../modules/styles/Colors';
 import React, { useState } from 'react';
 // native components
 import { Text, SafeAreaView, View } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
 // stylesheet
-import { landingPagesOrientation, agreementCheckBoxContainer, buttonOrientation } from '../modules/styles/Screens';
+import { landingPagesOrientation, agreementCheckBoxContainer, buttonOrientation } from '../../modules/styles/Screens';
 
-const App = () => {
+const AggreementScreen = ({ navigation }: any) => {
   const [isChecked, setChecked] = useState(false);
 
   return (
@@ -24,9 +24,16 @@ const App = () => {
         />
         <Text style={agreementCheckBoxContainer.label}>I have read and agreed to the Terms and Conditions</Text>
       </View>
-      <Button title="Continue" buttonStyle={buttonOrientation.landingButtons} disabled={!isChecked} />
+      <View style={buttonOrientation.landingButtonOrientation}>
+        <Button
+          title="Continue"
+          buttonStyle={buttonOrientation.landingButtons}
+          disabled={!isChecked}
+          onPress={() => navigation.navigate('FeatureScreen')}
+        />
+      </View>
     </SafeAreaView>
   );
 };
 
-export default App;
+export default AggreementScreen;

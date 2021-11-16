@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import Svg, { RadialGradient, Defs, Rect, Stop } from 'react-native-svg';
-
+import { Button } from 'react-native-elements';
+import { buttonOrientation } from '../styles/Screens';
 const { width, height } = Dimensions.get('screen');
 const SIZE = width - 75;
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    padding: 75,
+    padding: 50,
     paddingTop: 150,
     alignItems: 'center',
   },
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
     height: SIZE,
   },
   title: {
-    fontSize: 48,
+    fontSize: 40,
     color: 'white',
     textAlign: 'center',
     marginBottom: 16,
@@ -55,6 +56,11 @@ const Slide = ({ slide: { picture, color, title, description } }: SlideProps) =>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
+        {title === 'Location History' && (
+          <View style={buttonOrientation.landingButtonOrientation}>
+            <Button title="Continue" buttonStyle={buttonOrientation.featurebutton} />
+          </View>
+        )}
       </View>
     </>
   );

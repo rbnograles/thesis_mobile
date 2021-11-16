@@ -7,6 +7,7 @@ export const landingPagesOrientation = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
     marginTop: 120,
     marginHorizontal: 35,
+    position: 'relative',
   },
   header: {
     fontSize: 35,
@@ -14,9 +15,9 @@ export const landingPagesOrientation = StyleSheet.create({
     color: Colors.primary,
   },
   subHeader: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'normal',
-    marginTop: 25,
+    marginTop: 30,
     color: Colors.textColor,
   },
 });
@@ -26,13 +27,14 @@ export const agreementCheckBoxContainer = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     margin: 0,
-    marginTop: 60,
+    position: 'absolute',
+    bottom: 150,
   },
   containerStyle: {
     borderColor: 'white',
     margin: 0,
     padding: 0,
-    marginTop: 0,
+    marginTop: -2,
   },
   label: {
     margin: 0,
@@ -42,9 +44,19 @@ export const agreementCheckBoxContainer = StyleSheet.create({
 });
 
 export const buttonOrientation = StyleSheet.create({
+  landingButtonOrientation: {
+    position: 'absolute',
+    bottom: 60,
+    right: 0,
+    left: 0,
+  },
   landingButtons: {
     backgroundColor: Colors.primary,
-    marginTop: 250,
+    height: 50,
+  },
+  featurebutton: {
+    color: 'black',
+    marginHorizontal: 35,
     height: 50,
   },
 });

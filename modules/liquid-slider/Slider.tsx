@@ -28,8 +28,10 @@ interface SliderProps {
 }
 
 const Slider = ({ index, children: current, prev, next, setIndex }: SliderProps) => {
+  // this section is a boolean representation of checking if there are prev or next
   const hasPrev = !!prev;
   const hasNext = !!next;
+
   const zIndex = useSharedValue(0);
   const left = useVector(0, HEIGHT / 2);
   const right = useVector(0, HEIGHT / 2);
