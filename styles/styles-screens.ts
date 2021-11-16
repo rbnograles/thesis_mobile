@@ -1,5 +1,5 @@
 import { StyleSheet, StatusBar } from 'react-native';
-import { Colors } from './Colors';
+import { Colors } from './styles-colors';
 
 export const landingPagesOrientation = StyleSheet.create({
   container: {

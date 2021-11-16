@@ -1,10 +1,10 @@
-import { Colors } from '../../modules/styles/Colors';
+import { Colors } from '../../styles/styles-colors';
 import React, { useState } from 'react';
 // native components
 import { Text, SafeAreaView, View } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
 // stylesheet
-import { landingPagesOrientation, agreementCheckBoxContainer, buttonOrientation } from '../../modules/styles/Screens';
+import { landingPagesOrientation, agreementCheckBoxContainer, buttonOrientation } from '../../styles/styles-screens';
 
 const AggreementScreen = ({ navigation }: any) => {
   const [isChecked, setChecked] = useState(false);

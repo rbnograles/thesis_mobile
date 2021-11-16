@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Colors } from '../modules/styles/Colors';
+import { Colors } from '../styles/styles-colors';
 
 const { primary } = Colors;
 
