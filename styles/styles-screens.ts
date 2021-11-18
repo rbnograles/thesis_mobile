@@ -28,6 +28,10 @@ export const landingPagesOrientation = StyleSheet.create({
     backgroundColor: Colors.primary,
     marginTop: 0,
   },
+  darkPrimaryBackgroundColor: {
+    backgroundColor: Colors.darkPrimary,
+    marginTop: 0,
+  },
   header: {
     fontSize: 35,
     fontWeight: 'bold',

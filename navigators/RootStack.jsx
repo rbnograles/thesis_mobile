@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // screens
 import AggreementScreen from '../screens/landing-pages/Screen-Agreement';
 import Onboarding from '../screens/landing-pages/Screen-Safety';
+import ScanQRScreen from '../screens/landing-pages/Screen-QR-Code';
+import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-History';
 
 // create navigations
 const Stack = createNativeStackNavigator();
@@ -30,6 +32,16 @@ const RootStack = () => {
           options={{ headerTintColor: 'white', headerShadowVisible: false }}
           name="SafetyScreen"
           component={Onboarding}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          name="QRScreen"
+          component={ScanQRScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          name="LocationHistoryScreen"
+          component={LocationHistoryScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

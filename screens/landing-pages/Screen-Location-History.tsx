@@ -7,7 +7,7 @@ import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '.
 // components
 import CustomButton from '../../_utils/CustomButton';
 
-const ScanQRScreen = ({ navigation }: any) => {
+const LocationHistoryScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
@@ -32,4 +32,4 @@ const ScanQRScreen = ({ navigation }: any) => {
   );
 };
 
-export default ScanQRScreen;
+export default LocationHistoryScreen;

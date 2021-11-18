@@ -1,6 +1,7 @@
 // colors of the application
 export const Colors = {
   primary: '#2a749f',
+  darkPrimary: '#054164',
   textColor: '#2B2B2B',
   secondary: '#E5E7EB',
   tertiary: '#1F2937',

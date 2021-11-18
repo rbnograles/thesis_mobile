@@ -9,7 +9,7 @@ import CustomButton from '../../_utils/CustomButton';
 
 const ScanQRScreen = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
+    <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.darkPrimaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
         <Image source={require('../../assets/landing-page-3.png')} style={pageCenteredImage.image} />
       </View>
