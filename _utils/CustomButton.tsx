@@ -19,7 +19,7 @@ const style = StyleSheet.create({
     borderRadius: 3,
   },
   text: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '700',
   },
 });

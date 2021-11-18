@@ -34,7 +34,7 @@ export const landingPagesOrientation = StyleSheet.create({
     color: Colors.primary,
   },
   subHeader: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'normal',
     marginTop: 30,
     color: Colors.textColor,

@@ -7,7 +7,7 @@ import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '.
 // components
 import CustomButton from '../../_utils/CustomButton';
 
-const OnboardingScreen = ({ navigation }: any) => {
+const SafetyScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
@@ -32,4 +32,4 @@ const OnboardingScreen = ({ navigation }: any) => {
   );
 };
 
-export default OnboardingScreen;
+export default SafetyScreen;

@@ -39,7 +39,7 @@ const AggreementScreen = ({ navigation }: any) => {
           title="Continue"
           buttonStyle={buttonOrientation.landingButtons}
           disabled={!isChecked}
-          onPress={() => navigation.navigate('OnboardingScreen')}
+          onPress={() => navigation.navigate('SafetyScreen')}
         />
       </View>
     </SafeAreaView>

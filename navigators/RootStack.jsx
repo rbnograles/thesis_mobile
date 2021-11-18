@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // screens
 import AggreementScreen from '../screens/landing-pages/Screen-Agreement';
-import Onboarding from '../screens/landing-pages/Onboarding';
+import Onboarding from '../screens/landing-pages/Screen-Safety';
 
 // create navigations
 const Stack = createNativeStackNavigator();
@@ -28,7 +28,7 @@ const RootStack = () => {
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
         <Stack.Screen
           options={{ headerTintColor: 'white', headerShadowVisible: false }}
-          name="OnboardingScreen"
+          name="SafetyScreen"
           component={Onboarding}
         />
       </Stack.Navigator>
