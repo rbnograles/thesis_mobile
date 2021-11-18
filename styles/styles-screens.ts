@@ -1,13 +1,27 @@
 import { StyleSheet, StatusBar } from 'react-native';
 import { Colors } from './styles-colors';
 
+export const pageCenteredImage = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 300,
+  },
+});
+
 export const landingPagesOrientation = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
-    marginTop: 120,
+    marginTop: 10,
     marginHorizontal: 35,
     position: 'relative',
+  },
+  textContainer: {
+    marginTop: 15,
   },
   header: {
     fontSize: 35,

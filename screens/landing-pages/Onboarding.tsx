@@ -11,7 +11,7 @@ import {
   pageCenteredImage,
 } from '../../styles/styles-screens';
 
-const AggreementScreen = ({ navigation }: any) => {
+const OnboardingScreen = ({ navigation }: any) => {
   const [isChecked, setChecked] = useState(false);
 
   return (
@@ -46,4 +46,4 @@ const AggreementScreen = ({ navigation }: any) => {
   );
 };
 
-export default AggreementScreen;
+export default OnboardingScreen;
