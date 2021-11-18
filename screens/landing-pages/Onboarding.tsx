@@ -1,44 +1,30 @@
-import { Colors } from '../../styles/styles-colors';
-import React, { useState } from 'react';
+import React from 'react';
 // native components
 import { Text, SafeAreaView, View, Image } from 'react-native';
-import { CheckBox, Button } from 'react-native-elements';
+import { Colors } from '../../styles/styles-colors';
 // stylesheet
-import {
-  landingPagesOrientation,
-  agreementCheckBoxContainer,
-  buttonOrientation,
-  pageCenteredImage,
-} from '../../styles/styles-screens';
+import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '../../styles/styles-screens';
+// components
+import CustomButton from '../../_utils/CustomButton';
 
 const OnboardingScreen = ({ navigation }: any) => {
-  const [isChecked, setChecked] = useState(false);
-
   return (
-    <SafeAreaView style={landingPagesOrientation.container}>
+    <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
-        <Image source={require('../../assets/landing-page-1.png')} style={pageCenteredImage.image} />
+        <Image source={require('../../assets/landing-page-2.png')} style={pageCenteredImage.image} />
       </View>
-      <View style={landingPagesOrientation.textContainer}>
-        <Text style={landingPagesOrientation.header}>Welcome to JuanBreath contact tracing mobile application</Text>
-        <Text style={landingPagesOrientation.subHeader}>
-          This application aims to help reduce the number of cases of COVID-19 in the community / campus.
+      <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
+        <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Safety</Text>
+        <Text style={[landingPagesOrientation.subHeader, { color: 'white', textAlign: 'center' }]}>
+          We want to assure you that your privacy is not sacrificed ti ensure your safety. To overcome this pandemic,
+          let us cooperate and help the nation by providing the correct information.
         </Text>
       </View>
-      <View style={agreementCheckBoxContainer.checkboxContainer}>
-        <CheckBox
-          checked={isChecked}
-          checkedColor={Colors.primary}
-          onPress={() => setChecked(!isChecked)}
-          containerStyle={agreementCheckBoxContainer.containerStyle}
-        />
-        <Text style={agreementCheckBoxContainer.label}>I have read and agreed to the Terms and Conditions</Text>
-      </View>
       <View style={buttonOrientation.landingButtonOrientation}>
-        <Button
+        <CustomButton
           title="Continue"
-          buttonStyle={buttonOrientation.landingButtons}
-          disabled={!isChecked}
+          color="white"
+          textColor={Colors.primary}
           onPress={() => navigation.navigate('OnboardingScreen')}
         />
       </View>

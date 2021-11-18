@@ -3,6 +3,7 @@ import { Colors } from './styles-colors';
 
 export const pageCenteredImage = StyleSheet.create({
   container: {
+    marginTop: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -17,11 +18,15 @@ export const landingPagesOrientation = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     marginTop: 10,
-    marginHorizontal: 35,
+    paddingHorizontal: 35,
     position: 'relative',
   },
   textContainer: {
     marginTop: 15,
+  },
+  primaryBackgroundColor: {
+    backgroundColor: Colors.primary,
+    marginTop: 0,
   },
   header: {
     fontSize: 35,
@@ -34,13 +39,16 @@ export const landingPagesOrientation = StyleSheet.create({
     marginTop: 30,
     color: Colors.textColor,
   },
+  textContaineredCenter: {
+    alignItems: 'center',
+  },
 });
 
 export const agreementCheckBoxContainer = StyleSheet.create({
   checkboxContainer: {
     display: 'flex',
     flexDirection: 'row',
-    margin: 0,
+    marginLeft: 25,
     position: 'absolute',
     bottom: 150,
   },
@@ -61,11 +69,15 @@ export const buttonOrientation = StyleSheet.create({
   landingButtonOrientation: {
     position: 'absolute',
     bottom: 60,
-    right: 0,
-    left: 0,
+    right: 35,
+    left: 35,
   },
   landingButtons: {
     backgroundColor: Colors.primary,
+    height: 50,
+  },
+  navigationButtons: {
+    color: Colors.primary,
     height: 50,
   },
   featurebutton: {
