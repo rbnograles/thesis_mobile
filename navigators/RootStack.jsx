@@ -4,11 +4,13 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// screens
+// screens landing pages
 import AggreementScreen from '../screens/landing-pages/Screen-Agreement';
 import Onboarding from '../screens/landing-pages/Screen-Safety';
 import ScanQRScreen from '../screens/landing-pages/Screen-QR-Code';
 import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-History';
+// screens otp onboarding pages
+import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
 
 // create navigations
 const Stack = createNativeStackNavigator();
@@ -42,6 +44,11 @@ const RootStack = () => {
           options={{ headerTintColor: 'white', headerShadowVisible: false }}
           name="LocationHistoryScreen"
           component={LocationHistoryScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          name="SignInWithMobileScreen"
+          component={SignInWithMobileScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -7,29 +7,25 @@ import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '.
 // components
 import CustomButton from '../../_utils/CustomButton';
 
-const LocationHistoryScreen = ({ navigation }: any) => {
+const SignInWithMobileScreen = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
+    <SafeAreaView style={[landingPagesOrientation.container]}>
       <View style={pageCenteredImage.container}>
         <Image source={require('../../assets/landing-page-4.png')} style={pageCenteredImage.image} />
       </View>
       <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
-        <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Location History</Text>
-        <Text style={[landingPagesOrientation.subHeader, { color: 'white', textAlign: 'center' }]}>
-          Upon scanning, the visitation history log will be saved to your location history. Collected data will only be
-          saved to your mobile device. Only the trace id will be stored for contact tracing purposes.
-        </Text>
+        <Text>Continue with your mobile number</Text>
       </View>
       <View style={buttonOrientation.landingButtonOrientation}>
         <CustomButton
           title="Continue"
           color="white"
           textColor={Colors.primary}
-          onPress={() => navigation.navigate('SignInWithMobileScreen')}
+          onPress={() => navigation.navigate('Next Page')}
         />
       </View>
     </SafeAreaView>
   );
 };
 
-export default LocationHistoryScreen;
+export default SignInWithMobileScreen;
