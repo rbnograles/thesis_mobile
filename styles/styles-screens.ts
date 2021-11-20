@@ -1,15 +1,17 @@
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, Dimensions } from 'react-native';
 import { Colors } from './styles-colors';
 
 export const pageCenteredImage = StyleSheet.create({
   container: {
-    marginTop: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: Dimensions.get('window').height > 720 ? 20 : 40,
+    height: Dimensions.get('window').height > 720 ? 300 : 250,
+    width: Dimensions.get('window').height > 720 ? 300 : 250,
   },
   image: {
     width: '100%',
-    height: 300,
+    height: '100%',
   },
 });
 
@@ -33,7 +35,7 @@ export const landingPagesOrientation = StyleSheet.create({
     marginTop: 0,
   },
   header: {
-    fontSize: 35,
+    fontSize: Dimensions.get('window').height > 720 ? 35 : 25,
     fontWeight: 'bold',
     color: Colors.primary,
   },

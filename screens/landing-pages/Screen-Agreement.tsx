@@ -1,7 +1,7 @@
 import { Colors } from '../../styles/styles-colors';
 import React, { useState } from 'react';
 // native components
-import { Text, SafeAreaView, View, Image } from 'react-native';
+import { Text, SafeAreaView, View, Image, Dimensions } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
 // stylesheet
 import {
@@ -13,7 +13,6 @@ import {
 
 const AggreementScreen = ({ navigation }: any) => {
   const [isChecked, setChecked] = useState(false);
-
   return (
     <SafeAreaView style={landingPagesOrientation.container}>
       <View style={pageCenteredImage.container}>

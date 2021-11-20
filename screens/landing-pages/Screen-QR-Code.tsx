@@ -11,7 +11,10 @@ const ScanQRScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.darkPrimaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
-        <Image source={require('../../assets/landing-page-3.png')} style={pageCenteredImage.image} />
+        <Image
+          source={require('../../assets/landing-page-3.png')}
+          style={[pageCenteredImage.image, { marginTop: 60 }]}
+        />
       </View>
       <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
         <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Scan QR Code</Text>

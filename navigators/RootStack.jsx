@@ -12,6 +12,9 @@ import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-Hist
 // screens otp onboarding pages
 import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
 
+// utilities
+import { Colors } from '../styles/styles-colors';
+
 // create navigations
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +49,7 @@ const RootStack = () => {
           component={LocationHistoryScreen}
         />
         <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
           name="SignInWithMobileScreen"
           component={SignInWithMobileScreen}
         />
