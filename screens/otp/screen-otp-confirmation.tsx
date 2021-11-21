@@ -69,7 +69,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
           title="Verify and Continue"
           color={Colors.primary}
           textColor="white"
-          onPress={() => navigation.navigate('Next Page')}
+          onPress={() => navigation.navigate('MainPages')}
         />
       </View>
     </SafeAreaView>

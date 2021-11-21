@@ -12,6 +12,8 @@ import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-Hist
 // screens otp onboarding pages
 import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
 import OTPConfirmationScreen from '../screens/otp/screen-otp-confirmation';
+// main pages
+import TabNavigator from './TabNavigator';
 // utilities
 import { Colors } from '../styles/styles-colors';
 
@@ -30,8 +32,13 @@ const RootStack = () => {
           headerTransparent: true,
           headerTitle: '',
         }}
-        initialRouteName="AggreementScreen"
+        initialRouteName="MainPages"
       >
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
+          name="MainPages"
+          component={TabNavigator}
+        />
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
         <Stack.Screen
           options={{ headerTintColor: 'white', headerShadowVisible: false }}
