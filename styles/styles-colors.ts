@@ -11,4 +11,6 @@ export const Colors = {
   red: '#EF4444',
   lightRed: '#ff7f7f',
   lightGreen: '#4caf50',
+  outlineColor: '#5A5252',
+  inputColor: '#DADADA',
 };

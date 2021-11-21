@@ -48,6 +48,41 @@ export const landingPagesOrientation = StyleSheet.create({
   textContaineredCenter: {
     alignItems: 'center',
   },
+  otpContianer: {
+    marginTop: 90,
+  },
+  inputContainer: {
+    marginTop: 20,
+  },
+  input: {
+    height: 50,
+    width: '100%',
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: Colors.inputColor,
+    backgroundColor: Colors.inputColor,
+    borderRadius: 5,
+    padding: 10,
+  },
+  otpInput: {
+    fontWeight: '600',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 15,
+    padding: 15,
+    fontSize: 20,
+    height: 55,
+    width: '15%',
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: Colors.inputColor,
+    backgroundColor: Colors.inputColor,
+  },
+  resendLink: {
+    color: Colors.primary,
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
 });
 
 export const agreementCheckBoxContainer = StyleSheet.create({

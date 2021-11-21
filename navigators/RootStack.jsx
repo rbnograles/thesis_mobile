@@ -11,7 +11,7 @@ import ScanQRScreen from '../screens/landing-pages/Screen-QR-Code';
 import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-History';
 // screens otp onboarding pages
 import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
-
+import OTPConfirmationScreen from '../screens/otp/screen-otp-confirmation';
 // utilities
 import { Colors } from '../styles/styles-colors';
 
@@ -52,6 +52,11 @@ const RootStack = () => {
           options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
           name="SignInWithMobileScreen"
           component={SignInWithMobileScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
+          name="OTPConfirmationScreen"
+          component={OTPConfirmationScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,7 +1,8 @@
 import React from 'react';
 // native components
-import { Text, SafeAreaView, View, TextInput, StyleSheet } from 'react-native';
+import { Text, SafeAreaView, View, TextInput } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
+import { Feather } from '@expo/vector-icons';
 // stylesheet
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
@@ -12,35 +13,37 @@ const SignInWithMobileScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={[landingPagesOrientation.container]}>
-      <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
-        <Text>Continue with your mobile number</Text>
+      <View
+        style={[
+          landingPagesOrientation.textContainer,
+          landingPagesOrientation.textContaineredCenter,
+          landingPagesOrientation.otpContianer,
+        ]}
+      >
+        <Feather name="smartphone" size={90} color={Colors.primary} />
+        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
+          Continue with your mobile number, you'll receive a 4 digit code to verify next.
+        </Text>
       </View>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeNumber}
-        value={number}
-        placeholder="09 *** *** ***"
-        keyboardType="numeric"
-      />
+      <View style={landingPagesOrientation.inputContainer}>
+        <TextInput
+          style={landingPagesOrientation.input}
+          onChangeText={onChangeNumber}
+          value={number}
+          placeholder="09 *** *** ***"
+          keyboardType="numeric"
+        />
+      </View>
       <View style={buttonOrientation.landingButtonOrientation}>
         <CustomButton
           title="Continue"
-          color="white"
-          textColor={Colors.primary}
-          onPress={() => navigation.navigate('Next Page')}
+          color={Colors.primary}
+          textColor="white"
+          onPress={() => navigation.navigate('OTPConfirmationScreen')}
         />
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
 
 export default SignInWithMobileScreen;
