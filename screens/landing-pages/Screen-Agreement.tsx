@@ -13,6 +13,7 @@ import {
 
 const AggreementScreen = ({ navigation }: any) => {
   const [isChecked, setChecked] = useState(false);
+  console.log(Dimensions.get('window').height);
   return (
     <SafeAreaView style={landingPagesOrientation.container}>
       <View style={pageCenteredImage.container}>

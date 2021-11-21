@@ -5,9 +5,9 @@ export const pageCenteredImage = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: Dimensions.get('window').height > 720 ? 20 : 40,
-    height: Dimensions.get('window').height > 720 ? 300 : 250,
-    width: Dimensions.get('window').height > 720 ? 300 : 250,
+    marginHorizontal: Dimensions.get('window').height > 720 ? 30 : 65,
+    height: Dimensions.get('window').height > 720 ? 270 : 200,
+    width: Dimensions.get('window').height > 720 ? 270 : 200,
   },
   image: {
     width: '100%',
@@ -35,7 +35,7 @@ export const landingPagesOrientation = StyleSheet.create({
     marginTop: 0,
   },
   header: {
-    fontSize: Dimensions.get('window').height > 720 ? 35 : 25,
+    fontSize: Dimensions.get('window').height > 720 ? 27 : 22,
     fontWeight: 'bold',
     color: Colors.primary,
   },
