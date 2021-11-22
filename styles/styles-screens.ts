@@ -127,3 +127,14 @@ export const buttonOrientation = StyleSheet.create({
     height: 50,
   },
 });
+
+// styles for the main pages
+
+export const tabNavigation = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: Colors.primary,
+    position: 'relative',
+  },
+});

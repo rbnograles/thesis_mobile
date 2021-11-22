@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 // stylesheet
 import { landingPagesOrientation } from '../../styles/styles-screens';
 
-const HomeScreen = ({ navigation }: any) => {
+const QRCodeScreen = ({ navigation }: any) => {
   return (
     <View style={landingPagesOrientation.container}>
       <Text>Hi</Text>
@@ -12,4 +12,4 @@ const HomeScreen = ({ navigation }: any) => {
   );
 };
 
-export default HomeScreen;
+export default QRCodeScreen;

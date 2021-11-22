@@ -1,21 +1,42 @@
 import React from 'react';
-import 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 // components
-import HomeScreen from '../screens/main-pages/Home';
-import { landingPagesOrientation } from '../styles/styles-screens';
+import HomeScreen from '../screens/main-pages/QRCode-screen';
+import { tabNavigation } from '../styles/styles-screens';
+import { FontAwesome } from '@expo/vector-icons';
+import { Colors } from '../styles/styles-colors';
 const Tab = createMaterialTopTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <SafeAreaView style={landingPagesOrientation.container}>
-      <Tab.Navigator initialRouteName="Yes">
-        <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
-        <Tab.Screen name="Yes" component={HomeScreen} options={{ tabBarLabel: 'Yes' }} />
-        <Tab.Screen name="No" component={HomeScreen} options={{ tabBarLabel: 'No' }} />
-      </Tab.Navigator>
-    </SafeAreaView>
+    <Tab.Navigator
+      style={tabNavigation.container}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }: any) => {
+          let iconName: any;
+
+          if (route.name === 'qrcode') {
+            iconName = 'qrcode';
+          } else if (route.name === 'visithistory') {
+            iconName = 'location-arrow';
+          } else if (route.name === 'profile') {
+            iconName = 'user';
+          } else {
+            iconName = 'cogs';
+          }
+
+          // You can return any component that you like here!
+          return <FontAwesome name={iconName} size={23} color={color} />;
+        },
+        tabBarActiveTintColor: Colors.accent,
+        tabBarInactiveTintColor: Colors.darkLight,
+      })}
+    >
+      <Tab.Screen name="qrcode" component={HomeScreen} options={{ tabBarLabel: 'QR Code' }} />
+      <Tab.Screen name="visithistory" component={HomeScreen} options={{ tabBarLabel: 'History' }} />
+      <Tab.Screen name="profile" component={HomeScreen} options={{ tabBarLabel: 'Profile' }} />
+      <Tab.Screen name="others" component={HomeScreen} options={{ tabBarLabel: 'Settings' }} />
+    </Tab.Navigator>
   );
 };
 

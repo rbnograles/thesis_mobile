@@ -13,4 +13,5 @@ export const Colors = {
   lightGreen: '#4caf50',
   outlineColor: '#5A5252',
   inputColor: '#DADADA',
+  accent: '#30B8A6',
 };
