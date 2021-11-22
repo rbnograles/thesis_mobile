@@ -29,7 +29,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
       >
         <Feather name="smartphone" size={90} color={Colors.primary} />
         <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
-          Code is sent to <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>09516186637</Text>
+          Code is sent to <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>09123456789</Text>
         </Text>
       </View>
       <View style={[landingPagesOrientation.inputContainer, { justifyContent: 'space-around', flexDirection: 'row' }]}>

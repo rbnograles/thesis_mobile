@@ -32,38 +32,38 @@ const RootStack = () => {
           headerTransparent: true,
           headerTitle: '',
         }}
-        initialRouteName="MainPages"
+        initialRouteName="AggreementScreen"
       >
-        <Stack.Screen
-          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
-          name="MainPages"
-          component={TabNavigator}
-        />
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
         <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
           name="SafetyScreen"
           component={Onboarding}
         />
         <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
           name="QRScreen"
           component={ScanQRScreen}
         />
         <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false }}
+          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
           name="LocationHistoryScreen"
           component={LocationHistoryScreen}
         />
         <Stack.Screen
-          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="SignInWithMobileScreen"
           component={SignInWithMobileScreen}
         />
         <Stack.Screen
-          options={{ headerTintColor: Colors.primary, headerShadowVisible: false }}
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="OTPConfirmationScreen"
           component={OTPConfirmationScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
+          name="MainPages"
+          component={TabNavigator}
         />
       </Stack.Navigator>
     </NavigationContainer>
