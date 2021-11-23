@@ -14,6 +14,8 @@ import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
 import OTPConfirmationScreen from '../screens/otp/screen-otp-confirmation';
 // main pages
 import TabNavigator from './TabNavigator';
+// set ups pages
+import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
 // utilities
 import { Colors } from '../styles/styles-colors';
 
@@ -34,6 +36,7 @@ const RootStack = () => {
         }}
         initialRouteName="AggreementScreen"
       >
+        {/* landing pages */}
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
         <Stack.Screen
           options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
@@ -64,6 +67,12 @@ const RootStack = () => {
           options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="MainPages"
           component={TabNavigator}
+        />
+        {/* Profile set up screens */}
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
+          name="ProfileSetUp"
+          component={ProfileInformationSetupScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

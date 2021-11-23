@@ -11,6 +11,7 @@ import { _setThisPageToCompleted } from '../../_storages/_state_process';
 const SuccessPromptScreen = ({ navigation }: any) => {
   const setThisPageToComplete = () => {
     _setThisPageToCompleted('@successWelcomePage', 'true');
+    navigation.navigate('ProfileSetUp');
   };
 
   return (
