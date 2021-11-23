@@ -6,8 +6,13 @@ import { Colors } from '../../styles/styles-colors';
 import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
+import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
 const SuccessPromptScreen = ({ navigation }: any) => {
+  const setThisPageToComplete = () => {
+    _setThisPageToCompleted('@successWelcomePage', 'true');
+  };
+
   return (
     <SafeAreaView style={[landingPagesOrientation.container]}>
       <View style={pageCenteredImage.container}>
@@ -28,7 +33,7 @@ const SuccessPromptScreen = ({ navigation }: any) => {
           title="Start Setup"
           color={Colors.primary}
           textColor="white"
-          onPress={() => navigation.navigate('SignInWithMobileScreen')}
+          onPress={() => setThisPageToComplete()}
         />
       </View>
     </SafeAreaView>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { tabNavigation } from '../styles/styles-screens';
 import { FontAwesome } from '@expo/vector-icons';
@@ -6,12 +7,31 @@ import { Colors } from '../styles/styles-colors';
 
 // components
 import HomeScreen from '../screens/main-pages/QRCode-screen';
+import SettingsScreen from '../screens/main-pages/Settings-screen';
 import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
+import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
 
 const Tab = createMaterialTopTabNavigator();
 
 const TabNavigator = () => {
   const [isSetUp, setIsSetUp] = useState(true);
+
+  // this will fetch the default states from the screen interactions
+  const getWelcomePageStatus = async () => {
+    try {
+      const data = await AsyncStorage.getItem('@successWelcomePage');
+      console.log(data);
+      data !== null && setIsSetUp(data === 'true' ? false : true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // this function is a react native lifecycle method that will run when a component is mounted / loaded
+  useEffect(() => {
+    getWelcomePageStatus();
+  }, []);
+
   return (
     <Tab.Navigator
       style={tabNavigation.container}
@@ -41,10 +61,10 @@ const TabNavigator = () => {
       <Tab.Screen name="visithistory" component={HomeScreen} options={{ tabBarLabel: 'History' }} />
       <Tab.Screen
         name="profile"
-        component={isSetUp ? SuccessPromptScreen : HomeScreen}
+        component={isSetUp ? SuccessPromptScreen : ProfileInformationSetupScreen}
         options={{ tabBarLabel: 'Profile' }}
       />
-      <Tab.Screen name="others" component={HomeScreen} options={{ tabBarLabel: 'Settings' }} />
+      <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
     </Tab.Navigator>
   );
 };
