@@ -32,7 +32,7 @@ const RootStack = () => {
           headerTransparent: true,
           headerTitle: '',
         }}
-        initialRouteName="SignInWithMobileScreen"
+        initialRouteName="AggreementScreen"
       >
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
         <Stack.Screen
