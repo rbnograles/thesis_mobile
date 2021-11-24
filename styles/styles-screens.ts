@@ -140,3 +140,35 @@ export const tabNavigation = StyleSheet.create({
     position: 'relative',
   },
 });
+
+export const formsContainer = StyleSheet.create({
+  formsHeader: {
+    fontSize: 25,
+    fontWeight: '700',
+    marginTop: 30,
+    color: Colors.primary,
+  },
+  formsSubHeader: {
+    fontSize: 15,
+  },
+  errorMessage: {
+    color: Colors.red,
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 5,
+  },
+});
+
+export const inputs = StyleSheet.create({
+  style: {
+    height: 50,
+    width: '100%',
+    marginTop: 5,
+    borderWidth: 1,
+    fontSize: 18,
+    borderColor: Colors.inputColor,
+    backgroundColor: Colors.inputColor,
+    borderRadius: 5,
+    padding: 10,
+  },
+});

@@ -34,7 +34,7 @@ const RootStack = () => {
           headerTransparent: true,
           headerTitle: '',
         }}
-        initialRouteName="AggreementScreen"
+        initialRouteName="ProfileSetUp"
       >
         {/* landing pages */}
         <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />

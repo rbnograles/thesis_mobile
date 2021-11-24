@@ -9,7 +9,7 @@ import { Colors } from '../styles/styles-colors';
 import HomeScreen from '../screens/main-pages/QRCode-screen';
 import SettingsScreen from '../screens/main-pages/Settings-screen';
 import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
-import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
+import ProfileScreen from '../screens/main-pages/Profile-screen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -61,7 +61,7 @@ const TabNavigator = () => {
       <Tab.Screen name="visithistory" component={HomeScreen} options={{ tabBarLabel: 'History' }} />
       <Tab.Screen
         name="profile"
-        component={isSetUp ? SuccessPromptScreen : ProfileInformationSetupScreen}
+        component={isSetUp ? SuccessPromptScreen : ProfileScreen}
         options={{ tabBarLabel: 'Profile' }}
       />
       <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
