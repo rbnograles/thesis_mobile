@@ -10,100 +10,183 @@ import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
 
-interface PersonalInformationValues {
-  firstName: string;
-  middleName: string | null;
-  lastName: string;
-  nameExtension: string | null;
+interface StudentValues {
+  studentNumber: string;
+  collegeDepartment: string;
 }
 
-let personalInfoSchema = yup.object().shape({
-  firstName: yup
+interface FacultyValues {
+  facultyPosition: string;
+  collegeDepartment: string;
+}
+
+interface WorkerValues {
+  jobTitle: string;
+}
+
+let studentInfoSchema = yup.object().shape({
+  studentNumber: yup.string().required('Student number is required'),
+  collegeDepartment: yup
     .string()
-    .matches(/[A-Za-z]/, 'First name must contain only letters')
-    .required('First name is required'),
-  middleName: yup
-    .string()
-    .matches(/[A-Za-z]/, 'Middle name must contain only letters')
-    .nullable(),
-  lastName: yup
-    .string()
-    .matches(/[A-Za-z]/, 'Last name must contain only letters')
-    .required('Last name is required'),
-  nameExtension: yup
-    .string()
-    .matches(/[A-Za-z.]/, 'Name extension name must contain only letters')
-    .nullable(),
+    .matches(/[A-Za-z]/, 'College department must contain only letters')
+    .required('College department is required'),
 });
 
-const UserTypeRelatedInfoSetupScreen = ({ navigation }: any) => {
+let facultyInfoSchema = yup.object().shape({
+  facultyPosition: yup.string().required('Faculty Position is required'),
+  collegeDepartment: yup
+    .string()
+    .matches(/[A-Za-z]/, 'College department must contain only letters')
+    .required('College department is required'),
+});
+
+let workerInfoSchema = yup.object().shape({
+  jobTitle: yup.string().required('Job title is required'),
+});
+
+const renderStudentTypeFields = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={landingPagesOrientation.container}>
-      <Text style={formsContainer.formsHeader}>Profile Information</Text>
-      <Text style={formsContainer.formsSubHeader}>Please tell us some information related to you.</Text>
+    <>
       <Formik
         initialValues={{
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          nameExtension: '',
+          studentNumber: '',
+          collegeDepartment: '',
         }}
         validateOnMount={true}
-        validationSchema={personalInfoSchema}
-        onSubmit={(values: PersonalInformationValues) => {
+        validationSchema={studentInfoSchema}
+        onSubmit={(values: StudentValues) => {
           console.log(values);
+          navigation.navigate('MainPages');
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View style={{ marginTop: 10 }}>
             <CustomInputs
-              labelTitle="First name"
+              labelTitle="Student Number"
               required={true}
-              onChangeText={handleChange('firstName')}
-              placeHolder="Juan"
-              onBlur={handleBlur('firstName')}
-              value={values.firstName}
+              onChangeText={handleChange('studentNumber')}
+              placeHolder=""
+              onBlur={handleBlur('studentNumber')}
+              value={values.studentNumber}
             />
-            {errors.firstName && touched.firstName && (
-              <Text style={formsContainer.errorMessage}>{errors.firstName}</Text>
+            {errors.studentNumber && touched.studentNumber && (
+              <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
             )}
             <CustomInputs
-              labelTitle="Middle name"
-              required={false}
-              onChangeText={handleChange('middleName')}
-              placeHolder="Ramos"
-              onBlur={handleBlur('middleName')}
-              value={values.middleName}
-            />
-            {errors.middleName && touched.middleName && (
-              <Text style={formsContainer.errorMessage}>{errors.middleName}</Text>
-            )}
-            <CustomInputs
-              labelTitle="Last name"
+              labelTitle="College Department"
               required={true}
-              onChangeText={handleChange('lastName')}
-              placeHolder="Dela Cruz"
-              onBlur={handleBlur('lastName')}
-              value={values.lastName}
+              onChangeText={handleChange('collegeDepartment')}
+              placeHolder=""
+              onBlur={handleBlur('collegeDepartment')}
+              value={values.collegeDepartment}
             />
-            {errors.lastName && touched.lastName && <Text style={formsContainer.errorMessage}>{errors.lastName}</Text>}
-            <CustomInputs
-              labelTitle="Name extension"
-              required={false}
-              onChangeText={handleChange('nameExtension')}
-              placeHolder="Eg. Jr, Sr etc."
-              onBlur={handleBlur('nameExtension')}
-              value={values.nameExtension}
-            />
-            {errors.nameExtension && touched.nameExtension && (
-              <Text style={formsContainer.errorMessage}>{errors.nameExtension}</Text>
+            {errors.collegeDepartment && touched.collegeDepartment && (
+              <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
             )}
             <View style={{ marginTop: 20 }}>
-              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Next" />
+              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
             </View>
           </View>
         )}
       </Formik>
+    </>
+  );
+};
+
+const renderFacultyTypeFields = ({ navigation }: any) => {
+  return (
+    <>
+      <Formik
+        initialValues={{
+          facultyPosition: '',
+          collegeDepartment: '',
+        }}
+        validateOnMount={true}
+        validationSchema={facultyInfoSchema}
+        onSubmit={(values: FacultyValues) => {
+          console.log(values);
+          navigation.navigate('MainPages');
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View style={{ marginTop: 10 }}>
+            <CustomInputs
+              labelTitle="Faculty Position"
+              required={true}
+              onChangeText={handleChange('facultyPosition')}
+              placeHolder=""
+              onBlur={handleBlur('facultyPosition')}
+              value={values.facultyPosition}
+            />
+            {errors.facultyPosition && touched.facultyPosition && (
+              <Text style={formsContainer.errorMessage}>{errors.facultyPosition}</Text>
+            )}
+            <CustomInputs
+              labelTitle="College Department"
+              required={true}
+              onChangeText={handleChange('collegeDepartment')}
+              placeHolder=""
+              onBlur={handleBlur('collegeDepartment')}
+              value={values.collegeDepartment}
+            />
+            {errors.collegeDepartment && touched.collegeDepartment && (
+              <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
+            )}
+            <View style={{ marginTop: 20 }}>
+              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
+            </View>
+          </View>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+const renderWorkerTypeFields = ({ navigation }: any) => {
+  return (
+    <>
+      <Formik
+        initialValues={{
+          jobTitle: '',
+        }}
+        validateOnMount={true}
+        validationSchema={workerInfoSchema}
+        onSubmit={(values: WorkerValues) => {
+          console.log(values);
+          navigation.navigate('MainPages');
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <View style={{ marginTop: 10 }}>
+            <CustomInputs
+              labelTitle="Job Title"
+              required={true}
+              onChangeText={handleChange('jobTitle')}
+              placeHolder=""
+              onBlur={handleBlur('jobTitle')}
+              value={values.jobTitle}
+            />
+            {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
+            <View style={{ marginTop: 20 }}>
+              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
+            </View>
+          </View>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+const UserTypeRelatedInfoSetupScreen = ({ route, navigation }: any) => {
+  const { userType } = route.params;
+
+  return (
+    <SafeAreaView style={landingPagesOrientation.container}>
+      <Text style={formsContainer.formsHeader}>Profile Information</Text>
+      <Text style={formsContainer.formsSubHeader}>Please tell us some information related to you.</Text>
+      {userType === 'Student' && renderStudentTypeFields({ navigation })}
+      {userType === 'Worker' && renderWorkerTypeFields({ navigation })}
+      {userType === 'Faculty' && renderFacultyTypeFields({ navigation })}
     </SafeAreaView>
   );
 };

@@ -19,6 +19,7 @@ const UserTypeSetupScreen = ({ navigation }: any) => {
 
   const saveUserTypeChoice = () => {
     console.log(userType);
+    navigation.navigate('userTypeRelatedInfoSetup', { userType: userType });
   };
 
   return (

@@ -43,7 +43,7 @@ let personalInfoSchema = yup.object().shape({
     .required('City is required'),
   region: yup
     .string()
-    .matches(/[A-Za-z.]/, 'Region name must contain only letters')
+    .matches(/[0-9A-Za-z.]/, 'Region name must contain only numbers and letters')
     .required('Region is required'),
 });
 

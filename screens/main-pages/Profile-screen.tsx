@@ -7,7 +7,7 @@ import { landingPagesOrientation } from '../../styles/styles-screens';
 const ProfileScreen = ({ navigation }: any) => {
   return (
     <View style={landingPagesOrientation.container}>
-      <Text>Hi</Text>
+      <Text>Display is under construction</Text>
     </View>
   );
 };
