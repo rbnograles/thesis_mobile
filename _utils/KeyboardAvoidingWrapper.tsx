@@ -1,8 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Colors } from '../styles/styles-colors';
-
-const { primary } = Colors;
+import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 /**
  *
@@ -12,10 +9,8 @@ const { primary } = Colors;
 const KeyboardAvoidingWrapper = ({ children }: any) => {
   // this will ensure that the keyboard ui will adjust to the view port of the user
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: primary }}>
-      <ScrollView>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>{children}</TouchableWithoutFeedback>
-      </ScrollView>
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>{children}</TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 };

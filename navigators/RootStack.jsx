@@ -14,8 +14,9 @@ import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
 import OTPConfirmationScreen from '../screens/otp/screen-otp-confirmation';
 // main pages
 import TabNavigator from './TabNavigator';
-// set ups pages
+// set-ups pages
 import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
+import AddressInformationSetupScreen from '../screens/main-pages/profile-setup/_address-setup-screen';
 // utilities
 import { Colors } from '../styles/styles-colors';
 
@@ -73,6 +74,11 @@ const RootStack = () => {
           options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="ProfileSetUp"
           component={ProfileInformationSetupScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
+          name="AddressSetUp"
+          component={AddressInformationSetupScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

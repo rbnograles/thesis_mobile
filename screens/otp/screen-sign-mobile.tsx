@@ -26,8 +26,8 @@ const SignInWithMobileScreen = ({ navigation }: any) => {
 
   const _temporaryStorageForMobileNum = async () => {
     // this will check if the number is empty or invalid
-    if (number.length < 0) {
-      setError('Please provide phone number to proceed');
+    if (number.length === 0) {
+      setError('Please provide a phone number to proceed');
     } else if (number.length !== 11 || !isValidNumber) {
       setError('Invalid phone number format');
     }
