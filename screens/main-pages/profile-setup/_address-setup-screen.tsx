@@ -52,7 +52,7 @@ const AddressInformationSetupScreen = ({ navigation }: any) => {
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
         <Text style={formsContainer.formsHeader}>Profile Information</Text>
-        <Text style={formsContainer.formsSubHeader}>Where are you currently residing on?</Text>
+        <Text style={formsContainer.formsSubHeader}>Where are you currently residing in?</Text>
         <ScrollView>
           <Formik
             initialValues={{
@@ -67,6 +67,7 @@ const AddressInformationSetupScreen = ({ navigation }: any) => {
             validationSchema={personalInfoSchema}
             onSubmit={(values: PersonalInformationValues) => {
               console.log(values);
+              navigation.navigate('UserTypeSetup');
             }}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (

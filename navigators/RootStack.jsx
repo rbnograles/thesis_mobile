@@ -17,6 +17,7 @@ import TabNavigator from './TabNavigator';
 // set-ups pages
 import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
 import AddressInformationSetupScreen from '../screens/main-pages/profile-setup/_address-setup-screen';
+import UserTypeSetupScreen from '../screens/main-pages/profile-setup/_usertype-setup-screen';
 // utilities
 import { Colors } from '../styles/styles-colors';
 
@@ -79,6 +80,11 @@ const RootStack = () => {
           options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="AddressSetUp"
           component={AddressInformationSetupScreen}
+        />
+        <Stack.Screen
+          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
+          name="UserTypeSetup"
+          component={UserTypeSetupScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

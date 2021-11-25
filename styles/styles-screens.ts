@@ -172,3 +172,14 @@ export const inputs = StyleSheet.create({
     padding: 10,
   },
 });
+
+export const checkBox = StyleSheet.create({
+  radioOptions: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    marginVertical: 7,
+    marginLeft: -2,
+    marginHorizontal: 0,
+    width: '100%',
+  },
+});
