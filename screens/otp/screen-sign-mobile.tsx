@@ -38,6 +38,8 @@ const SignInWithMobileScreen = ({ navigation }: any) => {
       } catch (error) {
         console.log(error);
       }
+      // NOTICE: Send data to backend for otp sending
+      // Add Backend api here
       navigation.navigate('OTPConfirmationScreen');
     }
   };

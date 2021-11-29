@@ -13,14 +13,13 @@ import ProfileScreen from '../screens/main-pages/Profile-screen';
 
 const Tab = createMaterialTopTabNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({ navigation }: any) => {
   const [isSetUp, setIsSetUp] = useState(true);
 
   // this will fetch the default states from the screen interactions
   const getWelcomePageStatus = async () => {
     try {
       const data = await AsyncStorage.getItem('@successWelcomePage');
-      console.log(data);
       data !== null && setIsSetUp(data === 'true' ? false : true);
     } catch (error) {
       console.log(error);
@@ -29,7 +28,9 @@ const TabNavigator = () => {
 
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
-    getWelcomePageStatus();
+    navigation.addListener('focus', () => {
+      getWelcomePageStatus();
+    });
   }, []);
 
   return (

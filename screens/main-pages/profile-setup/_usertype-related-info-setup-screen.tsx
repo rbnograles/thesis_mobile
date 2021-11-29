@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // native components
 import { Text, View, SafeAreaView } from 'react-native';
 import * as yup from 'yup';
@@ -56,7 +56,7 @@ const renderStudentTypeFields = ({ navigation }: any) => {
         validationSchema={studentInfoSchema}
         onSubmit={(values: StudentValues) => {
           console.log(values);
-          navigation.navigate('MainPages');
+          navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -105,7 +105,7 @@ const renderFacultyTypeFields = ({ navigation }: any) => {
         validationSchema={facultyInfoSchema}
         onSubmit={(values: FacultyValues) => {
           console.log(values);
-          navigation.navigate('MainPages');
+          navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -153,7 +153,7 @@ const renderWorkerTypeFields = ({ navigation }: any) => {
         validationSchema={workerInfoSchema}
         onSubmit={(values: WorkerValues) => {
           console.log(values);
-          navigation.navigate('MainPages');
+          navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
