@@ -183,3 +183,26 @@ export const checkBox = StyleSheet.create({
     width: '100%',
   },
 });
+
+export const displayFormContainer = StyleSheet.create({
+  formsHeader: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  flexContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 50,
+    width: '100%',
+    marginTop: 5,
+    borderWidth: 1,
+    fontSize: 18,
+    borderColor: Colors.inputColor,
+    backgroundColor: Colors.inputColor,
+    borderRadius: 5,
+    padding: 15,
+    paddingLeft: 10,
+  },
+});

@@ -6,7 +6,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../styles/styles-colors';
 
 // components
-import HomeScreen from '../screens/main-pages/QRCode-screen';
+import QRScreen from '../screens/main-pages/QRCode-screen';
+import LocationHistoryScreen from '../screens/main-pages/LocationHistory-screen';
 import SettingsScreen from '../screens/main-pages/Settings-screen';
 import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
 import ProfileScreen from '../screens/main-pages/Profile-screen';
@@ -58,8 +59,8 @@ const TabNavigator = ({ navigation }: any) => {
         tabBarInactiveTintColor: Colors.darkLight,
       })}
     >
-      <Tab.Screen name="qrcode" component={HomeScreen} options={{ tabBarLabel: 'QR Code' }} />
-      <Tab.Screen name="visithistory" component={HomeScreen} options={{ tabBarLabel: 'History' }} />
+      <Tab.Screen name="qrcode" component={QRScreen} options={{ tabBarLabel: 'QR Code' }} />
+      <Tab.Screen name="visithistory" component={LocationHistoryScreen} options={{ tabBarLabel: 'History' }} />
       <Tab.Screen
         name="profile"
         component={isSetUp ? SuccessPromptScreen : ProfileScreen}
