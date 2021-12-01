@@ -4,8 +4,9 @@ import { Text, View, SafeAreaView, ScrollView, Modal, StyleSheet, Pressable, Ale
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { AntDesign } from '@expo/vector-icons';
+import { CheckBox } from 'react-native-elements';
 // stylesheet
-import { formsContainer, displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
+import { formsContainer, displayFormContainer, landingPagesOrientation, checkBox } from '../../styles/styles-screens';
 // custom components
 import KeyboardAvoidingWrapper from '../../_utils/KeyboardAvoidingWrapper';
 import CustomInputs from '../../_utils/CustomInputs';
@@ -20,43 +21,16 @@ interface PersonalInformationValues {
   lastName: string;
   nameExtension: string | null;
 }
-interface StudentValues {
-  studentNumber: string;
-  collegeDepartment: string;
-}
-
-interface FacultyValues {
-  facultyPosition: string;
-  collegeDepartment: string;
-}
-
-interface WorkerValues {
-  jobTitle: string;
-}
-
-// user types related information validation schema
-let studentInfoSchema = yup.object().shape({
-  studentNumber: yup.string().required('Student number is required'),
-  collegeDepartment: yup
-    .string()
-    .matches(/[A-Za-z]/, 'College department must contain only letters')
-    .required('College department is required'),
-});
-
-let facultyInfoSchema = yup.object().shape({
-  facultyPosition: yup.string().required('Faculty Position is required'),
-  collegeDepartment: yup
-    .string()
-    .matches(/[A-Za-z]/, 'College department must contain only letters')
-    .required('College department is required'),
-});
-
-let workerInfoSchema = yup.object().shape({
-  jobTitle: yup.string().required('Job title is required'),
-});
 
 // user profile validation schema
 let personalInfoSchema = yup.object().shape({
+  studentNumber: yup.string().nullable(),
+  facultyPosition: yup.string().nullable(),
+  jobTitle: yup.string().nullable(),
+  collegeDepartment: yup
+    .string()
+    .matches(/[A-Za-z]/, 'College department must contain only letters')
+    .nullable(),
   firstName: yup
     .string()
     .matches(/[A-Za-z]/, 'First name must contain only letters')
@@ -100,7 +74,88 @@ let personalInfoSchema = yup.object().shape({
 });
 
 const ProfileScreen = () => {
+  // default states
   const [modalVisible, setModalVisible] = useState(false);
+  const [userType, setUserType] = useState('Student');
+
+  const setUserTypeChoice = (type: string) => {
+    setUserType(type);
+  };
+
+  const renderStudentFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+    return (
+      <>
+        <CustomInputs
+          labelTitle="Student Number"
+          required={true}
+          onChangeText={handleChange('studentNumber')}
+          placeHolder=""
+          onBlur={handleBlur('studentNumber')}
+          value={values.studentNumber}
+        />
+        {errors.studentNumber && touched.studentNumber && (
+          <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
+        )}
+        <CustomInputs
+          labelTitle="College Department"
+          required={true}
+          onChangeText={handleChange('collegeDepartment')}
+          placeHolder=""
+          onBlur={handleBlur('collegeDepartment')}
+          value={values.collegeDepartment}
+        />
+        {errors.collegeDepartment && touched.collegeDepartment && (
+          <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
+        )}
+      </>
+    );
+  };
+
+  const renderFacultyFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+    return (
+      <>
+        <CustomInputs
+          labelTitle="Faculty Position"
+          required={true}
+          onChangeText={handleChange('facultyPosition')}
+          placeHolder=""
+          onBlur={handleBlur('facultyPosition')}
+          value={values.facultyPosition}
+        />
+        {errors.facultyPosition && touched.facultyPosition && (
+          <Text style={formsContainer.errorMessage}>{errors.facultyPosition}</Text>
+        )}
+        <CustomInputs
+          labelTitle="College Department"
+          required={true}
+          onChangeText={handleChange('collegeDepartment')}
+          placeHolder=""
+          onBlur={handleBlur('collegeDepartment')}
+          value={values.collegeDepartment}
+        />
+        {errors.collegeDepartment && touched.collegeDepartment && (
+          <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
+        )}
+      </>
+    );
+  };
+
+  const renderWorkerFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+    return (
+      <>
+        <CustomInputs
+          labelTitle="Job Title"
+          required={true}
+          onChangeText={handleChange('jobTitle')}
+          placeHolder=""
+          onBlur={handleBlur('jobTitle')}
+          value={values.jobTitle}
+        />
+        {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
+      </>
+    );
+  };
+
   return (
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
@@ -108,8 +163,10 @@ const ProfileScreen = () => {
         <ScrollView>
           <Formik
             initialValues={{
-              userType: '',
+              userType: userType,
               studentNumber: '',
+              facultyPosition: '',
+              jobTitle: '',
               collegeDepartment: '',
               firstName: '',
               middleName: '',
@@ -134,32 +191,13 @@ const ProfileScreen = () => {
                 <Text>Position</Text>
                 <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                   <View style={[displayFormContainer.flexContainer]}>
-                    <Text>{values.userType}</Text>
+                    <Text>{userType}</Text>
                     <AntDesign name="caretdown" size={14} color="black" />
                   </View>
                 </TouchableOpacity>
-                <CustomInputs
-                  labelTitle="Student Number"
-                  required={true}
-                  onChangeText={handleChange('studentNumber')}
-                  placeHolder=""
-                  onBlur={handleBlur('studentNumber')}
-                  value={values.studentNumber}
-                />
-                {errors.studentNumber && touched.studentNumber && (
-                  <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="College Department"
-                  required={true}
-                  onChangeText={handleChange('collegeDepartment')}
-                  placeHolder=""
-                  onBlur={handleBlur('collegeDepartment')}
-                  value={values.collegeDepartment}
-                />
-                {errors.collegeDepartment && touched.collegeDepartment && (
-                  <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
-                )}
+                {userType === 'Student' && renderStudentFields({ values, errors, handleChange, handleBlur, touched })}
+                {userType === 'Faculty' && renderFacultyFields({ values, errors, handleChange, handleBlur, touched })}
+                {userType === 'Worker' && renderWorkerFields({ values, errors, handleChange, handleBlur, touched })}
                 <CustomInputs
                   labelTitle="First name"
                   required={true}
@@ -296,6 +334,42 @@ const ProfileScreen = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Change user position?</Text>
+              <CheckBox
+                checked={userType === 'Student'}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checkedColor={Colors.primary}
+                onPress={() => setUserTypeChoice('Student')}
+                containerStyle={checkBox.radioOptions}
+                title="Student"
+              />
+              <CheckBox
+                checked={userType === 'Faculty'}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checkedColor={Colors.primary}
+                onPress={() => setUserTypeChoice('Faculty')}
+                containerStyle={checkBox.radioOptions}
+                title="Faculty"
+              />
+              <CheckBox
+                checked={userType === 'Worker'}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checkedColor={Colors.primary}
+                onPress={() => setUserTypeChoice('Worker')}
+                containerStyle={checkBox.radioOptions}
+                title="Worker"
+              />
+              <CheckBox
+                checked={userType === 'Visitor / Guest'}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                checkedColor={Colors.primary}
+                onPress={() => setUserTypeChoice('Visitor / Guest')}
+                containerStyle={checkBox.radioOptions}
+                title="Visitor / Guest"
+              />
               <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
                 <Text style={styles.textStyle}>Close</Text>
               </Pressable>
@@ -311,8 +385,8 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     marginTop: 20,
+    marginHorizontal: 15,
   },
   modalView: {
     margin: 20,
@@ -331,8 +405,10 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
-    padding: 10,
+    width: '100%',
+    padding: 15,
     elevation: 2,
+    marginHorizontal: '50%',
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
@@ -344,10 +420,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent: 'center',
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    width: '100%',
   },
 });
 
