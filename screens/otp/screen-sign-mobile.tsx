@@ -65,6 +65,7 @@ const SignInWithMobileScreen = ({ navigation }: any) => {
           value={number}
           placeholder="09 *** *** ***"
           keyboardType="numeric"
+          maxLength={11}
         />
         {error !== '' && <Text style={{ color: Colors.red, marginTop: 5, fontWeight: '700' }}>{error}</Text>}
       </View>

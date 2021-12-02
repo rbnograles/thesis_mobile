@@ -158,9 +158,9 @@ const ProfileScreen = () => {
 
   return (
     <KeyboardAvoidingWrapper>
-      <SafeAreaView style={landingPagesOrientation.container}>
-        <Text style={displayFormContainer.formsHeader}>Profile Information Summary</Text>
-        <ScrollView>
+      <ScrollView>
+        <SafeAreaView style={landingPagesOrientation.container}>
+          <Text style={displayFormContainer.formsHeader}>Profile Information Summary</Text>
           <Formik
             initialValues={{
               userType: userType,
@@ -188,195 +188,206 @@ const ProfileScreen = () => {
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={{ marginTop: 10 }}>
-                <Text>Position</Text>
-                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                  <View style={[displayFormContainer.flexContainer]}>
-                    <Text>{userType}</Text>
-                    <AntDesign name="caretdown" size={14} color="black" />
-                  </View>
-                </TouchableOpacity>
-                {userType === 'Student' && renderStudentFields({ values, errors, handleChange, handleBlur, touched })}
-                {userType === 'Faculty' && renderFacultyFields({ values, errors, handleChange, handleBlur, touched })}
-                {userType === 'Worker' && renderWorkerFields({ values, errors, handleChange, handleBlur, touched })}
-                <CustomInputs
-                  labelTitle="First name"
-                  required={true}
-                  onChangeText={handleChange('firstName')}
-                  placeHolder=""
-                  onBlur={handleBlur('firstName')}
-                  value={values.firstName}
-                />
-                {errors.firstName && touched.firstName && (
-                  <Text style={formsContainer.errorMessage}>{errors.firstName}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Middle name"
-                  required={false}
-                  onChangeText={handleChange('middleName')}
-                  placeHolder=""
-                  onBlur={handleBlur('middleName')}
-                  value={values.middleName}
-                />
-                {errors.middleName && touched.middleName && (
-                  <Text style={formsContainer.errorMessage}>{errors.middleName}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Last name"
-                  required={true}
-                  onChangeText={handleChange('lastName')}
-                  placeHolder=""
-                  onBlur={handleBlur('lastName')}
-                  value={values.lastName}
-                />
-                {errors.lastName && touched.lastName && (
-                  <Text style={formsContainer.errorMessage}>{errors.lastName}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Name extension"
-                  required={false}
-                  onChangeText={handleChange('nameExtension')}
-                  placeHolder=""
-                  onBlur={handleBlur('nameExtension')}
-                  value={values.nameExtension}
-                />
-                {errors.nameExtension && touched.nameExtension && (
-                  <Text style={formsContainer.errorMessage}>{errors.nameExtension}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Lot Number"
-                  required={false}
-                  onChangeText={handleChange('lotNumber')}
-                  placeHolder=""
-                  onBlur={handleBlur('firstName')}
-                  value={values.lotNumber}
-                />
-                {errors.lotNumber && touched.lotNumber && (
-                  <Text style={formsContainer.errorMessage}>{errors.lotNumber}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Street Name"
-                  required={true}
-                  onChangeText={handleChange('streetName')}
-                  placeHolder=""
-                  onBlur={handleBlur('streetName')}
-                  value={values.streetName}
-                />
-                {errors.streetName && touched.streetName && (
-                  <Text style={formsContainer.errorMessage}>{errors.streetName}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="District / Subdivision"
-                  required={false}
-                  onChangeText={handleChange('district')}
-                  placeHolder=""
-                  onBlur={handleBlur('district')}
-                  value={values.district}
-                />
-                {errors.district && touched.district && (
-                  <Text style={formsContainer.errorMessage}>{errors.district}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="Barangay"
-                  required={true}
-                  onChangeText={handleChange('barangay')}
-                  placeHolder=""
-                  onBlur={handleBlur('barangay')}
-                  value={values.barangay}
-                />
-                {errors.barangay && touched.barangay && (
-                  <Text style={formsContainer.errorMessage}>{errors.barangay}</Text>
-                )}
-                <CustomInputs
-                  labelTitle="City"
-                  required={true}
-                  onChangeText={handleChange('city')}
-                  placeHolder=""
-                  onBlur={handleBlur('city')}
-                  value={values.city}
-                />
-                {errors.city && touched.city && <Text style={formsContainer.errorMessage}>{errors.city}</Text>}
-                <CustomInputs
-                  labelTitle="Region"
-                  required={true}
-                  onChangeText={handleChange('region')}
-                  placeHolder=""
-                  onBlur={handleBlur('region')}
-                  value={values.region}
-                />
-                {errors.region && touched.region && <Text style={formsContainer.errorMessage}>{errors.region}</Text>}
-                <CustomInputs
-                  labelTitle="Mobile Number"
-                  required={true}
-                  onChangeText={handleChange('mobileNumber')}
-                  placeHolder=""
-                  onBlur={handleBlur('mobileNumber')}
-                  value={values.region}
-                />
-                {errors.mobileNumber && touched.mobileNumber && (
-                  <Text style={formsContainer.errorMessage}>{errors.mobileNumber}</Text>
-                )}
+                <View style={{ marginBottom: 15 }}>
+                  <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
+                  <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                    <View style={[displayFormContainer.flexContainer]}>
+                      <Text>{userType}</Text>
+                      <AntDesign name="caretdown" size={14} color="black" />
+                    </View>
+                  </TouchableOpacity>
+                  {userType === 'Student' && renderStudentFields({ values, errors, handleChange, handleBlur, touched })}
+                  {userType === 'Faculty' && renderFacultyFields({ values, errors, handleChange, handleBlur, touched })}
+                  {userType === 'Worker' && renderWorkerFields({ values, errors, handleChange, handleBlur, touched })}
+                </View>
+                <View style={{ marginBottom: 15 }}>
+                  <Text style={displayFormContainer.formCaptions}>Personal Name</Text>
+                  <CustomInputs
+                    labelTitle="First name"
+                    required={true}
+                    onChangeText={handleChange('firstName')}
+                    placeHolder=""
+                    onBlur={handleBlur('firstName')}
+                    value={values.firstName}
+                  />
+                  {errors.firstName && touched.firstName && (
+                    <Text style={formsContainer.errorMessage}>{errors.firstName}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="Middle name"
+                    required={false}
+                    onChangeText={handleChange('middleName')}
+                    placeHolder=""
+                    onBlur={handleBlur('middleName')}
+                    value={values.middleName}
+                  />
+                  {errors.middleName && touched.middleName && (
+                    <Text style={formsContainer.errorMessage}>{errors.middleName}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="Last name"
+                    required={true}
+                    onChangeText={handleChange('lastName')}
+                    placeHolder=""
+                    onBlur={handleBlur('lastName')}
+                    value={values.lastName}
+                  />
+                  {errors.lastName && touched.lastName && (
+                    <Text style={formsContainer.errorMessage}>{errors.lastName}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="Suffix"
+                    required={false}
+                    onChangeText={handleChange('nameExtension')}
+                    placeHolder=""
+                    onBlur={handleBlur('nameExtension')}
+                    value={values.nameExtension}
+                  />
+                  {errors.nameExtension && touched.nameExtension && (
+                    <Text style={formsContainer.errorMessage}>{errors.nameExtension}</Text>
+                  )}
+                </View>
+                <View style={{ marginBottom: 15 }}>
+                  <Text style={displayFormContainer.formCaptions}>Current Address</Text>
+                  <CustomInputs
+                    labelTitle="Lot Number"
+                    required={false}
+                    onChangeText={handleChange('lotNumber')}
+                    placeHolder=""
+                    onBlur={handleBlur('firstName')}
+                    value={values.lotNumber}
+                  />
+                  {errors.lotNumber && touched.lotNumber && (
+                    <Text style={formsContainer.errorMessage}>{errors.lotNumber}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="Street Name"
+                    required={true}
+                    onChangeText={handleChange('streetName')}
+                    placeHolder=""
+                    onBlur={handleBlur('streetName')}
+                    value={values.streetName}
+                  />
+                  {errors.streetName && touched.streetName && (
+                    <Text style={formsContainer.errorMessage}>{errors.streetName}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="District / Subdivision"
+                    required={false}
+                    onChangeText={handleChange('district')}
+                    placeHolder=""
+                    onBlur={handleBlur('district')}
+                    value={values.district}
+                  />
+                  {errors.district && touched.district && (
+                    <Text style={formsContainer.errorMessage}>{errors.district}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="Barangay"
+                    required={true}
+                    onChangeText={handleChange('barangay')}
+                    placeHolder=""
+                    onBlur={handleBlur('barangay')}
+                    value={values.barangay}
+                  />
+                  {errors.barangay && touched.barangay && (
+                    <Text style={formsContainer.errorMessage}>{errors.barangay}</Text>
+                  )}
+                  <CustomInputs
+                    labelTitle="City"
+                    required={true}
+                    onChangeText={handleChange('city')}
+                    placeHolder=""
+                    onBlur={handleBlur('city')}
+                    value={values.city}
+                  />
+                  {errors.city && touched.city && <Text style={formsContainer.errorMessage}>{errors.city}</Text>}
+                  <CustomInputs
+                    labelTitle="Region"
+                    required={true}
+                    onChangeText={handleChange('region')}
+                    placeHolder=""
+                    onBlur={handleBlur('region')}
+                    value={values.region}
+                  />
+                  {errors.region && touched.region && <Text style={formsContainer.errorMessage}>{errors.region}</Text>}
+                </View>
+                <View style={{ marginBottom: 15 }}>
+                  <Text style={displayFormContainer.formCaptions}>Contact Information</Text>
+                  <CustomInputs
+                    labelTitle="Mobile Number"
+                    required={true}
+                    onChangeText={handleChange('mobileNumber')}
+                    placeHolder=""
+                    onBlur={handleBlur('mobileNumber')}
+                    value={values.region}
+                  />
+                  {errors.mobileNumber && touched.mobileNumber && (
+                    <Text style={formsContainer.errorMessage}>{errors.mobileNumber}</Text>
+                  )}
+                </View>
                 <View style={{ marginTop: 20, marginBottom: 20 }}>
                   <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Update" />
                 </View>
               </View>
             )}
           </Formik>
-        </ScrollView>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Change user position?</Text>
-              <CheckBox
-                checked={userType === 'Student'}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
-                checkedColor={Colors.primary}
-                onPress={() => setUserTypeChoice('Student')}
-                containerStyle={checkBox.radioOptions}
-                title="Student"
-              />
-              <CheckBox
-                checked={userType === 'Faculty'}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
-                checkedColor={Colors.primary}
-                onPress={() => setUserTypeChoice('Faculty')}
-                containerStyle={checkBox.radioOptions}
-                title="Faculty"
-              />
-              <CheckBox
-                checked={userType === 'Worker'}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
-                checkedColor={Colors.primary}
-                onPress={() => setUserTypeChoice('Worker')}
-                containerStyle={checkBox.radioOptions}
-                title="Worker"
-              />
-              <CheckBox
-                checked={userType === 'Visitor / Guest'}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
-                checkedColor={Colors.primary}
-                onPress={() => setUserTypeChoice('Visitor / Guest')}
-                containerStyle={checkBox.radioOptions}
-                title="Visitor / Guest"
-              />
-              <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.textStyle}>Close</Text>
-              </Pressable>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Change user position?</Text>
+                <CheckBox
+                  checked={userType === 'Student'}
+                  checkedIcon="dot-circle-o"
+                  uncheckedIcon="circle-o"
+                  checkedColor={Colors.primary}
+                  onPress={() => setUserTypeChoice('Student')}
+                  containerStyle={checkBox.radioOptions}
+                  title="Student"
+                />
+                <CheckBox
+                  checked={userType === 'Faculty'}
+                  checkedIcon="dot-circle-o"
+                  uncheckedIcon="circle-o"
+                  checkedColor={Colors.primary}
+                  onPress={() => setUserTypeChoice('Faculty')}
+                  containerStyle={checkBox.radioOptions}
+                  title="Faculty"
+                />
+                <CheckBox
+                  checked={userType === 'Worker'}
+                  checkedIcon="dot-circle-o"
+                  uncheckedIcon="circle-o"
+                  checkedColor={Colors.primary}
+                  onPress={() => setUserTypeChoice('Worker')}
+                  containerStyle={checkBox.radioOptions}
+                  title="Worker"
+                />
+                <CheckBox
+                  checked={userType === 'Visitor / Guest'}
+                  checkedIcon="dot-circle-o"
+                  uncheckedIcon="circle-o"
+                  checkedColor={Colors.primary}
+                  onPress={() => setUserTypeChoice('Visitor / Guest')}
+                  containerStyle={checkBox.radioOptions}
+                  title="Visitor / Guest"
+                />
+                <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Close</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </Modal>
-      </SafeAreaView>
+          </Modal>
+        </SafeAreaView>
+      </ScrollView>
     </KeyboardAvoidingWrapper>
   );
 };

@@ -62,7 +62,6 @@ export const landingPagesOrientation = StyleSheet.create({
     fontSize: 20,
     borderColor: Colors.inputColor,
     backgroundColor: Colors.inputColor,
-    letterSpacing: 4,
     borderRadius: 5,
     padding: 10,
   },
@@ -70,6 +69,7 @@ export const landingPagesOrientation = StyleSheet.create({
     fontWeight: '600',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
     margin: 15,
     padding: 15,
     fontSize: 20,
@@ -185,6 +185,10 @@ export const checkBox = StyleSheet.create({
 });
 
 export const displayFormContainer = StyleSheet.create({
+  formCaptions: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
   formsHeader: {
     fontSize: 25,
     fontWeight: '700',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 // native components
 import { Text, SafeAreaView, View, TextInput } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
@@ -11,8 +11,16 @@ import CustomButton from '../../_utils/CustomButton';
 
 const OTPConfirmationScreen = ({ navigation }: any) => {
   // default values
-  const [number, onChangeNumber] = useState('');
+  const [firstDigit, setFirstDigit] = useState('');
+  const [secondDigit, setSecondDigit] = useState('');
+  const [thirdDigit, setThirdDigit] = useState('');
+  const [fourthDigit, setFourthDigit] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+
+  const firstDigitRef: any = useRef(null);
+  const secondDigitRef: any = useRef(null);
+  const thirdDigitRef: any = useRef(null);
+  const fourthDigitRef: any = useRef(null);
 
   const _readStoredNumber = async () => {
     try {
@@ -30,6 +38,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     // read and get the local number stored in the async storage
+    firstDigitRef.current.focus();
     _readStoredNumber();
   }, []);
 
@@ -56,27 +65,46 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
       </View>
       <View style={[landingPagesOrientation.inputContainer, { justifyContent: 'space-around', flexDirection: 'row' }]}>
         <TextInput
+          ref={firstDigitRef}
           style={landingPagesOrientation.otpInput}
-          onChangeText={onChangeNumber}
-          value={number}
+          onChangeText={e => {
+            setFirstDigit(e);
+            secondDigitRef.current.focus();
+          }}
+          value={firstDigit}
+          maxLength={1}
           keyboardType="numeric"
         />
         <TextInput
+          ref={secondDigitRef}
           style={landingPagesOrientation.otpInput}
-          onChangeText={onChangeNumber}
-          value={number}
+          onChangeText={e => {
+            setSecondDigit(e);
+            thirdDigitRef.current.focus();
+          }}
+          value={secondDigit}
+          maxLength={1}
           keyboardType="numeric"
         />
         <TextInput
+          ref={thirdDigitRef}
           style={landingPagesOrientation.otpInput}
-          onChangeText={onChangeNumber}
-          value={number}
+          onChangeText={e => {
+            setThirdDigit(e);
+            fourthDigitRef.current.focus();
+          }}
+          value={thirdDigit}
+          maxLength={1}
           keyboardType="numeric"
         />
         <TextInput
+          ref={fourthDigitRef}
           style={landingPagesOrientation.otpInput}
-          onChangeText={onChangeNumber}
-          value={number}
+          onChangeText={e => {
+            setFourthDigit(e);
+          }}
+          value={fourthDigit}
+          maxLength={1}
           keyboardType="numeric"
         />
       </View>
