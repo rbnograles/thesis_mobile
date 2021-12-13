@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { tabNavigation } from '../styles/styles-screens';
@@ -9,6 +10,7 @@ import { Colors } from '../styles/styles-colors';
 import QRScreen from '../screens/main-pages/QRCode-screen';
 import LocationHistoryScreen from '../screens/main-pages/LocationHistory-screen';
 import SettingsScreen from '../screens/main-pages/Settings-screen';
+import Loader from '../_utils/Loader';
 import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
 import ProfileScreen from '../screens/main-pages/Profile-screen';
 
@@ -16,7 +18,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const TabNavigator = ({ navigation }: any) => {
   const [isSetUp, setIsSetUp] = useState(true);
-
+  const [isRendering, setRendering] = useState(false);
   // this will fetch the default states from the screen interactions
   const getWelcomePageStatus = async () => {
     try {
@@ -25,6 +27,7 @@ const TabNavigator = ({ navigation }: any) => {
     } catch (error) {
       console.log(error);
     }
+    setRendering(true);
   };
 
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
@@ -61,14 +64,35 @@ const TabNavigator = ({ navigation }: any) => {
     >
       <Tab.Screen name="qrcode" component={QRScreen} options={{ tabBarLabel: 'QR Code' }} />
       <Tab.Screen name="visithistory" component={LocationHistoryScreen} options={{ tabBarLabel: 'History' }} />
-      <Tab.Screen
-        name="profile"
-        component={isSetUp ? SuccessPromptScreen : ProfileScreen}
-        options={{ tabBarLabel: 'Profile' }}
-      />
+      {isSetUp && (
+        <Tab.Screen
+          name="profile"
+          component={!isRendering ? Loader : SuccessPromptScreen}
+          options={{ tabBarLabel: 'Profile' }}
+        />
+      )}
+      {!isSetUp && (
+        <Tab.Screen
+          name="profile"
+          component={!isRendering ? Loader : ProfileScreen}
+          options={{ tabBarLabel: 'Profile' }}
+        />
+      )}
       <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+});
 
 export default TabNavigator;
