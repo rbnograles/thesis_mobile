@@ -24,6 +24,7 @@ const TabNavigator = ({ navigation }: any) => {
     try {
       const data = await AsyncStorage.getItem('@successWelcomePage');
       data !== null && setIsSetUp(data === 'true' ? false : true);
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -32,6 +33,9 @@ const TabNavigator = ({ navigation }: any) => {
 
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
+    // running this function on mount
+    getWelcomePageStatus();
+    // running this function once on setup
     navigation.addListener('focus', () => {
       getWelcomePageStatus();
     });

@@ -41,6 +41,7 @@ const QRCodeScreen = ({ navigation }: any) => {
 
   return (
     <View style={landingPagesOrientation.container}>
+      {/* This section will render the users QR Code Scanner Screen */}
       {renderStatus === '1' && (
         <>
           {!hasPermissions && (
@@ -75,6 +76,7 @@ const QRCodeScreen = ({ navigation }: any) => {
           )}
         </>
       )}
+      {/* This section has a logic of which if the render status is 0 it will render the users QR Code */}
       {renderStatus === '0' && (
         <>
           <View style={{ alignItems: 'center', marginBottom: 30 }}>

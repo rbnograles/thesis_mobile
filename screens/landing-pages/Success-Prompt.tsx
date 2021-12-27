@@ -26,7 +26,7 @@ const SuccessPromptScreen = ({ navigation }: any) => {
         <Text style={[landingPagesOrientation.header]}>Welcome!</Text>
         <Text style={[landingPagesOrientation.subHeader, { textAlign: 'center' }]}>
           Thank you for installing <Text style={[{ color: Colors.primary, fontWeight: '700' }]}>JuanBreath</Text>. To
-          use all the features of the app and fully setup your account, you can start by setting up your profile.
+          use all the features of the app and fully setup your account, you can start by filling up your profile.
         </Text>
       </View>
       <View style={buttonOrientation.landingButtonOrientation}>
