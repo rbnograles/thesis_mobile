@@ -3,7 +3,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Text, SafeAreaView, View, TextInput } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 import { Feather } from '@expo/vector-icons';
+// utilities
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { _setThisPageToCompleted } from '../../_storages/_state_process';
 // stylesheet
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
@@ -45,8 +47,16 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
   /**
    * This will re send the otp function by recalling it
    */
-  const sendOTP = () => {
+  const sendOTP = async () => {
     console.log('Sending OTP');
+  };
+
+  const verifyOTP = async () => {
+    // insert here the verification code block for the OTP
+    // this will set the "set up status" of the application to complete for the landing pages
+    _setThisPageToCompleted('@otpPageSuccessful', 'true');
+    // move to the landing screen
+    navigation.navigate('MainPages');
   };
 
   return (
@@ -119,7 +129,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
           title="Verify and Continue"
           color={Colors.primary}
           textColor="white"
-          onPress={() => navigation.navigate('MainPages')}
+          onPress={() => verifyOTP()}
         />
       </View>
     </SafeAreaView>
