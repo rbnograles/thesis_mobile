@@ -23,7 +23,7 @@ interface PersonalInformationValues {
 let personalInfoSchema = yup.object().shape({
   lotNumber: yup
     .string()
-    .matches(/[A-Za-z]/, 'Lot number must contain only letters')
+    .matches(/[0-9A-Za-z]/, 'Lot number must contain numbers and letters only')
     .nullable(),
   streetName: yup
     .string()
@@ -35,7 +35,7 @@ let personalInfoSchema = yup.object().shape({
     .nullable(),
   barangay: yup
     .string()
-    .matches(/[A-Za-z.]/, 'Barangay name must contain only letters')
+    .matches(/[0-9A-Za-z.]/, 'Barangay name must contain only numbers, letters only')
     .required('Barangay is required'),
   city: yup
     .string()
