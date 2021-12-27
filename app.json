@@ -4,11 +4,11 @@
     "slug": "juanbreath",
     "version": "1.0.7",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-jb.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-jb.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2a749f"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -20,8 +20,8 @@
     "android": {
       "package": "juanbreathdev.juanbreath",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/icon-jb.png",
+        "backgroundColor": "#2a749f"
       }
     },
     "web": {

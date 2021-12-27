@@ -5,9 +5,11 @@ import LoggedInRootStack from './navigators/LoggedInRootStack';
 
 // utilities
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppLoading from 'expo-app-loading';
 
 export default function App() {
-  [appOTPReday, setAppOTPRead] = useState(false);
+  const [appReady, setAppReady] = useState(false);
+  const [appOTPReday, setAppOTPRead] = useState(false);
 
   const _otpSetUpChecking = async () => {
     try {
@@ -22,15 +24,27 @@ export default function App() {
     }
   };
 
+  const checkIfAppReady = () => {
+    AsyncStorage.getItem('@otpPageSuccessful')
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error => console.warn());
+  };
+
   useEffect(() => {
     // read and get the local number stored in the async storage
-
     _otpSetUpChecking();
   }, []);
 
+  // this section will ensire that the page rendering wont overlap while waiting for the proper state to complete
+  if (!appReady) {
+    return <AppLoading startAsync={checkIfAppReady} onFinish={() => setAppReady(true)} onError={console.warn()} />;
+  }
+  // this section will be render of the user is new
   if (!appOTPReday) {
     return <RootStack />;
   }
-
+  // this section will render if there is already data inside the app's local storage
   return <LoggedInRootStack />;
 }
