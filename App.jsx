@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 // screens
 import RootStack from './navigators/RootStack';
 import LoggedInRootStack from './navigators/LoggedInRootStack';
@@ -10,6 +11,12 @@ import AppLoading from 'expo-app-loading';
 export default function App() {
   const [appReady, setAppReady] = useState(false);
   const [appOTPReday, setAppOTPRead] = useState(false);
+
+  // handles back button
+  const disableBackButton = () => {
+    BackHandler.exitApp();
+    return true;
+  };
 
   const _otpSetUpChecking = async () => {
     try {
@@ -29,12 +36,15 @@ export default function App() {
       .then(res => {
         console.log(res);
       })
-      .catch(error => console.warn());
+      .catch(error => console.warn(error));
   };
 
   useEffect(() => {
     // read and get the local number stored in the async storage
     _otpSetUpChecking();
+
+    // this will run uppon clicking the back button of the phone
+    BackHandler.addEventListener('hardwareBackPress', disableBackButton);
   }, []);
 
   // this section will ensire that the page rendering wont overlap while waiting for the proper state to complete
