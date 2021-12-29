@@ -58,21 +58,28 @@ const QRCodeScreen = ({ navigation }: any) => {
             </View>
           )}
           {hasPermissions && (
-            <View style={{ marginTop: -30 }}>
-              <View style={styles.barcodebox}>
-                <BarCodeScanner
-                  style={{ height: Dimensions.get('window').height - 70, width: Dimensions.get('window').width - 70 }}
-                  onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
+            <>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '600' }}>Place the QR Code in front of the camera</Text>
+              </View>
+              <View style={{ marginTop: -50 }}>
+                <View style={styles.barcodebox}>
+                  <BarCodeScanner
+                    style={{
+                      height: Dimensions.get('window').height - 70,
+                      width: Dimensions.get('window').width - 70,
+                    }}
+                    onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
+                  />
+                </View>
+                <CustomButton
+                  title="Scan Again"
+                  color={Colors.primary}
+                  textColor="white"
+                  onPress={() => setScanned(false)}
                 />
               </View>
-              <Text>{text}</Text>
-              <CustomButton
-                title="Scan Again"
-                color={Colors.primary}
-                textColor="white"
-                onPress={() => setScanned(false)}
-              />
-            </View>
+            </>
           )}
         </>
       )}

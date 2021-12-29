@@ -18,6 +18,7 @@ export default function App() {
     return true;
   };
 
+  // this will check if the otp set up is completed or not
   const _otpSetUpChecking = async () => {
     try {
       const value = await AsyncStorage.getItem('@otpPageSuccessful');
@@ -31,6 +32,7 @@ export default function App() {
     }
   };
 
+  // this will check if the app data are all loaded
   const checkIfAppReady = () => {
     AsyncStorage.getItem('@otpPageSuccessful')
       .then(res => {
@@ -39,6 +41,7 @@ export default function App() {
       .catch(error => console.warn(error));
   };
 
+  // react life cycle the runs always when the page is mounted
   useEffect(() => {
     // read and get the local number stored in the async storage
     _otpSetUpChecking();
