@@ -4,12 +4,12 @@ import { Text, View } from 'react-native';
 // stylesheet
 import { landingPagesOrientation } from '../../styles/styles-screens';
 
-const LocationHistoryScreen = ({ navigation }: any) => {
+const AlarmScreen = () => {
   return (
     <View style={landingPagesOrientation.container}>
-      <Text>Hi</Text>
+      <Text style={{ marginBottom: 15, fontSize: 24, fontWeight: '700' }}>Under construction</Text>
     </View>
   );
 };
 
-export default LocationHistoryScreen;
+export default AlarmScreen;

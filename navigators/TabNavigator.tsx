@@ -13,6 +13,7 @@ import SettingsScreen from '../screens/main-pages/Settings-screen';
 import Loader from '../_utils/Loader';
 import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
 import ProfileScreen from '../screens/main-pages/Profile-screen';
+import AlarmScreen from '../screens/main-pages/Alarm-screen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -55,6 +56,8 @@ const TabNavigator = ({ navigation }: any) => {
             iconName = 'location-arrow';
           } else if (route.name === 'profile') {
             iconName = 'user';
+          } else if (route.name === 'notification') {
+            iconName = 'bell';
           } else {
             iconName = 'cogs';
           }
@@ -82,6 +85,7 @@ const TabNavigator = ({ navigation }: any) => {
           options={{ tabBarLabel: 'Profile' }}
         />
       )}
+      <Tab.Screen name="notification" component={AlarmScreen} options={{ tabBarLabel: 'Alarm' }} />
       <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
     </Tab.Navigator>
   );
