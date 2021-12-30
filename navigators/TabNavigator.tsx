@@ -25,7 +25,6 @@ const TabNavigator = ({ navigation }: any) => {
     try {
       const data = await AsyncStorage.getItem('@successWelcomePage');
       data !== null && setIsSetUp(data === 'true' ? false : true);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

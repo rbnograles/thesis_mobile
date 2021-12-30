@@ -44,8 +44,6 @@ const LocationHistoryScreen = ({ navigation }) => {
     },
   ]);
 
-  console.log(new Date('2021-12-29').setHours(0, 0, 0, 0) + ' ' + new Date().setHours(0, 0, 0, 0));
-
   return (
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>

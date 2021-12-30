@@ -24,7 +24,6 @@ export default function App() {
       const value = await AsyncStorage.getItem('@otpPageSuccessful');
       if (value !== null) {
         // value previously stored
-        console.log(value);
         setAppOTPRead(value === 'true' ? true : false);
       }
     } catch (error) {
