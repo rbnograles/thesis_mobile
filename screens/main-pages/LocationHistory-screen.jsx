@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 // native components
 import { Text, View, ScrollView } from 'react-native';
 import Moment from 'moment';
-import { Feather } from '@expo/vector-icons';
 // stylesheet
-import { landingPagesOrientation } from '../../styles/styles-screens';
+import { displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 
 Moment.locale('en');
@@ -48,9 +47,7 @@ const LocationHistoryScreen = ({ navigation }) => {
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
-          <Text style={{ marginBottom: 15, fontSize: 24, fontWeight: '700' }}>
-            <Feather name="calendar" size={24} color="black" /> 14 Day Visitation History
-          </Text>
+          <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>14 Day Visitation History</Text>
           {historyData.length > 0 &&
             historyData.map((history, i) => {
               return (

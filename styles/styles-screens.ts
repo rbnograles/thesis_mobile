@@ -218,3 +218,19 @@ export const displayFormContainer = StyleSheet.create({
     paddingLeft: 10,
   },
 });
+
+export const sectionContiner = StyleSheet.create({
+  section: {
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 5,
+  },
+  sectionDescription: {
+    fontSize: 15,
+    marginBottom: 7,
+  },
+});

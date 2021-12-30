@@ -60,7 +60,9 @@ const QRCodeScreen = ({ navigation }: any) => {
           {hasPermissions && (
             <>
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 20, fontWeight: '600' }}>Place the QR Code in front of the camera</Text>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.primary }}>
+                  Place the QR Code in front of the camera
+                </Text>
               </View>
               <View style={{ marginTop: -50 }}>
                 <View style={styles.barcodebox}>
@@ -87,7 +89,7 @@ const QRCodeScreen = ({ navigation }: any) => {
       {renderStatus === '0' && (
         <>
           <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <Text style={{ fontSize: 24, fontWeight: '700' }}>Scan QR Code</Text>
+            <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan QR Code</Text>
           </View>
           <SvgQRCode
             size={Dimensions.get('window').width - 70}

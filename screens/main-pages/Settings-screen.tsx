@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // stylesheet
-import { landingPagesOrientation } from '../../styles/styles-screens';
+import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 
@@ -23,13 +23,29 @@ const SettingsScreen = () => {
 
   return (
     <View style={landingPagesOrientation.container}>
-      <Text>{message}</Text>
-      <CustomButton
-        title="Reset Saved Data"
-        color={Colors.primary}
-        textColor="white"
-        onPress={() => clearAsyncStorageData()}
-      />
+      <Text style={displayFormContainer.formsHeader}>Settings</Text>
+      <View style={sectionContiner.section}>
+        <Text style={sectionContiner.sectionHeader}>Upload your Location History</Text>
+        <Text style={sectionContiner.sectionDescription}>
+          If you are diagnosed with COVID-19, please upload your location history to alert the community of a possible
+          contact. If not done immediately, an authorized person from the university will obligate you to upload your
+          location history.
+        </Text>
+        <CustomButton title="Upload" color={Colors.primary} textColor="white" onPress={() => clearAsyncStorageData()} />
+      </View>
+      <View style={sectionContiner.section}>
+        <Text style={sectionContiner.sectionHeader}>Delete your account</Text>
+        <Text style={sectionContiner.sectionDescription}>
+          If you chose to delete your account, all data from this account will be deleted from the database and your
+          mobile device.
+        </Text>
+        <CustomButton
+          title="Delete Account"
+          color={Colors.red}
+          textColor="white"
+          onPress={() => clearAsyncStorageData()}
+        />
+      </View>
     </View>
   );
 };
