@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // native components
-import { Text, View, SafeAreaView, ScrollView, Modal, StyleSheet, Pressable, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, View, SafeAreaView, FlatList, Modal, StyleSheet, Pressable, Alert } from 'react-native';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { AntDesign } from '@expo/vector-icons';
@@ -12,15 +13,7 @@ import KeyboardAvoidingWrapper from '../../_utils/KeyboardAvoidingWrapper';
 import CustomInputs from '../../_utils/CustomInputs';
 import CustomButton from '../../_utils/CustomButton';
 import { Colors } from '../../styles/styles-colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-// schema types interfaces
-interface PersonalInformationValues {
-  firstName: string;
-  middleName: string | null;
-  lastName: string;
-  nameExtension: string | null;
-}
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 // user profile validation schema
 let personalInfoSchema = yup.object().shape({
@@ -77,12 +70,31 @@ const ProfileScreen = () => {
   // default states
   const [modalVisible, setModalVisible] = useState(false);
   const [userType, setUserType] = useState('Student');
+  const [prevInfo, setPrevInfo] = useState({});
 
-  const setUserTypeChoice = (type: string) => {
+  const setUserTypeChoice = type => {
     setUserType(type);
   };
 
-  const renderStudentFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+  const getUserProfileData = async () => {
+    // get the stored data and render to the fields
+    try {
+      const data = await AsyncStorage.getItem('@profileInfo');
+      const value = await AsyncStorage.getItem('@mobile_num_key');
+      const newdata = JSON.parse(data);
+      setPrevInfo({ mobileNumber: value, ...newdata });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // this function is a react native lifecycle method that will run when a component is mounted / loaded
+  useEffect(() => {
+    // running this function on mount
+    getUserProfileData();
+  }, []);
+
+  const renderStudentFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
@@ -91,7 +103,7 @@ const ProfileScreen = () => {
           onChangeText={handleChange('studentNumber')}
           placeHolder=""
           onBlur={handleBlur('studentNumber')}
-          value={values.studentNumber}
+          value={prevInfo.studentNumber}
         />
         {errors.studentNumber && touched.studentNumber && (
           <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
@@ -102,7 +114,7 @@ const ProfileScreen = () => {
           onChangeText={handleChange('collegeDepartment')}
           placeHolder=""
           onBlur={handleBlur('collegeDepartment')}
-          value={values.collegeDepartment}
+          value={prevInfo.collegeDepartment}
         />
         {errors.collegeDepartment && touched.collegeDepartment && (
           <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
@@ -111,7 +123,7 @@ const ProfileScreen = () => {
     );
   };
 
-  const renderFacultyFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+  const renderFacultyFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
@@ -120,7 +132,7 @@ const ProfileScreen = () => {
           onChangeText={handleChange('facultyPosition')}
           placeHolder=""
           onBlur={handleBlur('facultyPosition')}
-          value={values.facultyPosition}
+          value={prevInfo.facultyPosition}
         />
         {errors.facultyPosition && touched.facultyPosition && (
           <Text style={formsContainer.errorMessage}>{errors.facultyPosition}</Text>
@@ -131,7 +143,7 @@ const ProfileScreen = () => {
           onChangeText={handleChange('collegeDepartment')}
           placeHolder=""
           onBlur={handleBlur('collegeDepartment')}
-          value={values.collegeDepartment}
+          value={prevInfo.collegeDepartment}
         />
         {errors.collegeDepartment && touched.collegeDepartment && (
           <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
@@ -140,7 +152,7 @@ const ProfileScreen = () => {
     );
   };
 
-  const renderWorkerFields = ({ values, errors, handleChange, handleBlur, touched }: any) => {
+  const renderWorkerFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
@@ -149,7 +161,7 @@ const ProfileScreen = () => {
           onChangeText={handleChange('jobTitle')}
           placeHolder=""
           onBlur={handleBlur('jobTitle')}
-          value={values.jobTitle}
+          value={prevInfo.jobTitle}
         />
         {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
       </>
@@ -163,26 +175,26 @@ const ProfileScreen = () => {
           <Text style={displayFormContainer.formsHeader}>Profile Information Summary</Text>
           <Formik
             initialValues={{
-              userType: userType,
-              studentNumber: '',
-              facultyPosition: '',
-              jobTitle: '',
-              collegeDepartment: '',
-              firstName: '',
-              middleName: '',
-              lastName: '',
-              nameExtension: '',
-              lotNumber: '',
-              streetName: '',
-              district: '',
-              barangay: '',
-              city: '',
-              region: '',
-              mobileNumber: '',
+              userType: prevInfo.firstName,
+              studentNumber: prevInfo.studentNumber,
+              facultyPosition: prevInfo.facultyPosition,
+              jobTitle: prevInfo.jobTitle,
+              collegeDepartment: prevInfo.collegeDepartment,
+              firstName: prevInfo.firstName,
+              middleName: prevInfo.middleName,
+              lastName: prevInfo.lastName,
+              nameExtension: prevInfo.nameExtension,
+              lotNumber: prevInfo.lotNumber,
+              streetName: prevInfo.streetName,
+              district: prevInfo.district,
+              barangay: prevInfo.barangay,
+              city: prevInfo.city,
+              region: prevInfo.region,
+              mobileNumber: prevInfo.mobileNumber,
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
-            onSubmit={(values: PersonalInformationValues) => {
+            onSubmit={values => {
               console.log(values);
             }}
           >
@@ -192,13 +204,15 @@ const ProfileScreen = () => {
                   <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
                   <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                     <View style={[displayFormContainer.flexContainer]}>
-                      <Text>{userType}</Text>
+                      <Text>{prevInfo.userType}</Text>
                       <AntDesign name="caretdown" size={14} color="black" />
                     </View>
                   </TouchableOpacity>
-                  {userType === 'Student' && renderStudentFields({ values, errors, handleChange, handleBlur, touched })}
-                  {userType === 'Faculty' && renderFacultyFields({ values, errors, handleChange, handleBlur, touched })}
-                  {userType === 'Worker' && renderWorkerFields({ values, errors, handleChange, handleBlur, touched })}
+                  {userType === 'Student' &&
+                    renderStudentFields({ prevInfo, errors, handleChange, handleBlur, touched })}
+                  {userType === 'Faculty' &&
+                    renderFacultyFields({ prevInfo, errors, handleChange, handleBlur, touched })}
+                  {userType === 'Worker' && renderWorkerFields({ prevInfo, errors, handleChange, handleBlur, touched })}
                 </View>
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>Personal Name</Text>
@@ -208,7 +222,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('firstName')}
                     placeHolder=""
                     onBlur={handleBlur('firstName')}
-                    value={values.firstName}
+                    value={prevInfo.firstName}
                   />
                   {errors.firstName && touched.firstName && (
                     <Text style={formsContainer.errorMessage}>{errors.firstName}</Text>
@@ -219,7 +233,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('middleName')}
                     placeHolder=""
                     onBlur={handleBlur('middleName')}
-                    value={values.middleName}
+                    value={prevInfo.middleName}
                   />
                   {errors.middleName && touched.middleName && (
                     <Text style={formsContainer.errorMessage}>{errors.middleName}</Text>
@@ -230,7 +244,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('lastName')}
                     placeHolder=""
                     onBlur={handleBlur('lastName')}
-                    value={values.lastName}
+                    value={prevInfo.lastName}
                   />
                   {errors.lastName && touched.lastName && (
                     <Text style={formsContainer.errorMessage}>{errors.lastName}</Text>
@@ -241,7 +255,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('nameExtension')}
                     placeHolder=""
                     onBlur={handleBlur('nameExtension')}
-                    value={values.nameExtension}
+                    value={prevInfo.nameExtension}
                   />
                   {errors.nameExtension && touched.nameExtension && (
                     <Text style={formsContainer.errorMessage}>{errors.nameExtension}</Text>
@@ -255,7 +269,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('lotNumber')}
                     placeHolder=""
                     onBlur={handleBlur('firstName')}
-                    value={values.lotNumber}
+                    value={prevInfo.lotNumber}
                   />
                   {errors.lotNumber && touched.lotNumber && (
                     <Text style={formsContainer.errorMessage}>{errors.lotNumber}</Text>
@@ -266,7 +280,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('streetName')}
                     placeHolder=""
                     onBlur={handleBlur('streetName')}
-                    value={values.streetName}
+                    value={prevInfo.streetName}
                   />
                   {errors.streetName && touched.streetName && (
                     <Text style={formsContainer.errorMessage}>{errors.streetName}</Text>
@@ -277,7 +291,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('district')}
                     placeHolder=""
                     onBlur={handleBlur('district')}
-                    value={values.district}
+                    value={prevInfo.district}
                   />
                   {errors.district && touched.district && (
                     <Text style={formsContainer.errorMessage}>{errors.district}</Text>
@@ -288,7 +302,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('barangay')}
                     placeHolder=""
                     onBlur={handleBlur('barangay')}
-                    value={values.barangay}
+                    value={prevInfo.barangay}
                   />
                   {errors.barangay && touched.barangay && (
                     <Text style={formsContainer.errorMessage}>{errors.barangay}</Text>
@@ -299,7 +313,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('city')}
                     placeHolder=""
                     onBlur={handleBlur('city')}
-                    value={values.city}
+                    value={prevInfo.city}
                   />
                   {errors.city && touched.city && <Text style={formsContainer.errorMessage}>{errors.city}</Text>}
                   <CustomInputs
@@ -308,7 +322,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('region')}
                     placeHolder=""
                     onBlur={handleBlur('region')}
-                    value={values.region}
+                    value={prevInfo.region}
                   />
                   {errors.region && touched.region && <Text style={formsContainer.errorMessage}>{errors.region}</Text>}
                 </View>
@@ -320,7 +334,7 @@ const ProfileScreen = () => {
                     onChangeText={handleChange('mobileNumber')}
                     placeHolder=""
                     onBlur={handleBlur('mobileNumber')}
-                    value={values.region}
+                    value={prevInfo.mobileNumber}
                   />
                   {errors.mobileNumber && touched.mobileNumber && (
                     <Text style={formsContainer.errorMessage}>{errors.mobileNumber}</Text>

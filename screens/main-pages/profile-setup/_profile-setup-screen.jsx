@@ -10,13 +10,7 @@ import KeyboardAvoidingWrapper from '../../../_utils/KeyboardAvoidingWrapper';
 import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
-
-interface PersonalInformationValues {
-  firstName: string;
-  middleName: string | null;
-  lastName: string;
-  nameExtension: string | null;
-}
+import { _setThisPageToCompleted } from '../../../_storages/_state_process';
 
 let personalInfoSchema = yup.object().shape({
   firstName: yup
@@ -37,12 +31,14 @@ let personalInfoSchema = yup.object().shape({
     .nullable(),
 });
 
-const ProfileInformationSetupScreen = ({ navigation }: any) => {
+const ProfileInformationSetupScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
         <Text style={formsContainer.formsHeader}>Profile Information</Text>
-        <Text style={formsContainer.formsSubHeader}>Please tell us some information related to you.</Text>
+        <Text style={formsContainer.formsSubHeader}>
+          This information will be saved only on your device and not on the main database.
+        </Text>
         <ScrollView>
           <Formik
             initialValues={{
@@ -53,8 +49,10 @@ const ProfileInformationSetupScreen = ({ navigation }: any) => {
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
-            onSubmit={(values: PersonalInformationValues) => {
-              console.log(values);
+            onSubmit={values => {
+              // store the data temporarily and remeber that this page is done
+              _setThisPageToCompleted('@profileInfo', JSON.stringify(values));
+              _setThisPageToCompleted('@successProfileInfo', 'true');
               navigation.navigate('AddressSetUp');
             }}
           >

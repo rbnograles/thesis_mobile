@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // native components
 import { Text, View, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 // stylesheet
@@ -9,20 +10,7 @@ import { formsContainer, landingPagesOrientation } from '../../../styles/styles-
 import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
-
-interface StudentValues {
-  studentNumber: string;
-  collegeDepartment: string;
-}
-
-interface FacultyValues {
-  facultyPosition: string;
-  collegeDepartment: string;
-}
-
-interface WorkerValues {
-  jobTitle: string;
-}
+import { _setThisPageToCompleted } from '../../../_storages/_state_process';
 
 let studentInfoSchema = yup.object().shape({
   studentNumber: yup.string().required('Student number is required'),
@@ -44,7 +32,7 @@ let workerInfoSchema = yup.object().shape({
   jobTitle: yup.string().required('Job title is required'),
 });
 
-const renderStudentTypeFields = ({ navigation }: any) => {
+const renderStudentTypeFields = ({ navigation, prevInfo }) => {
   return (
     <>
       <Formik
@@ -54,8 +42,10 @@ const renderStudentTypeFields = ({ navigation }: any) => {
         }}
         validateOnMount={true}
         validationSchema={studentInfoSchema}
-        onSubmit={(values: StudentValues) => {
-          console.log(values);
+        onSubmit={values => {
+          // store the data temporarily and remeber that this page is done
+          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
+          _setThisPageToCompleted('@successWelcomePage', 'true');
           navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
@@ -93,7 +83,7 @@ const renderStudentTypeFields = ({ navigation }: any) => {
   );
 };
 
-const renderFacultyTypeFields = ({ navigation }: any) => {
+const renderFacultyTypeFields = ({ navigation, prevInfo }) => {
   return (
     <>
       <Formik
@@ -103,8 +93,10 @@ const renderFacultyTypeFields = ({ navigation }: any) => {
         }}
         validateOnMount={true}
         validationSchema={facultyInfoSchema}
-        onSubmit={(values: FacultyValues) => {
-          console.log(values);
+        onSubmit={values => {
+          // store the data temporarily and remeber that this page is done
+          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
+          _setThisPageToCompleted('@successWelcomePage', 'true');
           navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
@@ -142,7 +134,7 @@ const renderFacultyTypeFields = ({ navigation }: any) => {
   );
 };
 
-const renderWorkerTypeFields = ({ navigation }: any) => {
+const renderWorkerTypeFields = ({ navigation, prevInfo }) => {
   return (
     <>
       <Formik
@@ -151,8 +143,10 @@ const renderWorkerTypeFields = ({ navigation }: any) => {
         }}
         validateOnMount={true}
         validationSchema={workerInfoSchema}
-        onSubmit={(values: WorkerValues) => {
-          console.log(values);
+        onSubmit={values => {
+          // store the data temporarily and remeber that this page is done
+          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
+          _setThisPageToCompleted('@successWelcomePage', 'true');
           navigation.navigate('MainPages', { isSetupComplete: true });
         }}
       >
@@ -177,16 +171,35 @@ const renderWorkerTypeFields = ({ navigation }: any) => {
   );
 };
 
-const UserTypeRelatedInfoSetupScreen = ({ route, navigation }: any) => {
+const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
   const { userType } = route.params;
+  const [prevInfo, setPrevInfo] = useState(null);
+  // this will fetch the default states from the screen interactions
+  const getWelcomePageStatus = async () => {
+    try {
+      const data = await AsyncStorage.getItem('@profileInfo');
+      console.log(data);
+      setPrevInfo(JSON.parse(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // this function is a react native lifecycle method that will run when a component is mounted / loaded
+  useEffect(() => {
+    // running this function on mount
+    getWelcomePageStatus();
+  }, []);
 
   return (
     <SafeAreaView style={landingPagesOrientation.container}>
       <Text style={formsContainer.formsHeader}>Profile Information</Text>
-      <Text style={formsContainer.formsSubHeader}>Please tell us some information related to you.</Text>
-      {userType === 'Student' && renderStudentTypeFields({ navigation })}
-      {userType === 'Worker' && renderWorkerTypeFields({ navigation })}
-      {userType === 'Faculty' && renderFacultyTypeFields({ navigation })}
+      <Text style={formsContainer.formsSubHeader}>
+        This information will be saved only on your device and not on the main database.
+      </Text>
+      {userType === 'Student' && renderStudentTypeFields({ navigation, prevInfo })}
+      {userType === 'Worker' && renderWorkerTypeFields({ navigation, prevInfo })}
+      {userType === 'Faculty' && renderFacultyTypeFields({ navigation, prevInfo })}
     </SafeAreaView>
   );
 };

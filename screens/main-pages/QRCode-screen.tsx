@@ -9,7 +9,7 @@ import { landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 
-const QRCodeScreen = ({ navigation }: any) => {
+const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // native components
 import { Text, View, SafeAreaView, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 // stylesheet
@@ -10,15 +11,7 @@ import KeyboardAvoidingWrapper from '../../../_utils/KeyboardAvoidingWrapper';
 import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
-
-interface PersonalInformationValues {
-  lotNumber: string | null;
-  streetName: string;
-  district: string | null;
-  barangay: string;
-  city: string;
-  region: string;
-}
+import { _setThisPageToCompleted } from '../../../_storages/_state_process';
 
 let personalInfoSchema = yup.object().shape({
   lotNumber: yup
@@ -47,12 +40,31 @@ let personalInfoSchema = yup.object().shape({
     .required('Region is required'),
 });
 
-const AddressInformationSetupScreen = ({ navigation }: any) => {
+const AddressInformationSetupScreen = ({ navigation }) => {
+  // this will fetch the default states from the screen interactions
+  const [prevInfo, setPrevInfo] = useState(null);
+  const getWelcomePageStatus = async () => {
+    try {
+      const data = await AsyncStorage.getItem('@profileInfo');
+      setPrevInfo(JSON.parse(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // this function is a react native lifecycle method that will run when a component is mounted / loaded
+  useEffect(() => {
+    // running this function on mount
+    getWelcomePageStatus();
+  }, []);
+
   return (
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
         <Text style={formsContainer.formsHeader}>Profile Information</Text>
-        <Text style={formsContainer.formsSubHeader}>Where are you currently residing in?</Text>
+        <Text style={formsContainer.formsSubHeader}>
+          This information will be saved only on your device and not on the main database.
+        </Text>
         <ScrollView>
           <Formik
             initialValues={{
@@ -65,8 +77,10 @@ const AddressInformationSetupScreen = ({ navigation }: any) => {
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
-            onSubmit={(values: PersonalInformationValues) => {
-              console.log(values);
+            onSubmit={values => {
+              // store the data temporarily and remeber that this page is done
+              _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
+              _setThisPageToCompleted('@successProfileInfo', 'true');
               navigation.navigate('UserTypeSetup');
             }}
           >
