@@ -48,53 +48,55 @@ const LocationHistoryScreen = ({ navigation }) => {
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
-          <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>14 Day Visitation History</Text>
           {historyData.length > 0 &&
             historyData.map((history, i) => {
               return (
-                <View key={i}>
-                  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                    {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-                      ? 'Today'
-                      : Moment(history.date).format('MMMM DD, YYYY')}
+                <>
+                  <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>
+                    14 Day Visitation History
                   </Text>
-                  <View style={{ marginBottom: 20, marginTop: 10 }}>
-                    {history.visitation.map((visitation, i) => {
-                      return (
-                        <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
-                          <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
-                            {visitation.time}
-                          </Text>
-                          <View
-                            style={{
-                              height: 10,
-                              width: 10,
-                              backgroundColor: Colors.accent,
-                              borderRadius: 50,
-                              marginRight: 10,
-                              marginTop: 4,
-                            }}
-                          ></View>
-                          <View>
-                            <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
-                            <Text style={{ color: 'grey' }}>{visitation.action}</Text>
+                  <View key={i}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                      {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                        ? 'Today'
+                        : Moment(history.date).format('MMMM DD, YYYY')}
+                    </Text>
+                    <View style={{ marginBottom: 20, marginTop: 10 }}>
+                      {history.visitation.map((visitation, i) => {
+                        return (
+                          <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
+                            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
+                              {visitation.time}
+                            </Text>
+                            <View
+                              style={{
+                                height: 10,
+                                width: 10,
+                                backgroundColor: Colors.accent,
+                                borderRadius: 50,
+                                marginRight: 10,
+                                marginTop: 4,
+                              }}
+                            ></View>
+                            <View>
+                              <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
+                              <Text style={{ color: 'grey' }}>{visitation.action}</Text>
+                            </View>
                           </View>
-                        </View>
-                      );
-                    })}
+                        );
+                      })}
+                    </View>
                   </View>
-                </View>
+                </>
               );
             })}
           {historyData.length === 0 && (
-            <View
-              style={{ marginTop: '50%', marginHorizontal: '15%', alignContent: 'center', justifyContent: 'center' }}
-            >
+            <View style={{ marginTop: '50%', marginHorizontal: '13%' }}>
               <FontAwesome5
-                name="exclamation"
-                size={60}
+                name="search-location"
+                size={50}
                 color={Colors.primary}
-                style={{ marginHorizontal: '40%', marginBottom: 20 }}
+                style={{ marginHorizontal: '33%', marginBottom: 25 }}
               />
               <Text style={{ color: Colors.primary, fontSize: 15 }}>
                 You currently don't have any location history.
