@@ -18,6 +18,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
   const [thirdDigit, setThirdDigit] = useState('');
   const [fourthDigit, setFourthDigit] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [error, setError] = useState('');
 
   const firstDigitRef: any = useRef(null);
   const secondDigitRef: any = useRef(null);
@@ -53,10 +54,14 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
 
   const verifyOTP = async () => {
     // insert here the verification code block for the OTP
-    // this will set the "set up status" of the application to complete for the landing pages
-    _setThisPageToCompleted('@otpPageSuccessful', 'true');
-    // move to the landing screen
-    navigation.navigate('MainPages');
+    if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
+      // this will set the "set up status" of the application to complete for the landing pages
+      _setThisPageToCompleted('@otpPageSuccessful', 'true');
+      // move to the landing screen
+      navigation.navigate('MainPages');
+    } else {
+      setError(`Enter the 4 digit verification code set to ${mobileNumber}.`);
+    }
   };
 
   return (
@@ -118,6 +123,9 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
           keyboardType="numeric"
         />
       </View>
+      {error !== '' && (
+        <Text style={{ color: Colors.red, marginLeft: 20, marginTop: 10, marginBottom: 10 }}>{error}</Text>
+      )}
       <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
         Didn't receive the code?{' '}
         <Text style={landingPagesOrientation.resendLink} onPress={() => sendOTP()}>
