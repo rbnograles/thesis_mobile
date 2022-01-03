@@ -4,7 +4,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // main pages
-import TabNavigator from './TabNavigator';
+import TabNavigator from './LoggedInTabNavigator';
 // set-ups pages
 import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
 import AddressInformationSetupScreen from '../screens/main-pages/profile-setup/_address-setup-screen';
