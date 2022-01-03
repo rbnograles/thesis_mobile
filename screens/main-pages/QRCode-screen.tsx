@@ -8,6 +8,7 @@ import SwitchSelector from 'react-native-switch-selector';
 import { landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
+import uuid from 'react-native-uuid';
 
 const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
@@ -93,8 +94,8 @@ const QRCodeScreen = () => {
           </View>
           <SvgQRCode
             size={Dimensions.get('window').width - 70}
-            value="Ano yan kaibigan :D"
-            logo={require('../../assets/landing-page-2.png')}
+            value={uuid.v4().toString()}
+            logo={require('../../assets/icon-jb.png')}
           />
         </>
       )}

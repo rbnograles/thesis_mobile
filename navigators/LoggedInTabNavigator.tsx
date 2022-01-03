@@ -61,10 +61,11 @@ const TabNavigator = ({ navigation }: any) => {
           }
 
           // You can return any component that you like here!
-          return <FontAwesome name={iconName} size={22} color={color} />;
+          return <FontAwesome name={iconName} size={21} color={color} />;
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.darkLight,
+        tabBarAllowFontScaling: true,
       })}
     >
       <Tab.Screen name="qrcode" component={QRScreen} options={{ tabBarLabel: 'QR Code' }} />
