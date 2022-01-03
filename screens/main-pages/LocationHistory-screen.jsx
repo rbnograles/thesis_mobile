@@ -5,42 +5,43 @@ import Moment from 'moment';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 Moment.locale('en');
 
 const LocationHistoryScreen = ({ navigation }) => {
   const [historyData, setHistory] = useState([
-    {
-      date: '2021-12-29',
-      visitation: [
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-      ],
-    },
-    {
-      date: '2021-12-27',
-      visitation: [
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        ,
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        ,
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        ,
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        ,
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        ,
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-        { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-      ],
-    },
+    // {
+    //   date: '2021-12-29',
+    //   visitation: [
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //   ],
+    // },
+    // {
+    //   date: '2021-12-27',
+    //   visitation: [
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     ,
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     ,
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     ,
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     ,
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     ,
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
+    //   ],
+    // },
   ]);
 
   return (
@@ -85,6 +86,21 @@ const LocationHistoryScreen = ({ navigation }) => {
                 </View>
               );
             })}
+          {historyData.length === 0 && (
+            <View
+              style={{ marginTop: '50%', marginHorizontal: '15%', alignContent: 'center', justifyContent: 'center' }}
+            >
+              <FontAwesome5
+                name="exclamation"
+                size={60}
+                color={Colors.primary}
+                style={{ marginHorizontal: '40%', marginBottom: 20 }}
+              />
+              <Text style={{ color: Colors.primary, fontSize: 15 }}>
+                You currently don't have any location history.
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
