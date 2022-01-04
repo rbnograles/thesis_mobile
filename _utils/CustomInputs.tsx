@@ -16,6 +16,8 @@ const CustomInputs = ({ labelTitle, onBlur, onChangeText, value, placeHolder, re
         style={inputs.style}
         onBlur={onBlur}
         value={value}
+        keyboardType={labelTitle === 'Mobile Number' ? 'numeric' : 'default'}
+        maxLength={labelTitle === 'Mobile Number' ? 11 : 100}
       />
     </View>
   );
