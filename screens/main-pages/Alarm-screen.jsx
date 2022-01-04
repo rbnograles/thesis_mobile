@@ -47,7 +47,7 @@ const AlarmScreen = ({ navigation }) => {
   return (
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>
-        <View style={landingPagesOrientation.innerAdjustementPadding}>
+        <View style={[landingPagesOrientation.innerAdjustementPadding]}>
           {alarmNotifications.length > 0 &&
             alarmNotifications.map((history, i) => {
               return (
@@ -90,20 +90,25 @@ const AlarmScreen = ({ navigation }) => {
                 </>
               );
             })}
-          {alarmNotifications.length === 0 && (
-            <View style={{ marginTop: '50%', marginHorizontal: '13%' }}>
-              <FontAwesome5
-                name="bell-slash"
-                size={50}
-                color={Colors.primary}
-                style={{ marginHorizontal: '34%', marginBottom: 25 }}
-              />
-              <Text style={{ color: Colors.primary, fontSize: 15 }}>
-                There are no alarm notification at the moment.
-              </Text>
-            </View>
-          )}
         </View>
+        {alarmNotifications.length === 0 && (
+          <View
+            style={{
+              marginTop: '50%',
+              width: '100%',
+            }}
+          >
+            <FontAwesome5
+              name="bell-slash"
+              size={50}
+              color={Colors.primary}
+              style={{ marginBottom: 25, textAlign: 'center' }}
+            />
+            <Text style={{ color: Colors.primary, fontSize: 15, textAlign: 'center' }}>
+              You currently don't have any alarm notification.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
