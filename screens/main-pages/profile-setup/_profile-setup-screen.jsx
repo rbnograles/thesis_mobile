@@ -37,7 +37,7 @@ const ProfileInformationSetupScreen = ({ navigation }) => {
       <SafeAreaView style={landingPagesOrientation.container}>
         <Text style={formsContainer.formsHeader}>Profile Information</Text>
         <Text style={formsContainer.formsSubHeader}>
-          This information will be saved only on your device and not on the main database.
+          This information will be saved only on your device and not on the application's database.
         </Text>
         <ScrollView>
           <Formik

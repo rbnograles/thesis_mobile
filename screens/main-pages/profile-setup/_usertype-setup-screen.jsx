@@ -47,7 +47,7 @@ const UserTypeSetupScreen = ({ navigation }) => {
     <SafeAreaView style={landingPagesOrientation.container}>
       <Text style={formsContainer.formsHeader}>Profile Information</Text>
       <Text style={formsContainer.formsSubHeader}>
-        This information will be saved only on your device and not on the main database.
+        This information will be saved only on your device and not on the application's database.
       </Text>
       <View style={{ marginTop: 20 }}>
         <CheckBox
@@ -56,7 +56,7 @@ const UserTypeSetupScreen = ({ navigation }) => {
           uncheckedIcon="circle-o"
           checkedColor={Colors.primary}
           onPress={() => setUserTypeChoice('Student')}
-          containerStyle={checkBox.radioOptions}
+          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
           title="Student"
         />
         <CheckBox
@@ -65,7 +65,7 @@ const UserTypeSetupScreen = ({ navigation }) => {
           uncheckedIcon="circle-o"
           checkedColor={Colors.primary}
           onPress={() => setUserTypeChoice('Faculty')}
-          containerStyle={checkBox.radioOptions}
+          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
           title="Faculty"
         />
         <CheckBox
@@ -74,7 +74,7 @@ const UserTypeSetupScreen = ({ navigation }) => {
           uncheckedIcon="circle-o"
           checkedColor={Colors.primary}
           onPress={() => setUserTypeChoice('Worker')}
-          containerStyle={checkBox.radioOptions}
+          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
           title="Worker"
         />
         <CheckBox
@@ -83,7 +83,7 @@ const UserTypeSetupScreen = ({ navigation }) => {
           uncheckedIcon="circle-o"
           checkedColor={Colors.primary}
           onPress={() => setUserTypeChoice('Visitor / Guest')}
-          containerStyle={checkBox.radioOptions}
+          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
           title="Visitor / Guest"
         />
       </View>

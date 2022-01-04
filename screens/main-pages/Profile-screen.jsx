@@ -70,7 +70,7 @@ let personalInfoSchema = yup.object().shape({
 const ProfileScreen = () => {
   // default states
   const [modalVisible, setModalVisible] = useState(false);
-  const [userType, setUserType] = useState('Student');
+  const [userType, setUserType] = useState('');
   const [prevInfo, setPrevInfo] = useState({});
 
   const setUserTypeChoice = type => {
@@ -207,6 +207,7 @@ const ProfileScreen = () => {
           >
             {({ handleBlur, handleSubmit, errors, touched }) => (
               <View style={{ marginTop: 10 }}>
+                {console.log(prevInfo)}
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
                   <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
@@ -215,11 +216,11 @@ const ProfileScreen = () => {
                       <AntDesign name="caretdown" size={14} color="black" />
                     </View>
                   </TouchableOpacity>
-                  {userType === 'Student' &&
+                  {prevInfo.userType === 'Student' &&
                     renderStudentFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
-                  {userType === 'Faculty' &&
+                  {prevInfo.userType === 'Faculty' &&
                     renderFacultyFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
-                  {userType === 'Worker' &&
+                  {prevInfo.userType === 'Worker' &&
                     renderWorkerFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
                 </View>
                 <View style={{ marginBottom: 15 }}>
