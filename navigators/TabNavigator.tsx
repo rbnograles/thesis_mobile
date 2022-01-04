@@ -43,7 +43,7 @@ const TabNavigator = ({ navigation }: any) => {
   return (
     <Tab.Navigator
       style={tabNavigation.container}
-      initialRouteName="profile"
+      initialRouteName="qrcode"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }: any) => {
           let iconName: any;
@@ -65,6 +65,9 @@ const TabNavigator = ({ navigation }: any) => {
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.darkLight,
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
       })}
     >
       <Tab.Screen name="qrcode" component={QRScreen} options={{ tabBarLabel: 'QR Code' }} />

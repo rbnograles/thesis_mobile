@@ -65,7 +65,9 @@ const TabNavigator = ({ navigation }: any) => {
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.darkLight,
-        tabBarAllowFontScaling: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
       })}
     >
       <Tab.Screen name="qrcode" component={QRScreen} options={{ tabBarLabel: 'QR Code' }} />

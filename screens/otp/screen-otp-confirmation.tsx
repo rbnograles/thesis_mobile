@@ -60,7 +60,7 @@ const OTPConfirmationScreen = ({ navigation }: any) => {
       // move to the landing screen
       navigation.navigate('MainPages');
     } else {
-      setError(`Enter the 4 digit verification code set to ${mobileNumber}.`);
+      setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
     }
   };
 
