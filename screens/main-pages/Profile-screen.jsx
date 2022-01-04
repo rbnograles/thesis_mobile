@@ -79,7 +79,6 @@ const ProfileScreen = () => {
   };
 
   const overRideHandlerChange = (field, value) => {
-    console.log(value);
     setPrevInfo({ ...prevInfo, [field]: value });
   };
 
@@ -207,7 +206,6 @@ const ProfileScreen = () => {
           >
             {({ handleBlur, handleSubmit, errors, touched }) => (
               <View style={{ marginTop: 10 }}>
-                {console.log(prevInfo)}
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
                   <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
