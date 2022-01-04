@@ -14,4 +14,6 @@ export const Colors = {
   outlineColor: '#5A5252',
   inputColor: '#DADADA',
   accent: '#30B8A6',
+  lightBlue: '#DEF0FB',
+  lightGrey: '#EBEBEB',
 };

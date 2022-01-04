@@ -12,7 +12,7 @@ Moment.locale('en');
 const LocationHistoryScreen = ({ navigation }) => {
   const [historyData, setHistory] = useState([
     // {
-    //   date: '2021-12-29',
+    //   date: '2022-01-04',
     //   visitation: [
     //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
     //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
@@ -48,46 +48,44 @@ const LocationHistoryScreen = ({ navigation }) => {
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
+          {historyData.length > 0 && (
+            <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>14 Day Visitation History</Text>
+          )}
           {historyData.length > 0 &&
             historyData.map((history, i) => {
               return (
-                <>
-                  <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>
-                    14 Day Visitation History
+                <View key={i}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                    {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                      ? 'Today'
+                      : Moment(history.date).format('MMMM DD, YYYY')}
                   </Text>
-                  <View key={i}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                      {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-                        ? 'Today'
-                        : Moment(history.date).format('MMMM DD, YYYY')}
-                    </Text>
-                    <View style={{ marginBottom: 20, marginTop: 10 }}>
-                      {history.visitation.map((visitation, i) => {
-                        return (
-                          <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
-                            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
-                              {visitation.time}
-                            </Text>
-                            <View
-                              style={{
-                                height: 10,
-                                width: 10,
-                                backgroundColor: Colors.accent,
-                                borderRadius: 50,
-                                marginRight: 10,
-                                marginTop: 4,
-                              }}
-                            ></View>
-                            <View>
-                              <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
-                              <Text style={{ color: 'grey' }}>{visitation.action}</Text>
-                            </View>
+                  <View style={{ marginBottom: 20, marginTop: 10 }}>
+                    {history.visitation.map((visitation, i) => {
+                      return (
+                        <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
+                          <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
+                            {visitation.time}
+                          </Text>
+                          <View
+                            style={{
+                              height: 10,
+                              width: 10,
+                              backgroundColor: Colors.accent,
+                              borderRadius: 50,
+                              marginRight: 10,
+                              marginTop: 4,
+                            }}
+                          ></View>
+                          <View>
+                            <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
+                            <Text style={{ color: 'grey' }}>{visitation.action}</Text>
                           </View>
-                        );
-                      })}
-                    </View>
+                        </View>
+                      );
+                    })}
                   </View>
-                </>
+                </View>
               );
             })}
         </View>

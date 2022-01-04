@@ -1,93 +1,95 @@
 import React, { useState } from 'react';
 // native components
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import Moment from 'moment';
 // stylesheet
-import { displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
+import { displayFormContainer, landingPagesOrientation, notifContainer } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 Moment.locale('en');
 
 const AlarmScreen = ({ navigation }) => {
   const [alarmNotifications, setAlarmNotifications] = useState([
-    // {
-    //   date: '2021-12-29',
-    //   visitation: [
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //   ],
-    // },
-    // {
-    //   date: '2021-12-27',
-    //   visitation: [
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //   ],
-    // },
+    {
+      title: 'Notification Title',
+      description:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: true,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
+    {
+      title: 'Notification Title',
+      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+      new: false,
+      time: '8:00 AM',
+    },
   ]);
 
   return (
     <View style={landingPagesOrientation.historyContainer}>
       <ScrollView>
-        <View style={[landingPagesOrientation.innerAdjustementPadding]}>
+        <View style={[landingPagesOrientation.innerAdjustementPadding, { marginRight: 35 }]}>
+          {alarmNotifications.length > 0 && (
+            <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>Alarm Notifications</Text>
+          )}
           {alarmNotifications.length > 0 &&
-            alarmNotifications.map((history, i) => {
+            alarmNotifications.map((alarm, i) => {
               return (
-                <>
-                  <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>
-                    14 Day Visitation History
-                  </Text>
-                  <View key={i}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                      {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-                        ? 'Today'
-                        : Moment(history.date).format('MMMM DD, YYYY')}
+                <View
+                  key={i}
+                  style={[
+                    notifContainer.container,
+                    notifContainer.elevation,
+                    { backgroundColor: alarm.new ? Colors.lightBlue : Colors.lightGrey },
+                  ]}
+                >
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexWrap: 'nowrap',
+                      justifyContent: 'space-between',
+                      marginTop: 10,
+                    }}
+                  >
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: alarm.new ? Colors.accent : 'grey' }}>
+                      {alarm.title}
                     </Text>
-                    <View style={{ marginBottom: 20, marginTop: 10 }}>
-                      {history.visitation.map((visitation, i) => {
-                        return (
-                          <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
-                            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
-                              {visitation.time}
-                            </Text>
-                            <View
-                              style={{
-                                height: 10,
-                                width: 10,
-                                backgroundColor: Colors.accent,
-                                borderRadius: 50,
-                                marginRight: 10,
-                                marginTop: 4,
-                              }}
-                            ></View>
-                            <View>
-                              <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
-                              <Text style={{ color: 'grey' }}>{visitation.action}</Text>
-                            </View>
-                          </View>
-                        );
-                      })}
-                    </View>
+                    <Text style={{ color: 'grey' }}>{alarm.time}</Text>
                   </View>
-                </>
+                  <Text style={{ marginBottom: 10, marginTop: 10 }}>{alarm.description}</Text>
+                </View>
               );
             })}
         </View>

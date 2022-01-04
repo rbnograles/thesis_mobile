@@ -234,3 +234,16 @@ export const sectionContiner = StyleSheet.create({
     marginBottom: 7,
   },
 });
+
+export const notifContainer = StyleSheet.create({
+  container: {
+    borderRadius: 5,
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    marginBottom: 15,
+  },
+  elevation: {
+    elevation: 2,
+  },
+});
