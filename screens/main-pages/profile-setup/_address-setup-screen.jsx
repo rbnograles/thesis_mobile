@@ -34,10 +34,10 @@ let personalInfoSchema = yup.object().shape({
     .string()
     .matches(/[A-Za-z.]/, 'City name must contain only letters')
     .required('City is required'),
-  region: yup
+  province: yup
     .string()
-    .matches(/[0-9A-Za-z.]/, 'Region name must contain only numbers and letters')
-    .required('Region is required'),
+    .matches(/[0-9A-Za-z.]/, 'Province name must contain only numbers and letters')
+    .required('Province is required'),
 });
 
 const AddressInformationSetupScreen = ({ navigation }) => {
@@ -73,7 +73,7 @@ const AddressInformationSetupScreen = ({ navigation }) => {
               district: '',
               barangay: '',
               city: '',
-              region: '',
+              province: '',
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
@@ -140,14 +140,16 @@ const AddressInformationSetupScreen = ({ navigation }) => {
                 />
                 {errors.city && touched.city && <Text style={formsContainer.errorMessage}>{errors.city}</Text>}
                 <CustomInputs
-                  labelTitle="Region"
+                  labelTitle="Province"
                   required={true}
-                  onChangeText={handleChange('region')}
+                  onChangeText={handleChange('province')}
                   placeHolder=""
-                  onBlur={handleBlur('region')}
-                  value={values.region}
+                  onBlur={handleBlur('province')}
+                  value={values.province}
                 />
-                {errors.region && touched.region && <Text style={formsContainer.errorMessage}>{errors.region}</Text>}
+                {errors.province && touched.province && (
+                  <Text style={formsContainer.errorMessage}>{errors.province}</Text>
+                )}
                 <View style={{ marginTop: 20 }}>
                   <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Next" />
                 </View>

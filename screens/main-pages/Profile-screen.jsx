@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // native components
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, View, SafeAreaView, FlatList, Modal, StyleSheet, Pressable, Alert } from 'react-native';
+import { Text, View, SafeAreaView, Modal, StyleSheet, Pressable } from 'react-native';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { AntDesign } from '@expo/vector-icons';
@@ -14,6 +14,7 @@ import CustomInputs from '../../_utils/CustomInputs';
 import CustomButton from '../../_utils/CustomButton';
 import { Colors } from '../../styles/styles-colors';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { FontAwesome } from '@expo/vector-icons';
 
 // user profile validation schema
 let personalInfoSchema = yup.object().shape({
@@ -60,10 +61,10 @@ let personalInfoSchema = yup.object().shape({
     .string()
     .matches(/[A-Za-z.]/, 'City name must contain only letters')
     .required('City is required'),
-  region: yup
+  province: yup
     .string()
-    .matches(/[0-9A-Za-z.]/, 'Region name must contain only numbers and letters')
-    .required('Region is required'),
+    .matches(/[0-9A-Za-z.]/, 'Province name must contain only letters')
+    .required('Province is required'),
 });
 
 const ProfileScreen = () => {
@@ -74,6 +75,12 @@ const ProfileScreen = () => {
 
   const setUserTypeChoice = type => {
     setUserType(type);
+    setPrevInfo({ ...prevInfo, userType: type });
+  };
+
+  const overRideHandlerChange = (field, value) => {
+    console.log(value);
+    setPrevInfo({ ...prevInfo, [field]: value });
   };
 
   const getUserProfileData = async () => {
@@ -94,13 +101,13 @@ const ProfileScreen = () => {
     getUserProfileData();
   }, []);
 
-  const renderStudentFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
+  const renderStudentFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
           labelTitle="Student Number"
           required={true}
-          onChangeText={handleChange('studentNumber')}
+          onChangeText={e => overRideHandlerChange('studentNumber', e)}
           placeHolder=""
           onBlur={handleBlur('studentNumber')}
           value={prevInfo.studentNumber}
@@ -111,7 +118,7 @@ const ProfileScreen = () => {
         <CustomInputs
           labelTitle="College Department"
           required={true}
-          onChangeText={handleChange('collegeDepartment')}
+          onChangeText={e => overRideHandlerChange('collegeDepartment', e)}
           placeHolder=""
           onBlur={handleBlur('collegeDepartment')}
           value={prevInfo.collegeDepartment}
@@ -123,13 +130,13 @@ const ProfileScreen = () => {
     );
   };
 
-  const renderFacultyFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
+  const renderFacultyFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
           labelTitle="Faculty Position"
           required={true}
-          onChangeText={handleChange('facultyPosition')}
+          onChangeText={e => overRideHandlerChange('facultyPosition', e)}
           placeHolder=""
           onBlur={handleBlur('facultyPosition')}
           value={prevInfo.facultyPosition}
@@ -140,7 +147,7 @@ const ProfileScreen = () => {
         <CustomInputs
           labelTitle="College Department"
           required={true}
-          onChangeText={handleChange('collegeDepartment')}
+          onChangeText={e => overRideHandlerChange('collegeDepartment', e)}
           placeHolder=""
           onBlur={handleBlur('collegeDepartment')}
           value={prevInfo.collegeDepartment}
@@ -152,13 +159,13 @@ const ProfileScreen = () => {
     );
   };
 
-  const renderWorkerFields = ({ prevInfo, errors, handleChange, handleBlur, touched }) => {
+  const renderWorkerFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
     return (
       <>
         <CustomInputs
           labelTitle="Job Title"
           required={true}
-          onChangeText={handleChange('jobTitle')}
+          onChangeText={e => overRideHandlerChange('jobTitle', e)}
           placeHolder=""
           onBlur={handleBlur('jobTitle')}
           value={prevInfo.jobTitle}
@@ -175,22 +182,22 @@ const ProfileScreen = () => {
           <Text style={displayFormContainer.formsHeader}>Profile Information Summary</Text>
           <Formik
             initialValues={{
-              userType: prevInfo.firstName,
-              studentNumber: prevInfo.studentNumber,
-              facultyPosition: prevInfo.facultyPosition,
-              jobTitle: prevInfo.jobTitle,
-              collegeDepartment: prevInfo.collegeDepartment,
-              firstName: prevInfo.firstName,
-              middleName: prevInfo.middleName,
-              lastName: prevInfo.lastName,
-              nameExtension: prevInfo.nameExtension,
-              lotNumber: prevInfo.lotNumber,
-              streetName: prevInfo.streetName,
-              district: prevInfo.district,
-              barangay: prevInfo.barangay,
-              city: prevInfo.city,
-              region: prevInfo.region,
-              mobileNumber: prevInfo.mobileNumber,
+              userType: '',
+              studentNumber: '',
+              facultyPosition: '',
+              jobTitle: '',
+              collegeDepartment: '',
+              firstName: '',
+              middleName: '',
+              lastName: '',
+              nameExtension: '',
+              lotNumber: '',
+              streetName: '',
+              district: '',
+              barangay: '',
+              city: '',
+              province: '',
+              mobileNumber: '',
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
@@ -198,7 +205,7 @@ const ProfileScreen = () => {
               console.log(values);
             }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            {({ handleBlur, handleSubmit, errors, touched }) => (
               <View style={{ marginTop: 10 }}>
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
@@ -209,17 +216,18 @@ const ProfileScreen = () => {
                     </View>
                   </TouchableOpacity>
                   {userType === 'Student' &&
-                    renderStudentFields({ prevInfo, errors, handleChange, handleBlur, touched })}
+                    renderStudentFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
                   {userType === 'Faculty' &&
-                    renderFacultyFields({ prevInfo, errors, handleChange, handleBlur, touched })}
-                  {userType === 'Worker' && renderWorkerFields({ prevInfo, errors, handleChange, handleBlur, touched })}
+                    renderFacultyFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
+                  {userType === 'Worker' &&
+                    renderWorkerFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
                 </View>
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>Personal Name</Text>
                   <CustomInputs
                     labelTitle="First name"
                     required={true}
-                    onChangeText={handleChange('firstName')}
+                    onChangeText={e => overRideHandlerChange('firstName', e)}
                     placeHolder=""
                     onBlur={handleBlur('firstName')}
                     value={prevInfo.firstName}
@@ -230,7 +238,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Middle name"
                     required={false}
-                    onChangeText={handleChange('middleName')}
+                    onChangeText={e => overRideHandlerChange('middleName', e)}
                     placeHolder=""
                     onBlur={handleBlur('middleName')}
                     value={prevInfo.middleName}
@@ -241,7 +249,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Last name"
                     required={true}
-                    onChangeText={handleChange('lastName')}
+                    onChangeText={e => overRideHandlerChange('lastName', e)}
                     placeHolder=""
                     onBlur={handleBlur('lastName')}
                     value={prevInfo.lastName}
@@ -252,7 +260,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Suffix"
                     required={false}
-                    onChangeText={handleChange('nameExtension')}
+                    onChangeText={e => overRideHandlerChange('nameExtension', e)}
                     placeHolder=""
                     onBlur={handleBlur('nameExtension')}
                     value={prevInfo.nameExtension}
@@ -266,7 +274,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Lot Number"
                     required={false}
-                    onChangeText={handleChange('lotNumber')}
+                    onChangeText={e => overRideHandlerChange('lotNumber', e)}
                     placeHolder=""
                     onBlur={handleBlur('firstName')}
                     value={prevInfo.lotNumber}
@@ -277,7 +285,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Street Name"
                     required={true}
-                    onChangeText={handleChange('streetName')}
+                    onChangeText={e => overRideHandlerChange('streetName', e)}
                     placeHolder=""
                     onBlur={handleBlur('streetName')}
                     value={prevInfo.streetName}
@@ -288,7 +296,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="District / Subdivision"
                     required={false}
-                    onChangeText={handleChange('district')}
+                    onChangeText={e => overRideHandlerChange('district', e)}
                     placeHolder=""
                     onBlur={handleBlur('district')}
                     value={prevInfo.district}
@@ -299,7 +307,7 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="Barangay"
                     required={true}
-                    onChangeText={handleChange('barangay')}
+                    onChangeText={e => overRideHandlerChange('barangay', e)}
                     placeHolder=""
                     onBlur={handleBlur('barangay')}
                     value={prevInfo.barangay}
@@ -310,28 +318,30 @@ const ProfileScreen = () => {
                   <CustomInputs
                     labelTitle="City"
                     required={true}
-                    onChangeText={handleChange('city')}
+                    onChangeText={e => overRideHandlerChange('city', e)}
                     placeHolder=""
                     onBlur={handleBlur('city')}
                     value={prevInfo.city}
                   />
                   {errors.city && touched.city && <Text style={formsContainer.errorMessage}>{errors.city}</Text>}
                   <CustomInputs
-                    labelTitle="Region"
+                    labelTitle="Province"
                     required={true}
-                    onChangeText={handleChange('region')}
+                    onChangeText={e => overRideHandlerChange('province', e)}
                     placeHolder=""
-                    onBlur={handleBlur('region')}
-                    value={prevInfo.region}
+                    onBlur={handleBlur('province')}
+                    value={prevInfo.province}
                   />
-                  {errors.region && touched.region && <Text style={formsContainer.errorMessage}>{errors.region}</Text>}
+                  {errors.province && touched.province && (
+                    <Text style={formsContainer.errorMessage}>{errors.province}</Text>
+                  )}
                 </View>
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>Contact Information</Text>
                   <CustomInputs
                     labelTitle="Mobile Number"
                     required={true}
-                    onChangeText={handleChange('mobileNumber')}
+                    onChangeText={e => overRideHandlerChange('mobileNumber', e)}
                     placeHolder=""
                     onBlur={handleBlur('mobileNumber')}
                     value={prevInfo.mobileNumber}
@@ -351,13 +361,19 @@ const ProfileScreen = () => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
               setModalVisible(!modalVisible);
             }}
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Change user position?</Text>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.modalText}>Change user position?</Text>
+                  <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={{ color: 'black' }}>
+                      <FontAwesome name="times" color="black" size={22} />
+                    </Text>
+                  </Pressable>
+                </View>
                 <CheckBox
                   checked={userType === 'Student'}
                   checkedIcon="dot-circle-o"
@@ -394,9 +410,6 @@ const ProfileScreen = () => {
                   containerStyle={checkBox.radioOptions}
                   title="Visitor / Guest"
                 />
-                <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Close</Text>
-                </Pressable>
               </View>
             </View>
           </Modal>
@@ -409,37 +422,17 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    marginTop: 20,
-    marginHorizontal: 15,
+    justifyContent: 'flex-end',
+    backgroundColor: '#000000AA',
   },
   modalView: {
-    margin: 20,
-    backgroundColor: Colors.secondary,
-    borderRadius: 5,
+    backgroundColor: 'white',
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 7,
     padding: 35,
     alignItems: 'center',
     shadowColor: Colors.primary,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 5,
-    width: '100%',
-    padding: 15,
-    elevation: 2,
-    marginHorizontal: '50%',
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: Colors.primary,
   },
   textStyle: {
     color: 'white',
@@ -448,7 +441,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalText: {
+    fontSize: 18,
     marginBottom: 15,
+    fontWeight: '700',
     width: '100%',
   },
 });
