@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 // native components
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import Moment from 'moment';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation, notifContainer } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 Moment.locale('en');
 
@@ -17,42 +17,49 @@ const AlarmScreen = ({ navigation }) => {
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: true,
       time: '8:00 AM',
+      date: '2022-01-04',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-04',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-03',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-03',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-03',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-03',
     },
     {
       title: 'Notification Title',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
       new: false,
       time: '8:00 AM',
+      date: '2022-01-03',
     },
   ]);
 
@@ -89,6 +96,11 @@ const AlarmScreen = ({ navigation }) => {
                     <Text style={{ color: 'grey' }}>{alarm.time}</Text>
                   </View>
                   <Text style={{ marginBottom: 10, marginTop: 10 }}>{alarm.description}</Text>
+                  <Text style={{ marginBottom: 10, color: 'grey' }}>
+                    {new Date(alarm.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                      ? 'Today'
+                      : Moment(alarm.date).format('MMM DD, YYYY')}
+                  </Text>
                 </View>
               );
             })}
