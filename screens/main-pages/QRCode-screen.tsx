@@ -8,13 +8,15 @@ import SwitchSelector from 'react-native-switch-selector';
 import { landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
-import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Not yet scanned');
+  const [qrCodeID, setQRCodeID] = useState('');
+  const [renderQR, setRenderQR] = useState(false);
 
   const askForCameraPermission = () => {
     (async () => {
@@ -28,9 +30,25 @@ const QRCodeScreen = () => {
     { label: 'Scan A Place', value: '1' },
   ];
 
+  const _getGeneratedQRId = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@userRandomeQRID');
+      if (value !== null) {
+        // value previously stored
+        setQRCodeID(value);
+        setRenderQR(true);
+      }
+    } catch (error) {
+      // error reading value
+      setQRCodeID('');
+      console.log(error);
+    }
+  };
+
   // request camera permission
   useEffect(() => {
     askForCameraPermission();
+    _getGeneratedQRId();
   }, []);
 
   // what happens when we scan the bar code
@@ -92,11 +110,13 @@ const QRCodeScreen = () => {
           <View style={{ alignItems: 'center', marginBottom: 30 }}>
             <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan QR Code</Text>
           </View>
-          <SvgQRCode
-            size={Dimensions.get('window').width - 70}
-            value={uuid.v4().toString()}
-            logo={require('../../assets/icon-jb.png')}
-          />
+          {renderQR && (
+            <SvgQRCode
+              size={Dimensions.get('window').width - 70}
+              value={qrCodeID !== null || '' ? qrCodeID : 'error'}
+              logo={require('../../assets/icon-jb.png')}
+            />
+          )}
         </>
       )}
       <SwitchSelector

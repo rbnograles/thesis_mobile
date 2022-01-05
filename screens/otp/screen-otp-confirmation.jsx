@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 // native components
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 import { Text, SafeAreaView, View, TextInput } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 import { Feather } from '@expo/vector-icons';
 import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 // stylesheet
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
@@ -61,6 +62,8 @@ const OTPConfirmationScreen = ({ navigation }) => {
       if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
         // this will set the "set up status" of the application to complete for the landing pages
         _setThisPageToCompleted('@otpPageSuccessful', 'true');
+        const userQRID = uuid.v4().toString();
+        _setThisPageToCompleted('@userRandomeQRID', userQRID);
         // move to the landing screen
         navigation.navigate('MainPages');
       } else {
