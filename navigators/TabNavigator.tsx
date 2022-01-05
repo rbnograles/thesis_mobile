@@ -65,6 +65,10 @@ const TabNavigator = ({ navigation }: any) => {
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.darkLight,
+        tabBarIconStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         tabBarLabelStyle: {
           fontSize: 12,
         },
