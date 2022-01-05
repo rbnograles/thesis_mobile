@@ -7,32 +7,32 @@ import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '.
 // components
 import CustomButton from '../../_utils/CustomButton';
 
-const SafetyScreen = ({ navigation }: any) => {
+const SuccessPromptScreen = ({ navigation }: any) => {
   return (
-    <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
+    <SafeAreaView style={[landingPagesOrientation.container]}>
       <View style={pageCenteredImage.container}>
         <Image
-          source={require('../../assets/landing-page-2.png')}
+          source={require('../../assets/celebration-image.png')}
           style={[pageCenteredImage.image, { marginTop: 60 }]}
         />
       </View>
       <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
-        <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Safety</Text>
-        <Text style={[landingPagesOrientation.subHeader, { color: 'white', textAlign: 'center' }]}>
-          We want to assure you that your privacy is not sacrificed ti ensure your safety. To overcome this pandemic,
-          let us cooperate and help the nation by providing the correct information.
+        <Text style={[landingPagesOrientation.header]}>Welcome!</Text>
+        <Text style={[landingPagesOrientation.subHeader, { textAlign: 'center' }]}>
+          Thank you for installing <Text style={[{ color: Colors.primary, fontWeight: '700' }]}>JuanBreath</Text>. To
+          use all the features of the app and fully setup your account, you can start by filling up your profile.
         </Text>
       </View>
       <View style={buttonOrientation.landingButtonOrientation}>
         <CustomButton
-          title="Continue"
-          color="white"
-          textColor={Colors.primary}
-          onPress={() => navigation.navigate('QRScreen')}
+          title="Start Setup"
+          color={Colors.primary}
+          textColor="white"
+          onPress={() => navigation.navigate('ProfileSetUp')}
         />
       </View>
     </SafeAreaView>
   );
 };
 
-export default SafetyScreen;
+export default SuccessPromptScreen;

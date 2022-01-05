@@ -7,20 +7,20 @@ import { landingPagesOrientation, buttonOrientation, pageCenteredImage } from '.
 // components
 import CustomButton from '../../_utils/CustomButton';
 
-const SafetyScreen = ({ navigation }: any) => {
+const LocationHistoryScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={[landingPagesOrientation.container, landingPagesOrientation.primaryBackgroundColor]}>
       <View style={pageCenteredImage.container}>
         <Image
-          source={require('../../assets/landing-page-2.png')}
+          source={require('../../assets/landing-page-4.png')}
           style={[pageCenteredImage.image, { marginTop: 60 }]}
         />
       </View>
       <View style={[landingPagesOrientation.textContainer, landingPagesOrientation.textContaineredCenter]}>
-        <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Safety</Text>
+        <Text style={[landingPagesOrientation.header, { color: 'white' }]}>Location History</Text>
         <Text style={[landingPagesOrientation.subHeader, { color: 'white', textAlign: 'center' }]}>
-          We want to assure you that your privacy is not sacrificed ti ensure your safety. To overcome this pandemic,
-          let us cooperate and help the nation by providing the correct information.
+          Upon scanning, the visitation history log will be saved to your location history. Collected data will only be
+          saved to your mobile device. Only the trace id will be stored for contact tracing purposes.
         </Text>
       </View>
       <View style={buttonOrientation.landingButtonOrientation}>
@@ -28,11 +28,11 @@ const SafetyScreen = ({ navigation }: any) => {
           title="Continue"
           color="white"
           textColor={Colors.primary}
-          onPress={() => navigation.navigate('QRScreen')}
+          onPress={() => navigation.navigate('SignInWithMobileScreen')}
         />
       </View>
     </SafeAreaView>
   );
 };
 
-export default SafetyScreen;
+export default LocationHistoryScreen;

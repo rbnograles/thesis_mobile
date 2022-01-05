@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // react navigations
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-// screens landing pages
-import AggreementScreen from '../screens/landing-pages/Screen-Agreement';
-import Onboarding from '../screens/landing-pages/Screen-Safety';
-import ScanQRScreen from '../screens/landing-pages/Screen-QR-Code';
-import LocationHistoryScreen from '../screens/landing-pages/Screen-Location-History';
-// screens otp onboarding pages
-import SignInWithMobileScreen from '../screens/otp/screen-sign-mobile';
-import OTPConfirmationScreen from '../screens/otp/screen-otp-confirmation';
 // main pages
-import TabNavigator from './TabNavigator';
+import TabNavigator from './LoggedInTabNavigator';
 // set-ups pages
 import ProfileInformationSetupScreen from '../screens/main-pages/profile-setup/_profile-setup-screen';
 import AddressInformationSetupScreen from '../screens/main-pages/profile-setup/_address-setup-screen';
 import UserTypeSetupScreen from '../screens/main-pages/profile-setup/_usertype-setup-screen';
 import UserTypeRelatedInfoSetupScreen from '../screens/main-pages/profile-setup/_usertype-related-info-setup-screen';
+// utilities
 import { Colors } from '../styles/styles-colors';
 
 // create navigations
 const Stack = createNativeStackNavigator();
 
-const RootStack = () => {
+const LoggedInRootStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -36,35 +28,8 @@ const RootStack = () => {
           headerTransparent: true,
           headerTitle: '',
         }}
-        initialRouteName="AggreementScreen"
+        initialRouteName="MainPages"
       >
-        {/* landing pages */}
-        <Stack.Screen options={{ headerShadowVisible: false }} name="AggreementScreen" component={AggreementScreen} />
-        <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
-          name="SafetyScreen"
-          component={Onboarding}
-        />
-        <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
-          name="QRScreen"
-          component={ScanQRScreen}
-        />
-        <Stack.Screen
-          options={{ headerTintColor: 'white', headerShadowVisible: false, headerTitle: () => null }}
-          name="LocationHistoryScreen"
-          component={LocationHistoryScreen}
-        />
-        <Stack.Screen
-          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
-          name="SignInWithMobileScreen"
-          component={SignInWithMobileScreen}
-        />
-        <Stack.Screen
-          options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
-          name="OTPConfirmationScreen"
-          component={OTPConfirmationScreen}
-        />
         <Stack.Screen
           options={{ headerTintColor: Colors.primary, headerShadowVisible: false, headerTitle: () => null }}
           name="MainPages"
@@ -96,4 +61,4 @@ const RootStack = () => {
   );
 };
 
-export default RootStack;
+export default LoggedInRootStack;
