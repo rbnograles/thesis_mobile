@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // native components
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, View, SafeAreaView, Modal, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Text, View, SafeAreaView, Modal, StyleSheet, Pressable, TouchableOpacity, Alert } from 'react-native';
 // import * as yup from 'yup';
 import { Formik } from 'formik';
 import { AntDesign } from '@expo/vector-icons';
@@ -94,16 +94,6 @@ const ProfileScreen = () => {
     }
   };
 
-  // this will check if the app data are all loaded
-  const checkIfAppReady = () => {
-    AsyncStorage.getItem('@profileInfo')
-      .then(res => {
-        const newdata = JSON.parse(res);
-        console.log(newdata);
-      })
-      .catch(error => console.warn(error));
-  };
-
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
     // running this function on mount
@@ -181,6 +171,22 @@ const ProfileScreen = () => {
         />
         {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
       </>
+    );
+  };
+
+  const showSuccessAlert = () => {
+    Alert.alert(
+      'Success',
+      'Profile changes was saved successfully on your device.',
+      [
+        {
+          text: 'Close',
+          style: 'default',
+        },
+      ],
+      {
+        cancelable: true,
+      }
     );
   };
 
@@ -452,6 +458,7 @@ const ProfileScreen = () => {
                     onPress={() => {
                       _setThisPageToCompleted('@profileInfo', JSON.stringify(prevInfo));
                       setModalConfirmVisible(!modalConfirmVisible);
+                      showSuccessAlert();
                     }}
                   >
                     <View

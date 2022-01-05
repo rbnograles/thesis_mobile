@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // native components
-import { Text, View } from 'react-native';
+import { Text, View, Modal, TouchableOpacity, StyleSheet, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
@@ -9,12 +9,13 @@ import CustomButton from '../../_utils/CustomButton';
 
 const SettingsScreen = () => {
   const [message, setMessage] = useState('');
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
 
   // reset everything
   const clearAsyncStorageData = async () => {
     try {
       await AsyncStorage.clear();
-      setMessage('Data cleared successfully');
+      BackHandler.exitApp();
     } catch (error) {
       setMessage('Failed to clear data');
       console.log(error);
@@ -43,11 +44,108 @@ const SettingsScreen = () => {
           title="Delete Account"
           color={Colors.red}
           textColor="white"
-          onPress={() => clearAsyncStorageData()}
+          onPress={() => setModalConfirmVisible(true)}
         />
       </View>
+      {/* confirm modal for saving the data */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalConfirmVisible}
+        onRequestClose={() => {
+          setModalConfirmVisible(!modalConfirmVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={[styles.modalText, { color: Colors.red }]}>
+                Are you sure you want to delete your account?
+              </Text>
+            </View>
+            <Text style={{ fontSize: 15 }}>
+              By deleting your account all data stored in your mobile device will be lost, after completing the deletion
+              you will be exited from the application!
+            </Text>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginTop: 15,
+              }}
+            >
+              <TouchableOpacity style={{ width: '50%' }} onPress={() => setModalConfirmVisible(!modalConfirmVisible)}>
+                <View
+                  style={{
+                    backgroundColor: Colors.lightGrey,
+                    height: 50,
+                    justifyContent: 'center',
+                    marginRight: 10,
+                    alignItems: 'center',
+                    borderRadius: 3,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: '700' }}>No</Text>
+                </View>
+              </TouchableOpacity>
+              {/* yes button */}
+              <TouchableOpacity
+                style={{ width: '50%' }}
+                onPress={() => {
+                  clearAsyncStorageData();
+                  setModalConfirmVisible(!modalConfirmVisible);
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: Colors.red,
+                    height: 50,
+                    marginLeft: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 3,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Yes</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: '#000000AA',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 7,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: Colors.primary,
+    elevation: 5,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 15,
+    fontWeight: '700',
+    width: '100%',
+  },
+});
 
 export default SettingsScreen;

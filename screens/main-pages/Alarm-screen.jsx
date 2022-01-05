@@ -11,56 +11,35 @@ Moment.locale('en');
 
 const AlarmScreen = ({ navigation }) => {
   const [alarmNotifications, setAlarmNotifications] = useState([
-    {
-      title: 'Notification Title',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: true,
-      time: '8:00 AM',
-      date: '2022-01-04',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-04',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-03',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-03',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-03',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-03',
-    },
-    {
-      title: 'Notification Title',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
-      new: false,
-      time: '8:00 AM',
-      date: '2022-01-03',
-    },
+    // {
+    //   title: 'Notification Title',
+    //   description:
+    //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+    //   new: true,
+    //   time: '8:00 AM',
+    //   date: '2022-01-04',
+    // },
+    // {
+    //   title: 'Notification Title',
+    //   description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+    //   new: false,
+    //   time: '8:00 AM',
+    //   date: '2022-01-04',
+    // },
+    // {
+    //   title: 'Notification Title',
+    //   description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+    //   new: false,
+    //   time: '8:00 AM',
+    //   date: '2022-01-03',
+    // },
+    // {
+    //   title: 'Notification Title',
+    //   description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. ',
+    //   new: false,
+    //   time: '8:00 AM',
+    //   date: '2022-01-03',
+    // },
   ]);
 
   return (
