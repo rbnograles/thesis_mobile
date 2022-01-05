@@ -67,7 +67,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
         setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
       }
     } else {
-      setConnectedToNet(false);
+      setConnectedToNet(connectionStatus);
     }
   };
 
