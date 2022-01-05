@@ -55,14 +55,19 @@ const OTPConfirmationScreen = ({ navigation }) => {
   };
 
   const verifyOTP = async () => {
-    // insert here the verification code block for the OTP
-    if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
-      // this will set the "set up status" of the application to complete for the landing pages
-      _setThisPageToCompleted('@otpPageSuccessful', 'true');
-      // move to the landing screen
-      navigation.navigate('MainPages');
+    const connectionStatus = await checkInternetConnection();
+    if (connectionStatus) {
+      // insert here the verification code block for the OTP
+      if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
+        // this will set the "set up status" of the application to complete for the landing pages
+        _setThisPageToCompleted('@otpPageSuccessful', 'true');
+        // move to the landing screen
+        navigation.navigate('MainPages');
+      } else {
+        setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
+      }
     } else {
-      setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
+      setConnectedToNet(false);
     }
   };
 

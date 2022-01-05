@@ -27,22 +27,27 @@ const SignInWithMobileScreen = ({ navigation }) => {
   };
 
   const _temporaryStorageForMobileNum = async () => {
-    // this will check if the number is empty or invalid
-    if (number.length === 0) {
-      setError('Please provide a phone number to proceed');
-    } else if (number.length !== 11 || !isValidNumber) {
-      setError('Invalid phone number format');
-    }
-    // if all condition is satisfied save the data localy and go to the next page
-    if (number.length === 11 && isValidNumber) {
-      try {
-        await AsyncStorage.setItem('@mobile_num_key', number);
-      } catch (error) {
-        console.log(error);
+    const connectionStatus = await checkInternetConnection();
+    if (connectionStatus) {
+      // this will check if the number is empty or invalid
+      if (number.length === 0) {
+        setError('Please provide a phone number to proceed');
+      } else if (number.length !== 11 || !isValidNumber) {
+        setError('Invalid phone number format');
       }
-      // NOTICE: Send data to backend for otp sending
-      // Add Backend api here
-      navigation.navigate('OTPConfirmationScreen');
+      // if all condition is satisfied save the data localy and go to the next page
+      if (number.length === 11 && isValidNumber) {
+        try {
+          await AsyncStorage.setItem('@mobile_num_key', number);
+        } catch (error) {
+          console.log(error);
+        }
+        // NOTICE: Send data to backend for otp sending
+        // Add Backend api here
+        navigation.navigate('OTPConfirmationScreen');
+      }
+    } else {
+      setConnectedToNet(connectionStatus);
     }
   };
 
