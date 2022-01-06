@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
@@ -9,6 +9,7 @@ import { landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesome } from '@expo/vector-icons';
 
 const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
@@ -17,6 +18,12 @@ const QRCodeScreen = () => {
   const [text, setText] = useState('Not yet scanned');
   const [qrCodeID, setQRCodeID] = useState('');
   const [renderQR, setRenderQR] = useState(false);
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
+
+  const options = [
+    { label: 'Your QR Code', value: '0' },
+    { label: 'Scan A Place', value: '1' },
+  ];
 
   const askForCameraPermission = () => {
     (async () => {
@@ -24,11 +31,6 @@ const QRCodeScreen = () => {
       setHasPermission(status === 'granted');
     })();
   };
-
-  const options = [
-    { label: 'Your QR Code', value: '0' },
-    { label: 'Scan A Place', value: '1' },
-  ];
 
   const _getGeneratedQRId = async () => {
     try {
@@ -52,10 +54,10 @@ const QRCodeScreen = () => {
   }, []);
 
   // what happens when we scan the bar code
-  const handlerBarCodeScanned = ({ type, data }: any) => {
+  const handlerBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data);
-    console.log('Type: ' + type + '\nData: ' + data);
+    setModalConfirmVisible(true);
   };
 
   return (
@@ -94,12 +96,63 @@ const QRCodeScreen = () => {
                   />
                 </View>
                 <CustomButton
-                  title="Scan Again"
+                  title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
                   color={Colors.primary}
                   textColor="white"
-                  onPress={() => setScanned(false)}
+                  onPress={() => {
+                    setScanned(false);
+                  }}
                 />
               </View>
+              {/* confirm modal for saving the data */}
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalConfirmVisible}
+                onRequestClose={() => {
+                  setModalConfirmVisible(!modalConfirmVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={[styles.modalView]}>
+                    <FontAwesome name="check-circle" color={Colors.accent} size={100} />
+                    <View>
+                      <Text style={styles.modalText}>You have scanned the venue</Text>
+                    </View>
+                    <Text style={styles.locationText}>{text}</Text>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        marginTop: 15,
+                      }}
+                    >
+                      {/* yes button */}
+                      <TouchableOpacity
+                        style={{ width: '100%' }}
+                        onPress={() => {
+                          setModalConfirmVisible(!modalConfirmVisible);
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: Colors.accent,
+                            height: 50,
+                            marginLeft: 10,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 3,
+                          }}
+                        >
+                          <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Leave</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
             </>
           )}
         </>
@@ -113,7 +166,7 @@ const QRCodeScreen = () => {
           {renderQR && (
             <SvgQRCode
               size={Dimensions.get('window').width - 70}
-              value={qrCodeID !== null || '' ? qrCodeID : 'error'}
+              value={'PUP Manila - CEA CPE Laboratory'}
               logo={require('../../assets/icon-jb.png')}
             />
           )}
@@ -127,7 +180,7 @@ const QRCodeScreen = () => {
         buttonColor={Colors.accent}
         borderColor={Colors.primary}
         initial={0}
-        onPress={(value: any) => setRenderStatus(value)}
+        onPress={value => setRenderStatus(value)}
       />
     </View>
   );
@@ -140,6 +193,39 @@ const styles = StyleSheet.create({
     width: 500,
     margin: 0,
     overflow: 'hidden',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: '#000000AA',
+  },
+  locationText: {
+    color: Colors.primary,
+    fontSize: 25,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 7,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: Colors.primary,
+    elevation: 5,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginTop: 25,
+    marginBottom: 10,
+    fontWeight: '700',
+    width: '100%',
   },
 });
 
