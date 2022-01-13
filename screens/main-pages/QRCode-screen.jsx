@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
@@ -10,13 +10,15 @@ import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
+import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
 const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
-  const [text, setText] = useState('Not yet scanned');
+  const [location, setLocation] = useState('Not yet scanned');
   const [qrCodeID, setQRCodeID] = useState('');
+  const [visitationHistroy, setVisitationHistroy] = useState([]);
   const [renderQR, setRenderQR] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
 
@@ -34,7 +36,9 @@ const QRCodeScreen = () => {
 
   const _getGeneratedQRId = async () => {
     try {
+      // fetch the user random id saved on the mobile data
       const value = await AsyncStorage.getItem('@userRandomeQRID');
+      // checks if there is a saved data
       if (value !== null) {
         // value previously stored
         setQRCodeID(value);
@@ -47,17 +51,84 @@ const QRCodeScreen = () => {
     }
   };
 
+  const _getVisitationHistroy = async () => {
+    try {
+      // fetch the user visitation history saved from the local storage
+      const value = await AsyncStorage.getItem('@userVisitationHistory');
+      // parse the data
+      const parsedValue = JSON.parse(value);
+      setVisitationHistroy(parsedValue);
+    } catch (error) {
+      setVisitationHistroy(null);
+      Alert.alert(
+        'Error',
+        'Something went wrong while getting the visitation history',
+        [
+          {
+            text: 'Close',
+            style: 'default',
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    }
+  };
+
   // request camera permission
   useEffect(() => {
+    // get the data of all visitations history
+    _getVisitationHistroy();
+    // ask for camera permissions
     askForCameraPermission();
+    // generations of random user id
     _getGeneratedQRId();
+
+    console.log(visitationHistroy.length);
   }, []);
 
   // what happens when we scan the bar code
   const handlerBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    setText(data);
+    setLocation(data);
     setModalConfirmVisible(true);
+
+    // saving scanned history script starts here
+    // get the current date
+    if (visitationHistroy.length > 0) {
+      // proceed with checking of the data
+    } else {
+      const newVisitation = [
+        {
+          date: new Date().toISOString().split('T')[0],
+          visitation: [
+            {
+              location: data,
+              time: new Date().toLocaleTimeString(),
+              action: 'Scanned the QR Code',
+            },
+          ],
+        },
+      ];
+
+      const stringfyData = JSON.stringify(newVisitation);
+      // this will set the initial storing of the data in the states
+      setVisitationHistroy(newVisitation);
+      // this will save the user's visittation logs on to the mobile phone locally
+      _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+    }
+    // build a new object
+    // check all save history if there is currently a date today that is saved
+    // if there is a current date -> insert the scanned data on the visitation's array
+    // else create a new instance of that data
+  };
+
+  // what happens when user leaves the event place
+  const handleLeavingEventPlace = () => {
+    if (visitationHistroy.length > 0) {
+      // check if there is a current date present
+    }
   };
 
   return (
@@ -115,11 +186,14 @@ const QRCodeScreen = () => {
               >
                 <View style={styles.centeredView}>
                   <View style={[styles.modalView]}>
+                    <View>
+                      <Text style={[styles.modalText, { marginBottom: 20 }]}>Data has been recorded!</Text>
+                    </View>
                     <FontAwesome name="check-circle" color={Colors.accent} size={100} />
                     <View>
                       <Text style={styles.modalText}>You have scanned the venue</Text>
                     </View>
-                    <Text style={styles.locationText}>{text}</Text>
+                    <Text style={styles.locationText}>{location}</Text>
                     <View
                       style={{
                         display: 'flex',
@@ -129,10 +203,11 @@ const QRCodeScreen = () => {
                         marginTop: 15,
                       }}
                     >
-                      {/* yes button */}
+                      {/* leave button */}
                       <TouchableOpacity
                         style={{ width: '100%' }}
                         onPress={() => {
+                          handleLeavingEventPlace();
                           setModalConfirmVisible(!modalConfirmVisible);
                         }}
                       >
@@ -166,7 +241,7 @@ const QRCodeScreen = () => {
           {renderQR && (
             <SvgQRCode
               size={Dimensions.get('window').width - 70}
-              value={'PUP Manila - CEA CPE Laboratory'}
+              value={qrCodeID}
               logo={require('../../assets/icon-jb.png')}
             />
           )}
