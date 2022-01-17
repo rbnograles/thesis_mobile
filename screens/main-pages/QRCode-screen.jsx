@@ -5,10 +5,10 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
 // stylesheet
-import { landingPagesOrientation } from '../../styles/styles-screens';
-import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { landingPagesOrientation } from '../../styles/styles-screens';
+import { Colors } from '../../styles/styles-colors';
 import { FontAwesome } from '@expo/vector-icons';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
@@ -57,9 +57,9 @@ const QRCodeScreen = () => {
       const value = await AsyncStorage.getItem('@userVisitationHistory');
       // parse the data
       const parsedValue = JSON.parse(value);
-      setVisitationHistroy(parsedValue);
+      setVisitationHistroy(parsedValue !== null ? parsedValue : []);
     } catch (error) {
-      setVisitationHistroy(null);
+      setVisitationHistroy([]);
       Alert.alert(
         'Error',
         'Something went wrong while getting the visitation history',
@@ -85,7 +85,7 @@ const QRCodeScreen = () => {
     // generations of random user id
     _getGeneratedQRId();
 
-    console.log(visitationHistroy.length);
+    console.log(visitationHistroy);
   }, []);
 
   // what happens when we scan the bar code
@@ -117,6 +117,9 @@ const QRCodeScreen = () => {
       setVisitationHistroy(newVisitation);
       // this will save the user's visittation logs on to the mobile phone locally
       _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+
+      // refresh the data set after saving the visitation details
+      _getVisitationHistroy();
     }
     // build a new object
     // check all save history if there is currently a date today that is saved
@@ -126,8 +129,33 @@ const QRCodeScreen = () => {
 
   // what happens when user leaves the event place
   const handleLeavingEventPlace = () => {
+    // check if there are visitation's available
     if (visitationHistroy.length > 0) {
-      // check if there is a current date present
+      // check if there is a current date present in the list
+      const todaysVisitation = visitationHistroy.filter(data => {
+        return data.date === new Date().toISOString().split('T')[0];
+      });
+      // if there is a visitation log for the current day
+      if (todaysVisitation.length > 0) {
+        // construct leaving visitation object
+        const leaveRecord = {
+          location: location, // name of the location
+          time: new Date().toLocaleTimeString(), // time
+          action: 'Left the event location.', // event description
+        };
+        // add the created leaving object schema to the list
+        todaysVisitation[0].visitation.push(leaveRecord);
+        // filter all the recent visitation that is not recorded to day
+        const recentLogs = visitationHistroy.filter(data => {
+          return data.date !== new Date().toISOString().split('T')[0];
+        });
+        // append the newly create leaving logs with the recent logs
+        const stringfyData = JSON.stringify(...recentLogs, todaysVisitation);
+        // reset the state
+        setVisitationHistroy(stringfyData);
+        // store the data on the phones internal memory
+        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+      }
     }
   };
 

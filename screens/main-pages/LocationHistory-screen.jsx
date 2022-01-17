@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // native components
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, Alert, RefreshControl } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Moment from 'moment';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
@@ -9,44 +10,58 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 Moment.locale('en');
 
-const LocationHistoryScreen = ({ navigation }) => {
-  const [historyData, setHistory] = useState([
-    // {
-    //   date: '2022-01-04',
-    //   visitation: [
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //   ],
-    // },
-    // {
-    //   date: '2021-12-27',
-    //   visitation: [
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     ,
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //     { location: 'Location 1', time: '10:00 am', action: 'Scanned the QR Code' },
-    //   ],
-    // },
-  ]);
+const LocationHistoryScreen = () => {
+  const [historyData, setVisitationHistroy] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const _getVisitationHistroy = async () => {
+    try {
+      // fetch the user visitation history saved from the local storage
+      const value = await AsyncStorage.getItem('@userVisitationHistory');
+      // parse the data
+      const parsedValue = JSON.parse(value);
+      setVisitationHistroy(parsedValue !== null ? parsedValue : []);
+    } catch (error) {
+      setVisitationHistroy([]);
+      Alert.alert(
+        'Error',
+        'Something went wrong while getting the visitation history',
+        [
+          {
+            text: 'Close',
+            style: 'default',
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    }
+  };
+
+  const wait = timeout => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    wait(2000).then(() => {
+      setRefreshing(false);
+      _getVisitationHistroy();
+    });
+  }, [refreshing]);
+
+  useEffect(() => {
+    // get the data of all visitations history
+    _getVisitationHistroy();
+  }, []);
 
   return (
     <View style={landingPagesOrientation.historyContainer}>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
           {historyData.length > 0 && (
             <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>14 Day Visitation History</Text>
