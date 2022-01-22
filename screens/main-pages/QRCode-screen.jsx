@@ -16,7 +16,7 @@ const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
-  const [location, setLocation] = useState('Not yet scanned');
+  const [location, setLocation] = useState('');
   const [qrCodeID, setQRCodeID] = useState('');
   const [visitationHistroy, setVisitationHistroy] = useState([]);
   const [renderQR, setRenderQR] = useState(false);
@@ -47,7 +47,6 @@ const QRCodeScreen = () => {
     } catch (error) {
       // error reading value
       setQRCodeID('');
-      console.log(error);
     }
   };
 
@@ -76,7 +75,7 @@ const QRCodeScreen = () => {
     }
   };
 
-  // request camera permission
+  // @auto execute upon screen
   useEffect(() => {
     // get the data of all visitations history
     _getVisitationHistroy();
@@ -84,9 +83,62 @@ const QRCodeScreen = () => {
     askForCameraPermission();
     // generations of random user id
     _getGeneratedQRId();
-
-    console.log(visitationHistroy);
   }, []);
+
+  // @check of there are visitations already for the current date
+  const checkIfThereAreVisitationToday = () => {
+    // check if there is a current date present in the list
+    const todaysVisitation = visitationHistroy.filter(data => {
+      return data.date === new Date().toISOString().split('T')[0];
+    });
+
+    if (todaysVisitation.length > 0) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // @get all past logs from the visitation history that is not tied with the current date
+  const getRecentLogs = () => {
+    // filter all the recent visitation that is not recorded to day
+    return visitationHistroy.filter(data => {
+      return data.date !== new Date().toISOString().split('T')[0];
+    });
+  };
+
+  const handleVisitationSavingForCurrentDate = message => {
+    // check if there is a current date present in the list
+    const todaysVisitation = checkIfThereAreVisitationToday();
+
+    // if there is a visitation log for the current day
+    if (todaysVisitation) {
+      // construct leaving visitation object
+      const leaveRecord = {
+        location: location, // name of the location
+        time: new Date().toLocaleTimeString(), // time
+        action: message, // event description
+      };
+
+      // get the current data for the visitation today
+      const filteredDateLogs = visitationHistroy.filter(data => {
+        return data.date === new Date().toISOString().split('T')[0];
+      });
+
+      // add the created leaving object schema to the list
+      filteredDateLogs[0].visitation.push(leaveRecord);
+
+      console.log(filteredDateLogs);
+      // get recent logs
+      const recentLogs = getRecentLogs();
+      // parse the date into string to be stored locally
+      const stringfyData = JSON.stringify(...recentLogs, filteredDateLogs);
+      // reset the state
+      setVisitationHistroy(...recentLogs, filteredDateLogs);
+      // store the data on the phones internal memory
+      _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+    }
+  };
 
   // what happens when we scan the bar code
   const handlerBarCodeScanned = ({ type, data }) => {
@@ -94,68 +146,45 @@ const QRCodeScreen = () => {
     setLocation(data);
     setModalConfirmVisible(true);
 
+    // checking for existing visitation for the current day
+    const visitationLogChecker = checkIfThereAreVisitationToday();
     // saving scanned history script starts here
-    // get the current date
-    if (visitationHistroy.length > 0) {
-      // proceed with checking of the data
-    } else {
-      const newVisitation = [
-        {
-          date: new Date().toISOString().split('T')[0],
-          visitation: [
-            {
-              location: data,
-              time: new Date().toLocaleTimeString(),
-              action: 'Scanned the QR Code',
-            },
-          ],
-        },
-      ];
+    if (visitationLogChecker) {
+      // perform saving of visitation log's if there are current records for the current date
+      handleVisitationSavingForCurrentDate('Scanned the QR Code');
+    }
+    // perform creating an instance for the current day
+    else {
+      const newVisitation = {
+        date: new Date().toISOString().split('T')[0],
+        visitation: [
+          {
+            location: data,
+            time: new Date().toLocaleTimeString(),
+            action: 'Scanned the QR Code',
+          },
+        ],
+      };
+      // get recent logs
+      const recentLogs = getRecentLogs();
 
-      const stringfyData = JSON.stringify(newVisitation);
+      const stringfyData = JSON.stringify([...recentLogs, newVisitation]);
       // this will set the initial storing of the data in the states
-      setVisitationHistroy(newVisitation);
+      setVisitationHistroy(stringfyData);
       // this will save the user's visittation logs on to the mobile phone locally
       _setThisPageToCompleted('@userVisitationHistory', stringfyData);
 
       // refresh the data set after saving the visitation details
       _getVisitationHistroy();
     }
-    // build a new object
-    // check all save history if there is currently a date today that is saved
-    // if there is a current date -> insert the scanned data on the visitation's array
-    // else create a new instance of that data
   };
 
   // what happens when user leaves the event place
   const handleLeavingEventPlace = () => {
     // check if there are visitation's available
     if (visitationHistroy.length > 0) {
-      // check if there is a current date present in the list
-      const todaysVisitation = visitationHistroy.filter(data => {
-        return data.date === new Date().toISOString().split('T')[0];
-      });
-      // if there is a visitation log for the current day
-      if (todaysVisitation.length > 0) {
-        // construct leaving visitation object
-        const leaveRecord = {
-          location: location, // name of the location
-          time: new Date().toLocaleTimeString(), // time
-          action: 'Left the event location.', // event description
-        };
-        // add the created leaving object schema to the list
-        todaysVisitation[0].visitation.push(leaveRecord);
-        // filter all the recent visitation that is not recorded to day
-        const recentLogs = visitationHistroy.filter(data => {
-          return data.date !== new Date().toISOString().split('T')[0];
-        });
-        // append the newly create leaving logs with the recent logs
-        const stringfyData = JSON.stringify(...recentLogs, todaysVisitation);
-        // reset the state
-        setVisitationHistroy(stringfyData);
-        // store the data on the phones internal memory
-        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
-      }
+      // perform saving of visitation log's if there are current records for the current date
+      handleVisitationSavingForCurrentDate('Left the event location');
     }
   };
 
