@@ -11,6 +11,8 @@ import { _setThisPageToCompleted } from '../../_storages/_state_process';
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
+// apis
+import { verifyOTPCODE } from '../../apis/otp';
 
 const OTPConfirmationScreen = ({ navigation }) => {
   // default values
@@ -60,12 +62,23 @@ const OTPConfirmationScreen = ({ navigation }) => {
     if (connectionStatus) {
       // insert here the verification code block for the OTP
       if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
-        // this will set the "set up status" of the application to complete for the landing pages
-        _setThisPageToCompleted('@otpPageSuccessful', 'true');
-        const userQRID = uuid.v4().toString();
-        _setThisPageToCompleted('@userRandomeQRID', userQRID);
-        // move to the landing screen
-        navigation.navigate('MainPages');
+        try {
+          const newNumber = mobileNumber.split('');
+          newNumber.shift();
+          const status = await verifyOTPCODE({
+            mobileNumber: `+63${newNumber.join('')}`,
+            otpCode: `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}`,
+          });
+          console.log(status.data);
+          // this will set the "set up status" of the application to complete for the landing pages
+          _setThisPageToCompleted('@otpPageSuccessful', 'true');
+          const userQRID = uuid.v4().toString();
+          _setThisPageToCompleted('@userRandomeQRID', userQRID);
+          // move to the landing screen
+          navigation.navigate('MainPages');
+        } catch (error) {
+          console.log(error.data);
+        }
       } else {
         setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
       }
