@@ -9,6 +9,8 @@ import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
+// apis
+import { registerMobileNumber } from '../../apis/otp';
 
 const SignInWithMobileScreen = ({ navigation }) => {
   // default state, this will hold the mobile number input
@@ -39,10 +41,13 @@ const SignInWithMobileScreen = ({ navigation }) => {
       if (number.length === 11 && isValidNumber) {
         try {
           await AsyncStorage.setItem('@mobile_num_key', number);
+          const newNumber = number.split('');
+          newNumber.shift();
+          // NOTICE: Send data to backend for otp sending
+          await registerMobileNumber({ mobileNumber: newNumber.join('') });
         } catch (error) {
           console.log(error);
         }
-        // NOTICE: Send data to backend for otp sending
         // Add Backend api here
         navigation.navigate('OTPConfirmationScreen');
       }
