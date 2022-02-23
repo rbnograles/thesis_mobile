@@ -113,7 +113,7 @@ const QRCodeScreen = () => {
   const handleVisitationSavingForCurrentDate = async message => {
     // check if there is a current date present in the list
     const todaysVisitation = checkIfThereAreVisitationToday();
-
+    const date = new Date().toISOString().split('T')[0];
     // if there is a visitation log for the current day
     if (todaysVisitation) {
       // construct leaving visitation object
@@ -126,10 +126,11 @@ const QRCodeScreen = () => {
         await createUserVisitationHistroy({
           ...leaveRecord,
           userId: qrCodeID,
+          date: date,
         });
         // get the current data for the visitation today
         const filteredDateLogs = visitationHistroy.filter(data => {
-          return data.date === new Date().toISOString().split('T')[0];
+          return data.date === date;
         });
 
         // add the created leaving object schema to the list
@@ -163,18 +164,19 @@ const QRCodeScreen = () => {
     }
     // perform creating an instance for the current day
     else {
+      const date = new Date().toISOString().split('T')[0];
       const record = {
         location: data,
         time: new Date().toLocaleTimeString(),
         action: 'Scanned the QR Code',
       };
       const newVisitation = {
-        date: new Date().toISOString().split('T')[0],
+        date: date,
         visitation: [record],
       };
       // this will run the api call
       try {
-        const visitRecord = await createUserVisitationHistroy({ ...record, userId: qrCodeID });
+        await createUserVisitationHistroy({ ...record, userId: qrCodeID, date: date });
         // get recent logs
         const recentLogs = getRecentLogs();
         const stringfyData = JSON.stringify([...recentLogs, newVisitation]);
