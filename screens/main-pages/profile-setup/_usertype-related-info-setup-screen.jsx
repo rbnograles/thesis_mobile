@@ -178,7 +178,6 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
   const getWelcomePageStatus = async () => {
     try {
       const data = await AsyncStorage.getItem('@profileInfo');
-      console.log(data);
       setPrevInfo(JSON.parse(data));
     } catch (error) {
       console.log(error);

@@ -62,6 +62,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
     newNumber.shift();
     // NOTICE: Send data to backend for otp sending
     await registerMobileNumber({ mobileNumber: newNumber.join('') });
+    setIsRequesting(!isRequesting);
   };
 
   const verifyOTP = async () => {
@@ -73,14 +74,13 @@ const OTPConfirmationScreen = ({ navigation }) => {
         try {
           const newNumber = mobileNumber.split('');
           newNumber.shift();
-          await verifyOTPCODE({
+          const data = await verifyOTPCODE({
             mobileNumber: `+63${newNumber.join('')}`,
             otpCode: `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}`,
           });
           // this will set the "set up status" of the application to complete for the landing pages
           _setThisPageToCompleted('@otpPageSuccessful', 'true');
-          const userQRID = uuid.v4().toString();
-          _setThisPageToCompleted('@userRandomeQRID', userQRID);
+          _setThisPageToCompleted('@userRandomeQRID', data.data.result.result._id);
           // move to the landing screen
           navigation.navigate('MainPages');
         } catch (error) {
