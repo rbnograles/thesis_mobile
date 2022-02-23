@@ -54,6 +54,19 @@ const LocationHistoryScreen = () => {
     });
   }, [refreshing]);
 
+  const convertTo112HourFormat = time => {
+    // Check correct time format and split into components
+    time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) {
+      // If time format correct
+      time = time.slice(1); // Remove full string match value
+      time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join('');
+  };
+
   useEffect(() => {
     // get the data of all visitations history
     _getVisitationHistroy();
@@ -80,7 +93,7 @@ const LocationHistoryScreen = () => {
                       return (
                         <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: 10 }}>
                           <Text style={{ fontSize: 12, marginRight: 10, marginTop: 2, fontWeight: '700' }}>
-                            {visitation.time}
+                            {convertTo112HourFormat(visitation.time)}
                           </Text>
                           <View
                             style={{

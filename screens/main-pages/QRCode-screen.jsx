@@ -12,6 +12,9 @@ import { Colors } from '../../styles/styles-colors';
 import { FontAwesome } from '@expo/vector-icons';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
+// apis
+import { createUserVisitationHistroy } from '../../apis/qr-code-visitation';
+
 const QRCodeScreen = () => {
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
@@ -107,7 +110,7 @@ const QRCodeScreen = () => {
     });
   };
 
-  const handleVisitationSavingForCurrentDate = message => {
+  const handleVisitationSavingForCurrentDate = async message => {
     // check if there is a current date present in the list
     const todaysVisitation = checkIfThereAreVisitationToday();
 
@@ -119,29 +122,34 @@ const QRCodeScreen = () => {
         time: new Date().toLocaleTimeString(), // time
         action: message, // event description
       };
+      try {
+        await createUserVisitationHistroy({
+          ...leaveRecord,
+          userId: qrCodeID,
+        });
+        // get the current data for the visitation today
+        const filteredDateLogs = visitationHistroy.filter(data => {
+          return data.date === new Date().toISOString().split('T')[0];
+        });
 
-      // get the current data for the visitation today
-      const filteredDateLogs = visitationHistroy.filter(data => {
-        return data.date === new Date().toISOString().split('T')[0];
-      });
-
-      // add the created leaving object schema to the list
-      filteredDateLogs[0].visitation.push(leaveRecord);
-
-      console.log(filteredDateLogs);
-      // get recent logs
-      const recentLogs = getRecentLogs();
-      // parse the date into string to be stored locally
-      const stringfyData = JSON.stringify(...recentLogs, filteredDateLogs);
-      // reset the state
-      setVisitationHistroy(...recentLogs, filteredDateLogs);
-      // store the data on the phones internal memory
-      _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+        // add the created leaving object schema to the list
+        filteredDateLogs[0].visitation.push(leaveRecord);
+        // get recent logs
+        const recentLogs = getRecentLogs();
+        // parse the date into string to be stored locally
+        const stringfyData = JSON.stringify(...recentLogs, filteredDateLogs);
+        // reset the state
+        setVisitationHistroy(...recentLogs, filteredDateLogs);
+        // store the data on the phones internal memory
+        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   // what happens when we scan the bar code
-  const handlerBarCodeScanned = ({ type, data }) => {
+  const handlerBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setLocation(data);
     setModalConfirmVisible(true);
@@ -155,27 +163,30 @@ const QRCodeScreen = () => {
     }
     // perform creating an instance for the current day
     else {
+      const record = {
+        location: data,
+        time: new Date().toLocaleTimeString(),
+        action: 'Scanned the QR Code',
+      };
       const newVisitation = {
         date: new Date().toISOString().split('T')[0],
-        visitation: [
-          {
-            location: data,
-            time: new Date().toLocaleTimeString(),
-            action: 'Scanned the QR Code',
-          },
-        ],
+        visitation: [record],
       };
-      // get recent logs
-      const recentLogs = getRecentLogs();
-
-      const stringfyData = JSON.stringify([...recentLogs, newVisitation]);
-      // this will set the initial storing of the data in the states
-      setVisitationHistroy(stringfyData);
-      // this will save the user's visittation logs on to the mobile phone locally
-      _setThisPageToCompleted('@userVisitationHistory', stringfyData);
-
-      // refresh the data set after saving the visitation details
-      _getVisitationHistroy();
+      // this will run the api call
+      try {
+        const visitRecord = await createUserVisitationHistroy({ ...record, userId: qrCodeID });
+        // get recent logs
+        const recentLogs = getRecentLogs();
+        const stringfyData = JSON.stringify([...recentLogs, newVisitation]);
+        // this will set the initial storing of the data in the states
+        setVisitationHistroy(stringfyData);
+        // this will save the user's visittation logs on to the mobile phone locally
+        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
+        // refresh the data set after saving the visitation details
+        _getVisitationHistroy();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
