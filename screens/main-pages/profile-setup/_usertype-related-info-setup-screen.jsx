@@ -135,6 +135,7 @@ const renderFacultyTypeFields = ({ navigation, prevInfo }) => {
 };
 
 const renderWorkerTypeFields = ({ navigation, prevInfo }) => {
+  console.log(prevInfo);
   return (
     <>
       <Formik

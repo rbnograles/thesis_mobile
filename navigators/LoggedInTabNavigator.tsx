@@ -91,7 +91,7 @@ const TabNavigator = ({ navigation }: any) => {
         />
       )}
       <Tab.Screen name="notification" component={AlarmScreen} options={{ tabBarLabel: 'Alarm' }} />
-      <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Settings' }} />
+      <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Privacy' }} />
     </Tab.Navigator>
   );
 };
