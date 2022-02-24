@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
+import { createUserPositiveLogs } from '../../apis/positive-logs';
 
 const SettingsScreen = () => {
   const [message, setMessage] = useState('');
@@ -68,9 +69,31 @@ const SettingsScreen = () => {
     );
   };
 
+  const showFailedAlert = () => {
+    Alert.alert(
+      'Upload Failed',
+      'Something went wrong, please try again later.',
+      [
+        {
+          text: 'Close',
+          style: 'default',
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
   const uploadPositiveInformationData = async () => {
-    console.log('Uploading...');
-    showSuccessAlert();
+    try {
+      await createUserPositiveLogs(prevInfo);
+      setPositiveModalConfirmVisible(!positiveConfirmVisible);
+      showSuccessAlert();
+    } catch (error) {
+      console.log(error);
+      showFailedAlert();
+    }
   };
 
   // @auto execute upon screen
@@ -172,7 +195,6 @@ const SettingsScreen = () => {
                 style={{ width: '50%' }}
                 onPress={() => {
                   uploadPositiveInformationData();
-                  setPositiveModalConfirmVisible(!positiveConfirmVisible);
                 }}
               >
                 <View
