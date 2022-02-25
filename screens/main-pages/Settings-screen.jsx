@@ -87,7 +87,13 @@ const SettingsScreen = () => {
 
   const uploadPositiveInformationData = async () => {
     try {
-      await createUserPositiveLogs(prevInfo);
+      const newNumber = prevInfo.mobileNumber.split('');
+      newNumber.shift();
+      await createUserPositiveLogs({
+        ...prevInfo,
+        mobileNumber: `+63${newNumber.join('')}`,
+        date: new Date().toISOString().split('T')[0],
+      });
       setPositiveModalConfirmVisible(!positiveConfirmVisible);
       showSuccessAlert();
     } catch (error) {
