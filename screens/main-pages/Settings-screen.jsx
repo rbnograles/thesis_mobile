@@ -97,7 +97,7 @@ const SettingsScreen = () => {
       setPositiveModalConfirmVisible(!positiveConfirmVisible);
       showSuccessAlert();
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
       showFailedAlert();
     }
   };
