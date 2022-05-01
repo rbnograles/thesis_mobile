@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 // native components
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import uuid from 'react-native-uuid';
 import { Text, SafeAreaView, View, TextInput } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 import { Feather } from '@expo/vector-icons';
@@ -12,8 +11,9 @@ import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-
 // components
 import CustomButton from '../../_utils/CustomButton';
 // apis
-import Loader from '../../_utils/Loader';
+import LoaderCustom from '../../_utils/LoaderCustom';
 import { verifyOTPCODE, registerMobileNumber } from '../../apis/otp';
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 const OTPConfirmationScreen = ({ navigation }) => {
   // default values
@@ -96,6 +96,18 @@ const OTPConfirmationScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[landingPagesOrientation.container]}>
+      <OTPInputView
+    style={{width: '80%', height: 200}}
+    pinCount={4}
+    // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+    // onCodeChanged = {code => { this.setState({code})}}
+    autoFocusOnLoad
+    // codeInputFieldStyle={styles.underlineStyleBase}
+    // codeInputHighlightStyle={styles.underlineStyleHighLighted}
+    onCodeFilled = {(code => {
+        console.log(`Code is ${code}, you are good to go!`)
+    })}
+/>
       {connectedToNet && (
         <>
           <View
@@ -193,7 +205,12 @@ const OTPConfirmationScreen = ({ navigation }) => {
       <View style={buttonOrientation.landingButtonOrientation}>
         {connectedToNet &&
           (!isEditable ? (
-            <Loader />
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", textAlign: "center"}}>
+              <Text style={{ width: "15%"}}>
+                <LoaderCustom /> 
+              </Text>
+              <Text style={{ width:"50%", textAlign: "center", textAlignVertical: "center" }}>Please wait for a moment . . .</Text>
+            </View>
           ) : (
             <CustomButton
               title="Verify and Continue"

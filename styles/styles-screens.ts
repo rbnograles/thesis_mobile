@@ -15,6 +15,20 @@ export const pageCenteredImage = StyleSheet.create({
   },
 });
 
+export const pageSpecialCenteredImage = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: Dimensions.get('window').height > 720 ? 30 : 65,
+    height: Dimensions.get('window').height > 720 ? 170 : 100,
+    width: Dimensions.get('window').height > 720 ? 170 : 100,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+});
+
 export const landingPagesOrientation = StyleSheet.create({
   container: {
     flex: 1,
@@ -57,7 +71,7 @@ export const landingPagesOrientation = StyleSheet.create({
     alignItems: 'center',
   },
   otpContianer: {
-    marginTop: 90,
+    marginTop: 30,
   },
   inputContainer: {
     marginTop: 20,

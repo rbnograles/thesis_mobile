@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 // native components
-import { Text, SafeAreaView, View, TextInput } from 'react-native';
+import { Text, SafeAreaView, View, TextInput, Image } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
 // stylesheet
-import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
+import { landingPagesOrientation, buttonOrientation, pageSpecialCenteredImage } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
 // apis
-import Loader from '../../_utils/Loader';
+import LoaderCustom from '../../_utils/LoaderCustom';
 import { registerMobileNumber } from '../../apis/otp';
 
 const SignInWithMobileScreen = ({ navigation }) => {
@@ -47,7 +47,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
           newNumber.shift();
           setEditable(!isEditable);
           // NOTICE: Send data to backend for otp sending
-          await registerMobileNumber({ mobileNumber: newNumber.join('') });
+          //await registerMobileNumber({ mobileNumber: newNumber.join('') });
         } catch (error) {
           setEditable(isEditable);
         }
@@ -75,8 +75,11 @@ const SignInWithMobileScreen = ({ navigation }) => {
               landingPagesOrientation.otpContianer,
             ]}
           >
-            <Feather name="smartphone" size={90} color={Colors.primary} />
-            <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
+            <View style={pageSpecialCenteredImage.container}>
+              <Image source={require('../../assets/VerifyNumber.png')} style={pageSpecialCenteredImage.image} />
+            </View>
+            <Text style={[landingPagesOrientation.header, { color: 'white'}]}>Verify your number</Text>
+            <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16 }}>
               Continue with your mobile number, you'll receive a 4 digit code to verify next.
             </Text>
           </View>
@@ -86,7 +89,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
               onChangeText={e => mobileNumberValidation(e)}
               editable={isEditable}
               value={number}
-              placeholder="09 *** *** ***"
+              placeholder="Enter your mobile number"
               keyboardType="numeric"
               maxLength={11}
             />
@@ -114,7 +117,12 @@ const SignInWithMobileScreen = ({ navigation }) => {
       <View style={buttonOrientation.landingButtonOrientation}>
         {connectedToNet &&
           (!isEditable ? (
-            <Loader />
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", textAlign: "center"}}>
+              <Text style={{ width: "15%"}}>
+                <LoaderCustom /> 
+              </Text>
+              <Text style={{ width:"50%", textAlign: "center", textAlignVertical: "center" }}>Please wait for a moment . . .</Text>
+            </View>
           ) : (
             <CustomButton
               title="Continue"
