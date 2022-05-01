@@ -17,57 +17,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { FontAwesome } from '@expo/vector-icons';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
-// user profile validation schema
-// let personalInfoSchema = yup.object().shape({
-//   studentNumber: yup.string().nullable(),
-//   facultyPosition: yup.string().nullable(),
-//   jobTitle: yup.string().nullable(),
-//   collegeDepartment: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'College department must contain only letters')
-//     .nullable(),
-//   firstName: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'First name must contain only letters')
-//     .required('First name is required'),
-//   middleName: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'Middle name must contain only letters')
-//     .nullable(),
-//   lastName: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'Last name must contain only letters')
-//     .required('Last name is required'),
-//   nameExtension: yup
-//     .string()
-//     .matches(/[A-Za-z.]/, 'Name extension name must contain only letters')
-//     .nullable(),
-//   lotNumber: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'Lot number must contain only letters')
-//     .nullable(),
-//   streetName: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'Street name must contain only letters')
-//     .required('Street name is required'),
-//   district: yup
-//     .string()
-//     .matches(/[A-Za-z]/, 'District must contain only letters')
-//     .nullable(),
-//   barangay: yup
-//     .string()
-//     .matches(/[A-Za-z.]/, 'Barangay name must contain only letters')
-//     .required('Barangay is required'),
-//   city: yup
-//     .string()
-//     .matches(/[A-Za-z.]/, 'City name must contain only letters')
-//     .required('City is required'),
-//   province: yup
-//     .string()
-//     .matches(/[0-9A-Za-z.]/, 'Province name must contain only letters')
-//     .required('Province is required'),
-// });
-
 const ProfileScreen = () => {
   // default states
   const [modalVisible, setModalVisible] = useState(false);
