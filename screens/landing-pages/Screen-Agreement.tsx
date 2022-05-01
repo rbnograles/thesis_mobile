@@ -36,7 +36,7 @@ const AggreementScreen = ({ navigation }: any) => {
           onPress={() => setChecked(!isChecked)}
           containerStyle={agreementCheckBoxContainer.containerStyle}
         />
-        <Text style={agreementCheckBoxContainer.label}>I have read and agreed to the <Text onPress={() => {setModalConfirmVisible(true)}}>Terms and Conditions</Text></Text>
+        <Text style={agreementCheckBoxContainer.label}>I have read and agreed to the <Text style={{ color: Colors.primary, textDecorationLine: "underline" }} onPress={() => {setModalConfirmVisible(true)}}>Terms and Policies</Text></Text>
       </View>
       <View style={buttonOrientation.landingButtonOrientation}>
         <Button
@@ -93,6 +93,7 @@ const AggreementScreen = ({ navigation }: any) => {
                   style={{ width: '100%', marginTop: 20 }}
                   onPress={() => {
                     setModalConfirmVisible(!modalConfirmVisible);
+                    setChecked(true)
                   }}
                 >
                   <View
