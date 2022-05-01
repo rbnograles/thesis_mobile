@@ -47,7 +47,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
           newNumber.shift();
           setEditable(!isEditable);
           // NOTICE: Send data to backend for otp sending
-          //await registerMobileNumber({ mobileNumber: newNumber.join('') });
+          await registerMobileNumber({ mobileNumber: newNumber.join('') });
         } catch (error) {
           setEditable(isEditable);
         }
