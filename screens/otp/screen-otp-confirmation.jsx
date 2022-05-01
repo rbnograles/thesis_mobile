@@ -11,6 +11,9 @@ import { _setThisPageToCompleted } from '../../_storages/_state_process';
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
+// apis
+import Loader from '../../_utils/Loader';
+import { verifyOTPCODE, registerMobileNumber } from '../../apis/otp';
 
 const OTPConfirmationScreen = ({ navigation }) => {
   // default values
@@ -21,6 +24,8 @@ const OTPConfirmationScreen = ({ navigation }) => {
   const [fourthDigit, setFourthDigit] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [error, setError] = useState('');
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [isEditable, setEditable] = useState(true);
 
   const firstDigitRef = useRef(null);
   const secondDigitRef = useRef(null);
@@ -51,21 +56,36 @@ const OTPConfirmationScreen = ({ navigation }) => {
   /**
    * This will re send the otp function by recalling it
    */
-  const sendOTP = async () => {
-    console.log('Sending OTP');
+  const sendOTP = async number => {
+    setIsRequesting(!isRequesting);
+    const newNumber = number.split('');
+    newNumber.shift();
+    // NOTICE: Send data to backend for otp sending
+    await registerMobileNumber({ mobileNumber: newNumber.join('') });
+    setIsRequesting(!isRequesting);
   };
 
   const verifyOTP = async () => {
     const connectionStatus = await checkInternetConnection();
+    setEditable(!isEditable);
     if (connectionStatus) {
       // insert here the verification code block for the OTP
       if (firstDigit !== '' && secondDigit !== '' && thirdDigit !== '' && fourthDigit !== '') {
-        // this will set the "set up status" of the application to complete for the landing pages
-        _setThisPageToCompleted('@otpPageSuccessful', 'true');
-        const userQRID = uuid.v4().toString();
-        _setThisPageToCompleted('@userRandomeQRID', userQRID);
-        // move to the landing screen
-        navigation.navigate('MainPages');
+        try {
+          const newNumber = mobileNumber.split('');
+          newNumber.shift();
+          const data = await verifyOTPCODE({
+            mobileNumber: `+63${newNumber.join('')}`,
+            otpCode: `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}`,
+          });
+          // this will set the "set up status" of the application to complete for the landing pages
+          _setThisPageToCompleted('@otpPageSuccessful', 'true');
+          _setThisPageToCompleted('@userRandomeQRID', data.data.result.result._id);
+          // move to the landing screen
+          navigation.navigate('MainPages');
+        } catch (error) {
+          setError(error.response.data.message);
+        }
       } else {
         setError(`Enter the 4 digit verification code sent to ${mobileNumber}.`);
       }
@@ -102,6 +122,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
               }}
               value={firstDigit}
               maxLength={1}
+              editable={isEditable}
               keyboardType="numeric"
             />
             <TextInput
@@ -113,6 +134,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
               }}
               value={secondDigit}
               maxLength={1}
+              editable={isEditable}
               keyboardType="numeric"
             />
             <TextInput
@@ -124,6 +146,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
               }}
               value={thirdDigit}
               maxLength={1}
+              editable={isEditable}
               keyboardType="numeric"
             />
             <TextInput
@@ -134,6 +157,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
               }}
               value={fourthDigit}
               maxLength={1}
+              editable={isEditable}
               keyboardType="numeric"
             />
           </View>
@@ -142,8 +166,8 @@ const OTPConfirmationScreen = ({ navigation }) => {
           )}
           <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
             Didn't receive the code?{' '}
-            <Text style={landingPagesOrientation.resendLink} onPress={() => sendOTP()}>
-              Request again.
+            <Text style={landingPagesOrientation.resendLink} onPress={() => sendOTP(mobileNumber)}>
+              {isRequesting ? 'Requesting...' : 'Request again'}
             </Text>
           </Text>
         </>
@@ -167,14 +191,17 @@ const OTPConfirmationScreen = ({ navigation }) => {
       )}
 
       <View style={buttonOrientation.landingButtonOrientation}>
-        {connectedToNet && (
-          <CustomButton
-            title="Verify and Continue"
-            color={Colors.primary}
-            textColor="white"
-            onPress={() => verifyOTP()}
-          />
-        )}
+        {connectedToNet &&
+          (!isEditable ? (
+            <Loader />
+          ) : (
+            <CustomButton
+              title="Verify and Continue"
+              color={Colors.primary}
+              textColor="white"
+              onPress={() => verifyOTP()}
+            />
+          ))}
         {!connectedToNet && (
           <CustomButton
             title="Reload page"

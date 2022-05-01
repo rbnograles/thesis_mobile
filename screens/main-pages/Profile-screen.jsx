@@ -16,12 +16,14 @@ import { Colors } from '../../styles/styles-colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import { FontAwesome } from '@expo/vector-icons';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
+import { updateUserType } from '../../apis/users';
 
 const ProfileScreen = () => {
   // default states
   const [modalVisible, setModalVisible] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
   const [prevInfo, setPrevInfo] = useState({});
+  const [qrCodeID, setQRCodeID] = useState('');
 
   const setUserTypeChoice = type => {
     setPrevInfo({ ...prevInfo, userType: type });
@@ -43,11 +45,38 @@ const ProfileScreen = () => {
     }
   };
 
+  const _getGeneratedQRId = async () => {
+    try {
+      // fetch the user random id saved on the mobile data
+      const value = await AsyncStorage.getItem('@userRandomeQRID');
+      // checks if there is a saved data
+      if (value !== null) {
+        // value previously stored
+        setQRCodeID(value);
+      }
+    } catch (error) {
+      // error reading value
+      setQRCodeID('');
+    }
+  };
+
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
+    _getGeneratedQRId();
     // running this function on mount
     getUserProfileData();
   }, []);
+
+  const updateUserTypeFunction = async () => {
+    try {
+      await updateUserType({ userType: prevInfo.userType }, qrCodeID);
+      _setThisPageToCompleted('@profileInfo', JSON.stringify(prevInfo));
+      setModalConfirmVisible(!modalConfirmVisible);
+      showSuccessAlert();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const renderStudentFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
     return (
@@ -405,9 +434,7 @@ const ProfileScreen = () => {
                   <TouchableOpacity
                     style={{ width: '50%' }}
                     onPress={() => {
-                      _setThisPageToCompleted('@profileInfo', JSON.stringify(prevInfo));
-                      setModalConfirmVisible(!modalConfirmVisible);
-                      showSuccessAlert();
+                      updateUserTypeFunction();
                     }}
                   >
                     <View

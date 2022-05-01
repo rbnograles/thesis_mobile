@@ -9,6 +9,9 @@ import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet
 import { landingPagesOrientation, buttonOrientation } from '../../styles/styles-screens';
 // components
 import CustomButton from '../../_utils/CustomButton';
+// apis
+import Loader from '../../_utils/Loader';
+import { registerMobileNumber } from '../../apis/otp';
 
 const SignInWithMobileScreen = ({ navigation }) => {
   // default state, this will hold the mobile number input
@@ -16,6 +19,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
   const [number, onChangeNumber] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(false);
   const [error, setError] = useState('');
+  const [isEditable, setEditable] = useState(true);
 
   const mobileNumberValidation = value => {
     let test = /^[0-9]{0,11}$/;
@@ -39,11 +43,16 @@ const SignInWithMobileScreen = ({ navigation }) => {
       if (number.length === 11 && isValidNumber) {
         try {
           await AsyncStorage.setItem('@mobile_num_key', number);
+          const newNumber = number.split('');
+          newNumber.shift();
+          setEditable(!isEditable);
+          // NOTICE: Send data to backend for otp sending
+          await registerMobileNumber({ mobileNumber: newNumber.join('') });
         } catch (error) {
-          console.log(error);
+          setEditable(isEditable);
         }
-        // NOTICE: Send data to backend for otp sending
         // Add Backend api here
+        setEditable(isEditable);
         navigation.navigate('OTPConfirmationScreen');
       }
     } else {
@@ -75,6 +84,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
             <TextInput
               style={landingPagesOrientation.input}
               onChangeText={e => mobileNumberValidation(e)}
+              editable={isEditable}
               value={number}
               placeholder="09 *** *** ***"
               keyboardType="numeric"
@@ -102,14 +112,17 @@ const SignInWithMobileScreen = ({ navigation }) => {
         </View>
       )}
       <View style={buttonOrientation.landingButtonOrientation}>
-        {connectedToNet && (
-          <CustomButton
-            title="Continue"
-            color={Colors.primary}
-            textColor="white"
-            onPress={() => _temporaryStorageForMobileNum()}
-          />
-        )}
+        {connectedToNet &&
+          (!isEditable ? (
+            <Loader />
+          ) : (
+            <CustomButton
+              title="Continue"
+              color={Colors.primary}
+              textColor="white"
+              onPress={() => _temporaryStorageForMobileNum()}
+            />
+          ))}
         {!connectedToNet && (
           <CustomButton
             title="Reload page"
