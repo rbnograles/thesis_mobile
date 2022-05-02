@@ -206,6 +206,7 @@ const QRCodeScreen = () => {
       {/* This section will render the users QR Code Scanner Screen */}
       {renderStatus === '1' && (
         <>
+          {/* render when the app is installed the first time */}
           {!hasPermissions && (
             <View style={{ justifyContent: 'center', marginHorizontal: 35, marginVertical: '50%' }}>
               <Text style={{ textAlign: 'center', fontSize: 20, marginBottom: 20, fontWeight: '700' }}>
@@ -219,6 +220,7 @@ const QRCodeScreen = () => {
               />
             </View>
           )}
+          {/* render if the app has the camera permission */}
           {hasPermissions && (
             <>
               <View style={{ alignItems: 'center' }}>
@@ -228,6 +230,9 @@ const QRCodeScreen = () => {
               </View>
               <View style={{ marginTop: -50 }}>
                 <View style={styles.barcodebox}>
+                  {
+                    console.log(scanned)
+                  }
                   <BarCodeScanner
                     style={{
                       height: Dimensions.get('window').height - 70,
@@ -306,7 +311,7 @@ const QRCodeScreen = () => {
       {renderStatus === '0' && (
         <>
           <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan QR Code</Text>
+            <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan My QR Code</Text>
           </View>
           {renderQR && (
             <SvgQRCode

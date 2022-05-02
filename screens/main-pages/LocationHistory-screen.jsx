@@ -74,6 +74,9 @@ const LocationHistoryScreen = () => {
 
   return (
     <View style={landingPagesOrientation.historyContainer}>
+      {
+        console.log(historyData)
+      }
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
           {historyData.length > 0 && (
