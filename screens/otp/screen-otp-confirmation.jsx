@@ -139,6 +139,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
             <View style={pageSpecialCenteredImage.container}>
               <Image source={require('../../assets/Otp-sent.png')} style={pageSpecialCenteredImage.image} />
             </View>
+            <Text style={[landingPagesOrientation.header]}>Verify OTP</Text>
             <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
               Code is sent to <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>{mobileNumber}</Text>
             </Text>

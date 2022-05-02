@@ -78,7 +78,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
             <View style={pageSpecialCenteredImage.container}>
               <Image source={require('../../assets/VerifyNumber.png')} style={pageSpecialCenteredImage.image} />
             </View>
-            <Text style={[landingPagesOrientation.header, { color: 'white'}]}>Verify your number</Text>
+            <Text style={[landingPagesOrientation.header]}>Verify your number</Text>
             <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16 }}>
               Continue with your mobile number, you'll receive a 4 digit code to verify next.
             </Text>
