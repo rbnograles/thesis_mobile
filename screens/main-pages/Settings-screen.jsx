@@ -7,10 +7,14 @@ import { displayFormContainer, landingPagesOrientation, sectionContiner } from '
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 import { createUserPositiveLogs } from '../../apis/positive-logs';
+import Loader from '../../_utils/Loader';
+import Moment from 'moment';
 
 const SettingsScreen = () => {
-  const [message, setMessage] = useState('');
-  const [qrCodeID, setQRCodeID] = useState('');
+
+  const [positiveReportDate, setPositiveReportDate] = useState('');
+  const [dateAfter14Days, setDateAfter14Days] = useState('');
+  const [updating, setIsUpdating] = useState(false);
   const [prevInfo, setPrevInfo] = useState({});
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
   const [positiveConfirmVisible, setPositiveModalConfirmVisible] = useState(false);
@@ -21,22 +25,7 @@ const SettingsScreen = () => {
       await AsyncStorage.clear();
       BackHandler.exitApp();
     } catch (error) {
-      setMessage('Failed to clear data');
-    }
-  };
-
-  const _getGeneratedQRId = async () => {
-    try {
-      // fetch the user random id saved on the mobile data
-      const value = await AsyncStorage.getItem('@userRandomeQRID');
-      // checks if there is a saved data
-      if (value !== null) {
-        // value previously stored
-        setQRCodeID(value);
-      }
-    } catch (error) {
-      // error reading value
-      setQRCodeID('');
+      console.log(error)
     }
   };
 
@@ -45,8 +34,10 @@ const SettingsScreen = () => {
     try {
       const data = await AsyncStorage.getItem('@profileInfo');
       const value = await AsyncStorage.getItem('@mobile_num_key');
+      const positiveDate = await AsyncStorage.getItem('@positiveReportDate');
       const newdata = JSON.parse(data);
       setPrevInfo({ mobileNumber: value, ...newdata });
+      setPositiveReportDate(positiveDate);
       console.log(newdata);
     } catch (error) {
       console.log(error);
@@ -86,26 +77,35 @@ const SettingsScreen = () => {
   };
 
   const uploadPositiveInformationData = async () => {
+    setIsUpdating(true);
     try {
+      // prepare the number format for uploading to datebase
       const newNumber = prevInfo.mobileNumber.split('');
       newNumber.shift();
+      // send api
       await createUserPositiveLogs({
         ...prevInfo,
         mobileNumber: `+63${newNumber.join('')}`,
         date: new Date().toISOString().split('T')[0],
       });
+      // sets the current date as positive report date
+      await AsyncStorage.setItem('@positiveReportDate', new Date().toISOString().split('T')[0]);
+      await AsyncStorage.setItem('@dateAfter14Days', new Date(Date.now() + 12096e5).toISOString().split('T')[0]);
+      setPositiveReportDate(new Date().toISOString().split('T')[0]);
+      setDateAfter14Days(new Date(Date.now() + 12096e5).toISOString().split('T')[0]);
+      // close modal, alert 
       setPositiveModalConfirmVisible(!positiveConfirmVisible);
       showSuccessAlert();
+      setIsUpdating(false);
     } catch (error) {
       console.log(error.response);
       showFailedAlert();
+      setIsUpdating(false);
     }
   };
 
   // @auto execute upon screen
   useEffect(() => {
-    // generations of random user id
-    _getGeneratedQRId();
     // get stored profile data
     getUserProfileData();
   }, []);
@@ -115,17 +115,39 @@ const SettingsScreen = () => {
       <Text style={displayFormContainer.formsHeader}>Account Privacy</Text>
       <View style={sectionContiner.section}>
         <Text style={sectionContiner.sectionHeader}>COVID-19 Status Alert</Text>
-        <Text style={sectionContiner.sectionDescription}>
-          If you are diagnosed with COVID-19, please click the "I am positive" button. This will upload your personal
-          information provided to alert the community of a possible contact. If not done immediately, an authorized
-          person from the university will obligate you to upload your location history.
-        </Text>
-        <CustomButton
-          title="I am positive of COVID-19"
-          color={Colors.primary}
-          textColor="white"
-          onPress={() => setPositiveModalConfirmVisible(true)}
-        />
+        {
+          !positiveReportDate ? <>
+            <Text style={sectionContiner.sectionDescription}>
+              If you are diagnosed with COVID-19, please click the "I am positive" button. This will upload your personal
+              information provided to alert the community of a possible contact. If not done immediately, an authorized
+              person from the community will obligate you to upload your location history.
+            </Text>
+            <CustomButton
+              title="I am positive of COVID-19"
+              color={Colors.red}
+              textColor="white"
+              onPress={() => setPositiveModalConfirmVisible(true)}
+            />
+          </>
+          :
+          <>
+            <Text style={sectionContiner.sectionDescription}>
+              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of Covid 19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>{Moment(positiveReportDate).format('MMMM DD, YYYY')}</Text>.
+            </Text>
+            <Text style={sectionContiner.sectionDescription}>
+              You are advised to follow the 14 day <Text style={{ color: Colors.green, fontWeight: "bold"}}>({ Moment(positiveReportDate).format('MMMM DD, YYYY') + " - " + Moment(dateAfter14Days).format('MMMM DD, YYYY') })</Text> quarantine protocol mandated by the government. 
+              Person/s that is/are Covid-19 positive <Text style={{ fontWeight: "bold", color: Colors.green}}> can press the green button </Text> 
+              if the health officials gives you the signal that you are covid free now. 
+            </Text>
+            <CustomButton
+              title="I have recovered from Covid-19"
+              color={Colors.green}
+              textColor="white"
+              onPress={() => setPositiveModalConfirmVisible(true)}
+            />
+          </>
+          
+        }
       </View>
       <View style={sectionContiner.section}>
         <Text style={sectionContiner.sectionHeader}>Delete your account</Text>
@@ -179,7 +201,9 @@ const SettingsScreen = () => {
                 marginTop: 15,
               }}
             >
-              <TouchableOpacity
+              {
+                !updating ? <>
+                <TouchableOpacity
                 style={{ width: '50%' }}
                 onPress={() => setPositiveModalConfirmVisible(!positiveConfirmVisible)}
               >
@@ -215,7 +239,8 @@ const SettingsScreen = () => {
                 >
                   <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity></>: <Loader/>
+              }
             </View>
           </View>
         </View>

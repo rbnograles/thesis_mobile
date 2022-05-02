@@ -1,180 +1,18 @@
 import React, { useState, useEffect } from 'react';
 // native components
-import { Text, View, SafeAreaView } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as yup from 'yup';
-import { Formik } from 'formik';
 // stylesheet
-import { formsContainer, landingPagesOrientation } from '../../../styles/styles-screens';
+import { formsContainer, landingPagesOrientation, displayFormContainer } from '../../../styles/styles-screens';
 // custom components
-import CustomInputs from '../../../_utils/CustomInputs';
+import CustomInputs from '../../../_utils/DisplayInput';
+import { _setThisPageToCompleted } from '../../../_storages/_state_process';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
-import { _setThisPageToCompleted } from '../../../_storages/_state_process';
-
-let studentInfoSchema = yup.object().shape({
-  studentNumber: yup.string().required('Student number is required'),
-  collegeDepartment: yup
-    .string()
-    .matches(/[A-Za-z]/, 'College department must contain only letters')
-    .required('College department is required'),
-});
-
-let facultyInfoSchema = yup.object().shape({
-  facultyPosition: yup.string().required('Faculty Position is required'),
-  collegeDepartment: yup
-    .string()
-    .matches(/[A-Za-z]/, 'College department must contain only letters')
-    .required('College department is required'),
-});
-
-let workerInfoSchema = yup.object().shape({
-  jobTitle: yup.string().required('Job title is required'),
-});
-
-const renderStudentTypeFields = ({ navigation, prevInfo }) => {
-  return (
-    <>
-      <Formik
-        initialValues={{
-          studentNumber: '',
-          collegeDepartment: '',
-        }}
-        validateOnMount={true}
-        validationSchema={studentInfoSchema}
-        onSubmit={values => {
-          // store the data temporarily and remeber that this page is done
-          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
-          _setThisPageToCompleted('@successWelcomePage', 'true');
-          navigation.navigate('MainPages', { isSetupComplete: true });
-        }}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <View style={{ marginTop: 10 }}>
-            <CustomInputs
-              labelTitle="Student Number"
-              required={true}
-              onChangeText={handleChange('studentNumber')}
-              placeHolder=""
-              onBlur={handleBlur('studentNumber')}
-              value={values.studentNumber}
-            />
-            {errors.studentNumber && touched.studentNumber && (
-              <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
-            )}
-            <CustomInputs
-              labelTitle="College Department"
-              required={true}
-              onChangeText={handleChange('collegeDepartment')}
-              placeHolder=""
-              onBlur={handleBlur('collegeDepartment')}
-              value={values.collegeDepartment}
-            />
-            {errors.collegeDepartment && touched.collegeDepartment && (
-              <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
-            )}
-            <View style={{ marginTop: 20 }}>
-              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
-            </View>
-          </View>
-        )}
-      </Formik>
-    </>
-  );
-};
-
-const renderFacultyTypeFields = ({ navigation, prevInfo }) => {
-  return (
-    <>
-      <Formik
-        initialValues={{
-          facultyPosition: '',
-          collegeDepartment: '',
-        }}
-        validateOnMount={true}
-        validationSchema={facultyInfoSchema}
-        onSubmit={values => {
-          // store the data temporarily and remeber that this page is done
-          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
-          _setThisPageToCompleted('@successWelcomePage', 'true');
-          navigation.navigate('MainPages', { isSetupComplete: true });
-        }}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <View style={{ marginTop: 10 }}>
-            <CustomInputs
-              labelTitle="Faculty Position"
-              required={true}
-              onChangeText={handleChange('facultyPosition')}
-              placeHolder=""
-              onBlur={handleBlur('facultyPosition')}
-              value={values.facultyPosition}
-            />
-            {errors.facultyPosition && touched.facultyPosition && (
-              <Text style={formsContainer.errorMessage}>{errors.facultyPosition}</Text>
-            )}
-            <CustomInputs
-              labelTitle="College Department"
-              required={true}
-              onChangeText={handleChange('collegeDepartment')}
-              placeHolder=""
-              onBlur={handleBlur('collegeDepartment')}
-              value={values.collegeDepartment}
-            />
-            {errors.collegeDepartment && touched.collegeDepartment && (
-              <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
-            )}
-            <View style={{ marginTop: 20 }}>
-              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
-            </View>
-          </View>
-        )}
-      </Formik>
-    </>
-  );
-};
-
-const renderWorkerTypeFields = ({ navigation, prevInfo }) => {
-  console.log(prevInfo);
-  return (
-    <>
-      <Formik
-        initialValues={{
-          jobTitle: '',
-        }}
-        validateOnMount={true}
-        validationSchema={workerInfoSchema}
-        onSubmit={values => {
-          // store the data temporarily and remeber that this page is done
-          _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...values, ...prevInfo }));
-          _setThisPageToCompleted('@successWelcomePage', 'true');
-          navigation.navigate('MainPages', { isSetupComplete: true });
-        }}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <View style={{ marginTop: 10 }}>
-            <CustomInputs
-              labelTitle="Job Title"
-              required={true}
-              onChangeText={handleChange('jobTitle')}
-              placeHolder=""
-              onBlur={handleBlur('jobTitle')}
-              value={values.jobTitle}
-            />
-            {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
-            <View style={{ marginTop: 20 }}>
-              <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Finish Setup" />
-            </View>
-          </View>
-        )}
-      </Formik>
-    </>
-  );
-};
 
 const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
   const { userType } = route.params;
-  const [prevInfo, setPrevInfo] = useState(null);
+  const [prevInfo, setPrevInfo] = useState({});
   // this will fetch the default states from the screen interactions
   const getWelcomePageStatus = async () => {
     try {
@@ -185,6 +23,13 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
     }
   };
 
+  const process = () => {
+    // store the data temporarily and remeber that this page is done
+    _setThisPageToCompleted('@profileInfo', JSON.stringify({ ...prevInfo }));
+    _setThisPageToCompleted('@successWelcomePage', 'true');
+    navigation.navigate('MainPages', { isSetupComplete: true });
+  }
+
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
     // running this function on mount
@@ -193,13 +38,81 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={landingPagesOrientation.container}>
-      <Text style={formsContainer.formsHeader}>Profile Information</Text>
+      <Text style={formsContainer.formsHeader}>Profile Information Summary</Text>
       <Text style={formsContainer.formsSubHeader}>
-        This information will be saved only on your device and not on the application's database.
+        This information will be keep private and will not be shared to any third parties or individiual.
       </Text>
-      {userType === 'Student' && renderStudentTypeFields({ navigation, prevInfo })}
-      {userType === 'Worker' && renderWorkerTypeFields({ navigation, prevInfo })}
-      {userType === 'Faculty' && renderFacultyTypeFields({ navigation, prevInfo })}
+      <ScrollView>
+        <View style={{ marginTop: 10, marginBottom: 20 }}>
+          <View style={{ marginBottom: 15 }}>
+            <Text style={displayFormContainer.formCaptions}>User Affiliation</Text>
+            <CustomInputs
+              labelTitle="User Type"
+              required={true}
+              placeHolder=""
+              value={userType}
+            />
+          </View>
+          <View style={{ marginBottom: 15 }}>
+            <Text style={displayFormContainer.formCaptions}>Personal Name</Text>
+            <CustomInputs
+              labelTitle="First name"
+              required={true}
+              placeHolder=""
+              value={prevInfo.firstName}
+            />
+            <CustomInputs
+              labelTitle="Middle name"
+              required={false}
+              value={prevInfo.middleName}
+            />
+            <CustomInputs
+              labelTitle="Last name"
+              required={true}
+              value={prevInfo.lastName}
+            />
+            <CustomInputs
+              labelTitle="Suffix"
+              required={false}
+              value={prevInfo.nameExtension}
+            />
+          </View>
+          <View style={{ marginBottom: 15 }}>
+            <Text style={displayFormContainer.formCaptions}>Current Address</Text>
+            <CustomInputs
+              labelTitle="Lot Number"
+              required={false}
+              value={prevInfo.lotNumber}
+            />
+            <CustomInputs
+              labelTitle="Street Name"
+              required={true}
+              value={prevInfo.streetName}
+            />
+            <CustomInputs
+              labelTitle="District / Subdivision"
+              required={false}
+              value={prevInfo.district}
+            />
+            <CustomInputs
+              labelTitle="Barangay"
+              required={true}
+              value={prevInfo.barangay}
+            />
+            <CustomInputs
+              labelTitle="City"
+              required={true}
+              value={prevInfo.city}
+            />
+            <CustomInputs
+              labelTitle="Province"
+              required={true}
+              value={prevInfo.province}
+            />
+          </View>
+          <CustomButton color={Colors.primary} textColor="white" onPress={process} title="Finish Setup" />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

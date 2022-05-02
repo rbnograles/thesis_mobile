@@ -50,31 +50,13 @@ const UserTypeSetupScreen = ({ navigation }) => {
       </Text>
       <View style={{ marginTop: 20 }}>
         <CheckBox
-          checked={userType === 'Student'}
+          checked={userType === 'Member'}
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
           checkedColor={Colors.primary}
-          onPress={() => setUserTypeChoice('Student')}
+          onPress={() => setUserTypeChoice('Member')}
           containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
-          title="Student"
-        />
-        <CheckBox
-          checked={userType === 'Faculty'}
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-          checkedColor={Colors.primary}
-          onPress={() => setUserTypeChoice('Faculty')}
-          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
-          title="Faculty"
-        />
-        <CheckBox
-          checked={userType === 'Worker'}
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-          checkedColor={Colors.primary}
-          onPress={() => setUserTypeChoice('Worker')}
-          containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
-          title="Worker"
+          title="Member"
         />
         <CheckBox
           checked={userType === 'Visitor / Guest'}

@@ -6,6 +6,7 @@ import { Text, View, SafeAreaView, Modal, StyleSheet, Pressable, TouchableOpacit
 import { Formik } from 'formik';
 import { AntDesign } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
+import Loader from '../../_utils/Loader';
 // stylesheet
 import { formsContainer, displayFormContainer, landingPagesOrientation, checkBox } from '../../styles/styles-screens';
 // custom components
@@ -22,6 +23,7 @@ const ProfileScreen = () => {
   // default states
   const [modalVisible, setModalVisible] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
+  const [updating, setIsUpdating] = useState(false);
   const [prevInfo, setPrevInfo] = useState({});
   const [qrCodeID, setQRCodeID] = useState('');
 
@@ -68,94 +70,23 @@ const ProfileScreen = () => {
   }, []);
 
   const updateUserTypeFunction = async () => {
+    setIsUpdating(true);
     try {
       await updateUserType({ userType: prevInfo.userType }, qrCodeID);
       _setThisPageToCompleted('@profileInfo', JSON.stringify(prevInfo));
       setModalConfirmVisible(!modalConfirmVisible);
       showSuccessAlert();
+      setIsUpdating(false);
     } catch (error) {
       console.log(error);
+      setIsUpdating(false);
     }
-  };
-
-  const renderStudentFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
-    return (
-      <>
-        <CustomInputs
-          labelTitle="Student Number"
-          required={true}
-          onChangeText={e => overRideHandlerChange('studentNumber', e)}
-          placeHolder=""
-          onBlur={handleBlur('studentNumber')}
-          value={prevInfo.studentNumber}
-        />
-        {errors.studentNumber && touched.studentNumber && (
-          <Text style={formsContainer.errorMessage}>{errors.studentNumber}</Text>
-        )}
-        <CustomInputs
-          labelTitle="College Department"
-          required={true}
-          onChangeText={e => overRideHandlerChange('collegeDepartment', e)}
-          placeHolder=""
-          onBlur={handleBlur('collegeDepartment')}
-          value={prevInfo.collegeDepartment}
-        />
-        {errors.collegeDepartment && touched.collegeDepartment && (
-          <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
-        )}
-      </>
-    );
-  };
-
-  const renderFacultyFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
-    return (
-      <>
-        <CustomInputs
-          labelTitle="Faculty Position"
-          required={true}
-          onChangeText={e => overRideHandlerChange('facultyPosition', e)}
-          placeHolder=""
-          onBlur={handleBlur('facultyPosition')}
-          value={prevInfo.facultyPosition}
-        />
-        {errors.facultyPosition && touched.facultyPosition && (
-          <Text style={formsContainer.errorMessage}>{errors.facultyPosition}</Text>
-        )}
-        <CustomInputs
-          labelTitle="College Department"
-          required={true}
-          onChangeText={e => overRideHandlerChange('collegeDepartment', e)}
-          placeHolder=""
-          onBlur={handleBlur('collegeDepartment')}
-          value={prevInfo.collegeDepartment}
-        />
-        {errors.collegeDepartment && touched.collegeDepartment && (
-          <Text style={formsContainer.errorMessage}>{errors.collegeDepartment}</Text>
-        )}
-      </>
-    );
-  };
-
-  const renderWorkerFields = ({ prevInfo, errors, overRideHandlerChange, handleBlur, touched }) => {
-    return (
-      <>
-        <CustomInputs
-          labelTitle="Job Title"
-          required={true}
-          onChangeText={e => overRideHandlerChange('jobTitle', e)}
-          placeHolder=""
-          onBlur={handleBlur('jobTitle')}
-          value={prevInfo.jobTitle}
-        />
-        {errors.jobTitle && touched.jobTitle && <Text style={formsContainer.errorMessage}>{errors.jobTitle}</Text>}
-      </>
-    );
   };
 
   const showSuccessAlert = () => {
     Alert.alert(
-      'Success',
-      'Profile changes was saved successfully on your device.',
+      'Update Success',
+      'Your profile changes was saved successfully on your device.',
       [
         {
           text: 'Close',
@@ -191,12 +122,6 @@ const ProfileScreen = () => {
                       <AntDesign name="caretdown" size={14} color="black" />
                     </View>
                   </TouchableOpacity>
-                  {prevInfo.userType === 'Student' &&
-                    renderStudentFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
-                  {prevInfo.userType === 'Faculty' &&
-                    renderFacultyFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
-                  {prevInfo.userType === 'Worker' &&
-                    renderWorkerFields({ prevInfo, errors, overRideHandlerChange, handleBlur, touched })}
                 </View>
                 <View style={{ marginBottom: 15 }}>
                   <Text style={displayFormContainer.formCaptions}>Personal Name</Text>
@@ -352,31 +277,13 @@ const ProfileScreen = () => {
                   </Pressable>
                 </View>
                 <CheckBox
-                  checked={prevInfo.userType === 'Student'}
+                  checked={prevInfo.userType === 'Member'}
                   checkedIcon="dot-circle-o"
                   uncheckedIcon="circle-o"
                   checkedColor={Colors.primary}
-                  onPress={() => setUserTypeChoice('Student')}
+                  onPress={() => setUserTypeChoice('Member')}
                   containerStyle={checkBox.radioOptions}
-                  title="Student"
-                />
-                <CheckBox
-                  checked={prevInfo.userType === 'Faculty'}
-                  checkedIcon="dot-circle-o"
-                  uncheckedIcon="circle-o"
-                  checkedColor={Colors.primary}
-                  onPress={() => setUserTypeChoice('Faculty')}
-                  containerStyle={checkBox.radioOptions}
-                  title="Faculty"
-                />
-                <CheckBox
-                  checked={prevInfo.userType === 'Worker'}
-                  checkedIcon="dot-circle-o"
-                  uncheckedIcon="circle-o"
-                  checkedColor={Colors.primary}
-                  onPress={() => setUserTypeChoice('Worker')}
-                  containerStyle={checkBox.radioOptions}
-                  title="Worker"
+                  title="Member"
                 />
                 <CheckBox
                   checked={prevInfo.userType === 'Visitor / Guest'}
@@ -413,6 +320,8 @@ const ProfileScreen = () => {
                     marginTop: 15,
                   }}
                 >
+                {
+                  !updating ? <>
                   <TouchableOpacity
                     style={{ width: '50%' }}
                     onPress={() => setModalConfirmVisible(!modalConfirmVisible)}
@@ -430,7 +339,6 @@ const ProfileScreen = () => {
                       <Text style={{ fontSize: 16, fontWeight: '700' }}>No</Text>
                     </View>
                   </TouchableOpacity>
-                  {/* yes button */}
                   <TouchableOpacity
                     style={{ width: '50%' }}
                     onPress={() => {
@@ -449,7 +357,10 @@ const ProfileScreen = () => {
                     >
                       <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Yes</Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity></>
+                  :
+                  <Loader/>
+                }
                 </View>
               </View>
             </View>

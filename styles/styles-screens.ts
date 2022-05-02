@@ -234,7 +234,7 @@ export const displayFormContainer = StyleSheet.create({
 export const sectionContiner = StyleSheet.create({
   section: {
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 20,
   },
   sectionHeader: {
     fontSize: 20,
