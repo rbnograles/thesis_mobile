@@ -178,7 +178,7 @@ const SettingsScreen = () => {
               the health officials gives you the signal that you are covid free now. 
             </Text>
             {
-              new Date().toISOString().split('T')[0] !== dateAfter14Days ? 
+              new Date().toISOString().split('T')[0] === dateAfter14Days ? 
               <CustomButton
                 title="I have recovered from Covid-19"
                 color={Colors.green}
