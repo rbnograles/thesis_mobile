@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
-import { updateUserPositiveLogsRecovered } from '../../apis/positive-logs';
+import { updateUserPositiveLogsRecovered, createUserPositiveLogs } from '../../apis/positive-logs';
 import Loader from '../../_utils/Loader';
 import Moment from 'moment';
 
