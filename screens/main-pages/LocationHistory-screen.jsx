@@ -7,37 +7,35 @@ import Moment from 'moment';
 import { displayFormContainer, landingPagesOrientation } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { getUsersVisitationHistroy } from "../../apis/qr-code-visitation";
+import { checkInternetConnection } from "../../_utils/CheckIfConnectedToInternet";
 
 Moment.locale('en');
 
 const LocationHistoryScreen = () => {
+
   const [historyData, setVisitationHistroy] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdateDate, setLastUpdateDate] = useState("")
 
-  const _getVisitationHistroy = async () => {
-    try {
-      // fetch the user visitation history saved from the local storage
-      const value = await AsyncStorage.getItem('@userVisitationHistory');
-      // parse the data
-      const parsedValue = JSON.parse(value);
-      setVisitationHistroy(parsedValue !== null ? parsedValue : []);
-    } catch (error) {
-      setVisitationHistroy([]);
-      Alert.alert(
-        'Error',
-        'Something went wrong while getting the visitation history',
-        [
-          {
-            text: 'Close',
-            style: 'default',
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );
+  const getUsersVisitationLogsPersonal = async (connectedToNet) => {
+    const userId = await AsyncStorage.getItem('@userRandomeQRID');
+    if(connectedToNet) {
+      try {
+        const data = await getUsersVisitationHistroy(userId);
+        setVisitationHistroy(data.data.data)
+        await AsyncStorage.setItem('@savedVisitationHistory', JSON.stringify(data.data.data))
+        await AsyncStorage.setItem('@lastUpdateDateForVisitationHistroy', new Date().toISOString().split('T')[0]);
+        setLastUpdateDate(new Date().toISOString().split('T')[0]);
+      } catch (error) {
+        setVisitationHistroy([]);
+      }
+    } else {
+      const data = await AsyncStorage.getItem('@savedVisitationHistory');
+      const parsedValue = JSON.parse(data)
+      setVisitationHistroy(parsedValue !== null ? parsedValue: []);
     }
-  };
+  }
 
   const wait = timeout => {
     return new Promise(resolve => {
@@ -50,7 +48,7 @@ const LocationHistoryScreen = () => {
 
     wait(2000).then(() => {
       setRefreshing(false);
-      _getVisitationHistroy();
+      getUsersVisitationLogsPersonal();
     });
   }, [refreshing]);
 
@@ -68,28 +66,27 @@ const LocationHistoryScreen = () => {
   };
 
   useEffect(() => {
-    // get the data of all visitations history
-    _getVisitationHistroy();
+    checkInternetConnection().then(res => getUsersVisitationLogsPersonal(res));    
   }, []);
 
   return (
     <View style={landingPagesOrientation.historyContainer}>
-      {
-        console.log(historyData)
-      }
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={landingPagesOrientation.innerAdjustementPadding}>
           {historyData.length > 0 && (
-            <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>14 Day Visitation History</Text>
+            <View style={{ marginBottom: 15 }}>
+              <Text style={[displayFormContainer.formsHeader]}>14 Day Visitation History</Text>
+              <Text>Last Update: {Moment(lastUpdateDate).format('MMMM DD, YYYY')}</Text>
+            </View>
           )}
           {historyData.length > 0 &&
             historyData.map((history, i) => {
               return (
                 <View key={i}>
                   <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                    {new Date(history.date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                    {new Date(history.visitDate).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
                       ? 'Today'
-                      : Moment(history.date).format('MMMM DD, YYYY')}
+                      : Moment(history.visitDate).format('MMMM DD, YYYY')}
                   </Text>
                   <View style={{ marginBottom: 20, marginTop: 10 }}>
                     {history.visitation.map((visitation, i) => {
