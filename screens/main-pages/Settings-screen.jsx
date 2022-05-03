@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
-import { createUserPositiveLogs } from '../../apis/positive-logs';
+import { updateUserPositiveLogsRecovered } from '../../apis/positive-logs';
 import Loader from '../../_utils/Loader';
 import Moment from 'moment';
 
@@ -18,6 +18,7 @@ const SettingsScreen = () => {
   const [prevInfo, setPrevInfo] = useState({});
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
   const [positiveConfirmVisible, setPositiveModalConfirmVisible] = useState(false);
+  const [recoveredConfirmVisible, setRecoveredModalConfirmVisible] = useState(false);
 
   // reset everything
   const clearAsyncStorageData = async () => {
@@ -35,12 +36,25 @@ const SettingsScreen = () => {
       const data = await AsyncStorage.getItem('@profileInfo');
       const value = await AsyncStorage.getItem('@mobile_num_key');
       const positiveDate = await AsyncStorage.getItem('@positiveReportDate');
+      const dateAfter14Days = await AsyncStorage.getItem('@dateAfter14Days');
       const newdata = JSON.parse(data);
       setPrevInfo({ mobileNumber: value, ...newdata });
       setPositiveReportDate(positiveDate);
-      console.log(newdata);
+      setDateAfter14Days(dateAfter14Days);
     } catch (error) {
-      console.log(error);
+      Alert.alert(
+      'Error',
+      'Something went wrong, please try again later.',
+      [
+        {
+          text: 'Close',
+          style: 'default',
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
     }
   };
 
@@ -104,6 +118,28 @@ const SettingsScreen = () => {
     }
   };
 
+  const updateHealthStatus = async () => {
+    setIsUpdating(true);
+    try {
+      // prepare the number format for uploading to datebase
+      const newNumber = prevInfo.mobileNumber.split('');
+      newNumber.shift();
+      // send api
+      await updateUserPositiveLogsRecovered({ mobileNumber: `+63${newNumber.join('')}`});
+      await AsyncStorage.removeItem('@positiveReportDate');
+      await AsyncStorage.removeItem('@dateAfter14Days');
+      setPositiveReportDate('');
+      setDateAfter14Days('');
+      setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
+      showSuccessAlert();
+      setIsUpdating(false);
+    } catch (error) {
+      console.log(error.response);
+      showFailedAlert();
+      setIsUpdating(false);
+    }
+  }
+
   // @auto execute upon screen
   useEffect(() => {
     // get stored profile data
@@ -132,19 +168,31 @@ const SettingsScreen = () => {
           :
           <>
             <Text style={sectionContiner.sectionDescription}>
-              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of Covid 19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>{Moment(positiveReportDate).format('MMMM DD, YYYY')}</Text>.
+              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of Covid 19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>
+                {Moment(positiveReportDate).format('MMMM DD, YYYY')}
+              </Text>.
             </Text>
             <Text style={sectionContiner.sectionDescription}>
               You are advised to follow the 14 day <Text style={{ color: Colors.green, fontWeight: "bold"}}>({ Moment(positiveReportDate).format('MMMM DD, YYYY') + " - " + Moment(dateAfter14Days).format('MMMM DD, YYYY') })</Text> quarantine protocol mandated by the government. 
-              Person/s that is/are Covid-19 positive <Text style={{ fontWeight: "bold", color: Colors.green}}> can press the green button </Text> 
-              if the health officials gives you the signal that you are covid free now. 
+              You can <Text style={{ fontWeight: "bold", color: Colors.green}}> can press the button below</Text>  after the 14 day quarantine protocol is over and
+              the health officials gives you the signal that you are covid free now. 
             </Text>
-            <CustomButton
-              title="I have recovered from Covid-19"
-              color={Colors.green}
-              textColor="white"
-              onPress={() => setPositiveModalConfirmVisible(true)}
-            />
+            {
+              new Date().toISOString().split('T')[0] !== dateAfter14Days ? 
+              <CustomButton
+                title="I have recovered from Covid-19"
+                color={Colors.green}
+                textColor="white"
+                onPress={() => setRecoveredModalConfirmVisible(true)}
+              />
+              :
+              <CustomButton
+                title="I have recovered from Covid-19"
+                color={Colors.grey}
+                textColor="white"
+                onPress={() => {}}
+              />
+            }
           </>
           
         }
@@ -230,6 +278,85 @@ const SettingsScreen = () => {
                 <View
                   style={{
                     backgroundColor: Colors.red,
+                    height: 50,
+                    marginLeft: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 3,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
+                </View>
+              </TouchableOpacity></>: <Loader/>
+              }
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={recoveredConfirmVisible}
+        onRequestClose={() => {
+          setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={[styles.modalText, { color: Colors.green }]}>Recovered from COVID-19 Health Notice</Text>
+            </View>
+            <Text style={{ fontSize: 15 }}>
+              By clicking this button, you are stating that you are{' '}
+              <Text style={[{ color: Colors.green }]}>COVID-19 Recovered Patient</Text>, this will notify the system
+              administrator about your health status.
+            </Text>
+            <Text style={{ fontSize: 15, marginTop: 10 }}>
+              If you are unsure of your health status, please visit a health center/hospital for a COVID-19 test first,
+              before you proceed.{' '}
+              <Text style={[{ color: Colors.red }]}>
+                False Information will be meet with a sanction from the management.
+              </Text>
+            </Text>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginTop: 15,
+              }}
+            >
+              {
+                !updating ? <>
+                <TouchableOpacity
+                style={{ width: '50%' }}
+                onPress={() => setRecoveredModalConfirmVisible(!recoveredConfirmVisible)}
+              >
+                <View
+                  style={{
+                    backgroundColor: Colors.lightGrey,
+                    height: 50,
+                    justifyContent: 'center',
+                    marginRight: 10,
+                    alignItems: 'center',
+                    borderRadius: 3,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: '700' }}>Cancel</Text>
+                </View>
+              </TouchableOpacity>
+              {/* yes button */}
+              <TouchableOpacity
+                style={{ width: '50%' }}
+                onPress={() => {
+                  updateHealthStatus();
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: Colors.green,
                     height: 50,
                     marginLeft: 10,
                     justifyContent: 'center',

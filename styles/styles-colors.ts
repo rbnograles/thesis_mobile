@@ -15,5 +15,6 @@ export const Colors = {
   inputColor: '#DADADA',
   accent: '#30B8A6',
   lightBlue: '#DEF0FB',
+  grey: "#909090",
   lightGrey: '#EBEBEB',
 };
