@@ -90,6 +90,22 @@ const SettingsScreen = () => {
     );
   };
 
+  const showFailedUploadAlert = () => {
+    Alert.alert(
+      'Upload Failed',
+      'Something went wrong, please check your internet connection or your profile information setup and try again.',
+      [
+        {
+          text: 'Close',
+          style: 'default',
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
   const uploadPositiveInformationData = async () => {
     setIsUpdating(true);
     try {
@@ -112,8 +128,7 @@ const SettingsScreen = () => {
       showSuccessAlert();
       setIsUpdating(false);
     } catch (error) {
-      console.log(error.response);
-      showFailedAlert();
+      showFailedUploadAlert();
       setIsUpdating(false);
     }
   };
