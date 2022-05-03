@@ -8,14 +8,18 @@ import SwitchSelector from 'react-native-switch-selector';
 import CustomButton from '../../_utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { landingPagesOrientation } from '../../styles/styles-screens';
+import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../styles/styles-colors';
 import { FontAwesome } from '@expo/vector-icons';
+import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
 // apis
 import { createUserVisitationHistroy } from '../../apis/qr-code-visitation';
 
 const QRCodeScreen = () => {
+  // states
+  const [connectedToNet, setConnectedToNet] = useState(false);
   const [renderStatus, setRenderStatus] = useState('0');
   const [hasPermissions, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
@@ -54,6 +58,7 @@ const QRCodeScreen = () => {
 
   // @auto execute upon screen
   useEffect(() => {
+    checkInternetConnection().then(res => setConnectedToNet(res));
     // ask for camera permissions
     askForCameraPermission();
     // generations of random user id
@@ -104,114 +109,161 @@ const QRCodeScreen = () => {
     try {
       await createUserVisitationHistroy({ ...leaveRecord, userId: qrCodeID, date: date });
     } catch (error) {
-      console.log(error);
+      Alert.alert(
+        'Scanning Failed',
+        error.response,
+        [
+          {
+            text: 'Close',
+            style: 'default',
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
     }
   };
 
   return (
     <View style={landingPagesOrientation.container}>
-      {/* This section will render the users QR Code Scanner Screen */}
-      {renderStatus === '1' && (
+      {
+        // This section will render the users QR Code Scanner Screen
+        renderStatus === '1' && (
         <>
-          {/* render when the app is installed the first time */}
-          {!hasPermissions && (
-            <View style={{ justifyContent: 'center', marginHorizontal: 35, marginVertical: '50%' }}>
-              <Text style={{ textAlign: 'center', fontSize: 20, marginBottom: 20, fontWeight: '700' }}>
-                No camera permission!
-              </Text>
-              <CustomButton
-                color={Colors.primary}
-                textColor="white"
-                title="Allow Camera"
-                onPress={() => askForCameraPermission()}
-              />
-            </View>
-          )}
-          {/* render if the app has the camera permission */}
-          {hasPermissions && (
-            <>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.primary }}>
-                  Place the QR Code in front of the camera
-                </Text>
-              </View>
-              <View style={{ marginTop: -50 }}>
-                <View style={styles.barcodebox}>
-                  {
-                    console.log(scanned)
-                  }
-                  <BarCodeScanner
-                    style={{
-                      height: Dimensions.get('window').height - 70,
-                      width: Dimensions.get('window').width - 70,
-                    }}
-                    onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
-                  />
-                </View>
-                <CustomButton
-                  title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
-                  color={Colors.primary}
-                  textColor="white"
-                  onPress={() => {
-                    setScanned(false);
-                  }}
-                />
-              </View>
-              {/* confirm modal for saving the data */}
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalConfirmVisible}
-                onRequestClose={() => {
-                  setModalConfirmVisible(!modalConfirmVisible);
-                }}
-              >
-                <View style={styles.centeredView}>
-                  <View style={[styles.modalView]}>
-                    <View>
-                      <Text style={[styles.modalText, { marginBottom: 20 }]}>Data has been recorded!</Text>
+          {
+            connectedToNet ? (
+              <>
+                {
+                  // render when the app is installed the first time
+                  !hasPermissions && (
+                    <View style={{ justifyContent: 'center', marginHorizontal: 35, marginVertical: '50%' }}>
+                      <Text style={{ textAlign: 'center', fontSize: 20, marginBottom: 20, fontWeight: '700' }}>
+                        No camera permission!
+                      </Text>
+                      <CustomButton
+                        color={Colors.primary}
+                        textColor="white"
+                        title="Allow Camera"
+                        onPress={() => askForCameraPermission()}
+                      />
                     </View>
-                    <FontAwesome name="check-circle" color={Colors.accent} size={100} />
-                    <View>
-                      <Text style={styles.modalText}>You have scanned the venue</Text>
-                    </View>
-                    <Text style={styles.locationText}>{location}</Text>
-                    <View
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        marginTop: 15,
-                      }}
-                    >
-                      {/* leave button */}
-                      <TouchableOpacity
-                        style={{ width: '100%' }}
-                        onPress={() => {
-                          handleLeavingEventPlace();
+                  )
+                }
+                {
+                  // render if the app has the camera permission
+                  hasPermissions && (
+                    <>
+                      <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.primary }}>
+                          Place the QR Code in front of the camera
+                        </Text>
+                      </View>
+                      <View style={{ marginTop: -50 }}>
+                        <View style={styles.barcodebox}>
+                          {
+                            console.log(scanned)
+                          }
+                          <BarCodeScanner
+                            style={{
+                              height: Dimensions.get('window').height - 70,
+                              width: Dimensions.get('window').width - 70,
+                            }}
+                            onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
+                          />
+                        </View>
+                        <CustomButton
+                          title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
+                          color={Colors.primary}
+                          textColor="white"
+                          onPress={() => {
+                            setScanned(false);
+                          }}
+                        />
+                      </View>
+                      {/* confirm modal for saving the data */}
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalConfirmVisible}
+                        onRequestClose={() => {
                           setModalConfirmVisible(!modalConfirmVisible);
                         }}
                       >
-                        <View
-                          style={{
-                            backgroundColor: Colors.accent,
-                            height: 50,
-                            marginLeft: 10,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 3,
-                          }}
-                        >
-                          <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Leave</Text>
+                        <View style={styles.centeredView}>
+                          <View style={[styles.modalView]}>
+                            <View>
+                              <Text style={[styles.modalText, { marginBottom: 20 }]}>Data has been recorded!</Text>
+                            </View>
+                            <FontAwesome name="check-circle" color={Colors.accent} size={100} />
+                            <View>
+                              <Text style={styles.modalText}>You have scanned the venue</Text>
+                            </View>
+                            <Text style={styles.locationText}>{location}</Text>
+                            <View
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                                marginTop: 15,
+                              }}
+                            >
+                              {/* leave button */}
+                              <TouchableOpacity
+                                style={{ width: '100%' }}
+                                onPress={() => {
+                                  handleLeavingEventPlace();
+                                  setModalConfirmVisible(!modalConfirmVisible);
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    backgroundColor: Colors.accent,
+                                    height: 50,
+                                    marginLeft: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: 3,
+                                  }}
+                                >
+                                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Leave</Text>
+                                </View>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
                         </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                      </Modal>
+                    </>
+                  )
+                }
+              </>
+            ) 
+            : 
+              <>
+                <View
+                  style={[
+                    landingPagesOrientation.textContainer,
+                    landingPagesOrientation.textContaineredCenter,
+                    landingPagesOrientation.otpContianer,{
+                      marginTop: "40%",
+                      marginBottom: 20
+                    }
+                  ]}
+                >
+                  <Feather name="wifi-off" size={90} color={Colors.primary} />
+                  <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 17, fontWeight: '700' }}>
+                    Please make sure that you are connected to a stable internet connection in order to continue.
+                  </Text>
                 </View>
-              </Modal>
-            </>
-          )}
+                <CustomButton
+                  title="Reload page"
+                  color={'grey'}
+                  textColor={Colors.lightGrey}
+                  onPress={() => checkInternetConnection().then(res => setConnectedToNet(res))}
+                />
+              </>
+          }
         </>
       )}
       {/* This section has a logic of which if the render status is 0 it will render the users QR Code */}
