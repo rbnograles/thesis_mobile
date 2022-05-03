@@ -21,7 +21,6 @@ const QRCodeScreen = () => {
   const [scanned, setScanned] = useState(false);
   const [location, setLocation] = useState('');
   const [qrCodeID, setQRCodeID] = useState('');
-  const [visitationHistroy, setVisitationHistroy] = useState([]);
   const [renderQR, setRenderQR] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
 
@@ -53,18 +52,33 @@ const QRCodeScreen = () => {
     }
   };
 
-  const _getVisitationHistroy = async () => {
+  // @auto execute upon screen
+  useEffect(() => {
+    // ask for camera permissions
+    askForCameraPermission();
+    // generations of random user id
+    _getGeneratedQRId();
+  }, []);
+
+  // what happens when we scan the bar code
+  const handlerBarCodeScanned = async ({ type, data }) => {
+    setScanned(true);
+    setLocation(data);
+    setModalConfirmVisible(true);
+    // saving scanned history script starts here
+    const date = new Date().toISOString().split('T')[0];
+    const record = {
+      location: data,
+      time: new Date().toLocaleTimeString(),
+      action: 'Scanned the QR Code',
+    };
+    // this will run the api call
     try {
-      // fetch the user visitation history saved from the local storage
-      const value = await AsyncStorage.getItem('@userVisitationHistory');
-      // parse the data
-      const parsedValue = JSON.parse(value);
-      setVisitationHistroy(parsedValue !== null ? parsedValue : []);
+      await createUserVisitationHistroy({ ...record, userId: qrCodeID, date: date });
     } catch (error) {
-      setVisitationHistroy([]);
       Alert.alert(
-        'Error',
-        'Something went wrong while getting the visitation history',
+        'Scanning Failed',
+        error.response,
         [
           {
             text: 'Close',
@@ -78,126 +92,19 @@ const QRCodeScreen = () => {
     }
   };
 
-  // @auto execute upon screen
-  useEffect(() => {
-    // get the data of all visitations history
-    _getVisitationHistroy();
-    // ask for camera permissions
-    askForCameraPermission();
-    // generations of random user id
-    _getGeneratedQRId();
-  }, []);
-
-  // @check of there are visitations already for the current date
-  const checkIfThereAreVisitationToday = () => {
-    // check if there is a current date present in the list
-    const todaysVisitation = visitationHistroy.filter(data => {
-      return data.date === new Date().toISOString().split('T')[0];
-    });
-
-    if (todaysVisitation.length > 0) {
-      return true;
-    }
-
-    return false;
-  };
-
-  // @get all past logs from the visitation history that is not tied with the current date
-  const getRecentLogs = () => {
-    // filter all the recent visitation that is not recorded to day
-    return visitationHistroy.filter(data => {
-      return data.date !== new Date().toISOString().split('T')[0];
-    });
-  };
-
-  const handleVisitationSavingForCurrentDate = async message => {
-    // check if there is a current date present in the list
-    const todaysVisitation = checkIfThereAreVisitationToday();
-    const date = new Date().toISOString().split('T')[0];
-    // if there is a visitation log for the current day
-    if (todaysVisitation) {
-      // construct leaving visitation object
-      const leaveRecord = {
-        location: location, // name of the location
-        time: new Date().toLocaleTimeString(), // time
-        action: message, // event description
-      };
-      try {
-        await createUserVisitationHistroy({
-          ...leaveRecord,
-          userId: qrCodeID,
-          date: date,
-        });
-        // get the current data for the visitation today
-        const filteredDateLogs = visitationHistroy.filter(data => {
-          return data.date === date;
-        });
-
-        // add the created leaving object schema to the list
-        filteredDateLogs[0].visitation.push(leaveRecord);
-        // get recent logs
-        const recentLogs = getRecentLogs();
-        // parse the date into string to be stored locally
-        const stringfyData = JSON.stringify(...recentLogs, filteredDateLogs);
-        // reset the state
-        setVisitationHistroy(...recentLogs, filteredDateLogs);
-        // store the data on the phones internal memory
-        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  // what happens when we scan the bar code
-  const handlerBarCodeScanned = async ({ type, data }) => {
-    setScanned(true);
-    setLocation(data);
-    setModalConfirmVisible(true);
-
-    // checking for existing visitation for the current day
-    const visitationLogChecker = checkIfThereAreVisitationToday();
-    // saving scanned history script starts here
-    if (visitationLogChecker) {
-      // perform saving of visitation log's if there are current records for the current date
-      handleVisitationSavingForCurrentDate('Scanned the QR Code');
-    }
-    // perform creating an instance for the current day
-    else {
-      const date = new Date().toISOString().split('T')[0];
-      const record = {
-        location: data,
-        time: new Date().toLocaleTimeString(),
-        action: 'Scanned the QR Code',
-      };
-      const newVisitation = {
-        date: date,
-        visitation: [record],
-      };
-      // this will run the api call
-      try {
-        await createUserVisitationHistroy({ ...record, userId: qrCodeID, date: date });
-        // get recent logs
-        const recentLogs = getRecentLogs();
-        const stringfyData = JSON.stringify([...recentLogs, newVisitation]);
-        // this will set the initial storing of the data in the states
-        setVisitationHistroy(stringfyData);
-        // this will save the user's visittation logs on to the mobile phone locally
-        _setThisPageToCompleted('@userVisitationHistory', stringfyData);
-        // refresh the data set after saving the visitation details
-        _getVisitationHistroy();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   // what happens when user leaves the event place
-  const handleLeavingEventPlace = () => {
-    // check if there are visitation's available
-    if (visitationHistroy.length > 0) {
-      // perform saving of visitation log's if there are current records for the current date
-      handleVisitationSavingForCurrentDate('Left the event location');
+  const handleLeavingEventPlace = async () => {
+    const date = new Date().toISOString().split('T')[0];
+    // construct leaving visitation object
+    const leaveRecord = {
+      location: location, // name of the location
+      time: new Date().toLocaleTimeString(), // time
+      action: "Left the venue", // event description
+    };
+    try {
+      await createUserVisitationHistroy({ ...leaveRecord, userId: qrCodeID, date: date });
+    } catch (error) {
+      console.log(error);
     }
   };
 
