@@ -99,13 +99,13 @@ const LocationHistoryScreen = () => {
                             style={{
                               height: 10,
                               width: 10,
-                              backgroundColor: Colors.accent,
+                              backgroundColor: visitation.action === "Scanned the QR Code" ? Colors.accent : Colors.red,
                               borderRadius: 50,
                               marginRight: 10,
                               marginTop: 4,
                             }}
                           ></View>
-                          <View>
+                          <View style={{ width: "75%"}}>
                             <Text style={{ fontSize: 18 }}>{visitation.location}</Text>
                             <Text style={{ color: 'grey' }}>{visitation.action}</Text>
                           </View>

@@ -177,6 +177,7 @@ const QRCodeScreen = () => {
                           textColor="white"
                           onPress={() => {
                             setScanned(false);
+                            checkInternetConnection().then(res => setConnectedToNet(res));
                           }}
                         />
                       </View>
