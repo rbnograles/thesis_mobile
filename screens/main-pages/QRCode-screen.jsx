@@ -72,9 +72,10 @@ const QRCodeScreen = () => {
     setModalConfirmVisible(true);
     // saving scanned history script starts here
     const date = new Date().toISOString().split('T')[0];
+    const time = new Date().toLocaleTimeString().split(':');
     const record = {
       location: data,
-      time: new Date().toLocaleTimeString(),
+      time: `${time[0]}:${time[1]}`,
       action: 'Scanned the QR Code',
     };
     // this will run the api call
@@ -100,10 +101,11 @@ const QRCodeScreen = () => {
   // what happens when user leaves the event place
   const handleLeavingEventPlace = async () => {
     const date = new Date().toISOString().split('T')[0];
+    const time = new Date().toLocaleTimeString().split(':');
     // construct leaving visitation object
     const leaveRecord = {
       location: location, // name of the location
-      time: new Date().toLocaleTimeString(), // time
+      time: `${time[0]}:${time[1]}`, // time
       action: "Left the venue", // event description
     };
     try {
@@ -161,9 +163,6 @@ const QRCodeScreen = () => {
                       </View>
                       <View style={{ marginTop: -50 }}>
                         <View style={styles.barcodebox}>
-                          {
-                            console.log(scanned)
-                          }
                           <BarCodeScanner
                             style={{
                               height: Dimensions.get('window').height - 70,

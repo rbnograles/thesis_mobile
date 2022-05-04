@@ -48,7 +48,7 @@ const LocationHistoryScreen = () => {
 
     wait(2000).then(() => {
       setRefreshing(false);
-      getUsersVisitationLogsPersonal();
+      checkInternetConnection().then(res => getUsersVisitationLogsPersonal(res));
     });
   }, [refreshing]);
 
