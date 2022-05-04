@@ -276,7 +276,6 @@ const QRCodeScreen = () => {
             <SvgQRCode
               size={Dimensions.get('window').width - 70}
               value={qrCodeID}
-              logo={require('../../assets/icon-jb.png')}
             />
           )}
         </>
