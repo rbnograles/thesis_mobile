@@ -196,7 +196,7 @@ const SettingsScreen = () => {
             {
               new Date().toISOString().split('T')[0] === dateAfter14Days ? 
               <CustomButton
-                title="I have recovered from Covid-19"
+                title="I have recovered from COVID-19"
                 color={Colors.green}
                 textColor="white"
                 onPress={() => setRecoveredModalConfirmVisible(true)}
@@ -324,7 +324,7 @@ const SettingsScreen = () => {
               <Text style={[styles.modalText, { color: Colors.green }]}>Recovered from COVID-19 Health Notice</Text>
             </View>
             <Text style={{ fontSize: 15 }}>
-              By clicking this button, you are stating that you are{' '}
+              By clicking this button, you are stating that you are a{' '}
               <Text style={[{ color: Colors.green }]}>COVID-19 Recovered Patient</Text>, this will notify the system
               administrator about your health status.
             </Text>
