@@ -113,6 +113,7 @@ const SettingsScreen = () => {
       const newNumber = prevInfo.mobileNumber.split('');
       newNumber.shift();
       // send api
+      console.log(newNumber)
       await createUserPositiveLogs({
         ...prevInfo,
         mobileNumber: `+63${newNumber.join('')}`,
@@ -183,17 +184,17 @@ const SettingsScreen = () => {
           :
           <>
             <Text style={sectionContiner.sectionDescription}>
-              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of Covid 19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>
+              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of COVID-19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>
                 {Moment(positiveReportDate).format('MMMM DD, YYYY')}
               </Text>.
             </Text>
             <Text style={sectionContiner.sectionDescription}>
               You are advised to follow the 14 day <Text style={{ color: Colors.green, fontWeight: "bold"}}>({ Moment(positiveReportDate).format('MMMM DD, YYYY') + " - " + Moment(dateAfter14Days).format('MMMM DD, YYYY') })</Text> quarantine protocol mandated by the government. 
               You can <Text style={{ fontWeight: "bold", color: Colors.green}}> can press the button below</Text>  after the 14 day quarantine protocol is over and
-              the health officials gives you the signal that you are covid free now. 
+              the health officials gives you the signal that you have recovered from the virus. 
             </Text>
             {
-              new Date().toISOString().split('T')[0] === dateAfter14Days ? 
+              new Date().toISOString().split('T')[0] !== dateAfter14Days ? 
               <CustomButton
                 title="I have recovered from Covid-19"
                 color={Colors.green}
@@ -245,14 +246,14 @@ const SettingsScreen = () => {
               administrator about your health status. A contact tracing will happen shortly after the upload.
             </Text>
             <Text style={{ fontSize: 15, marginTop: 10 }}>
-              All of you information and visitation history will be collected by the system for health profiling and
+              All of YOUR information and visitation history will be collected by the system for health profiling and
               contact tracing.
             </Text>
             <Text style={{ fontSize: 15, marginTop: 10 }}>
               If you are unsure of your health status, please visit a health center/hospital for a COVID-19 test first,
               before you proceed.{' '}
               <Text style={[{ color: Colors.red }]}>
-                False Information will be meet with a sanction from the management.
+                False Information will be met with a sanction from the management.
               </Text>
             </Text>
             <View

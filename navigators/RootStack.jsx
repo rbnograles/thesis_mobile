@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // react navigations
 import { NavigationContainer } from '@react-navigation/native';

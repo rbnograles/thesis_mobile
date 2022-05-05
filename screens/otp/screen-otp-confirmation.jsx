@@ -115,6 +115,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
           // move to the landing screen
           navigation.navigate('MainPages');
         } catch (error) {
+          setEditable(true);
           setError(error.response.data.message);
         }
       } else {

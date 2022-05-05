@@ -65,6 +65,7 @@ const QRCodeScreen = () => {
       setRenderStatus('1')
       setLocation(data);
       setModalConfirmVisible(true);
+      setScanned(true);
     }
   }
 
@@ -136,6 +137,7 @@ const QRCodeScreen = () => {
 
   // @auto execute upon screen
   useEffect(() => {
+    _checkIfTheUserHasCurrentLocation();
     checkInternetConnection().then(res => setConnectedToNet(res));
     // ask for camera permissions
     askForCameraPermission();
@@ -147,7 +149,7 @@ const QRCodeScreen = () => {
         _checkIfTheUserHasCurrentLocation();
       }
         appState.current = nextAppState;
-      });
+    });
   }, []);
 
   return (

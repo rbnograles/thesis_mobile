@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { tabNavigation } from '../styles/styles-screens';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../styles/styles-colors';
-
+import { View } from 'react-native'
 // components
 import QRScreen from '../screens/main-pages/QRCode-screen';
 import LocationHistoryScreen from '../screens/main-pages/LocationHistory-screen';
@@ -16,9 +16,10 @@ import AlarmScreen from '../screens/main-pages/Alarm-screen';
 
 const Tab = createMaterialTopTabNavigator();
 
-const TabNavigator = ({ navigation }: any) => {
+const TabNavigator = ({ navigation }) => {
   const [isSetUp, setIsSetUp] = useState(true);
   const [isRendering, setRendering] = useState(false);
+  const [count, setCount] = useState(0);
   // this will fetch the default states from the screen interactions
   const getWelcomePageStatus = async () => {
     try {
@@ -30,8 +31,19 @@ const TabNavigator = ({ navigation }: any) => {
     setRendering(true);
   };
 
+  const getUsersVisitationLogsPersonal = async () => {
+    const userId = await AsyncStorage.getItem('@userRandomeQRID');
+    try {
+        const data = await getAllNotificationCount(userId);
+        setCount(data.data.data)
+      } catch (error) {
+        setCount(0);
+      }
+  }
+
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
+    getUsersVisitationLogsPersonal();
     // running this function on mount
     getWelcomePageStatus();
     // running this function once on setup
@@ -45,8 +57,8 @@ const TabNavigator = ({ navigation }: any) => {
       style={tabNavigation.container}
       initialRouteName="profile"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color }: any) => {
-          let iconName: any;
+        tabBarIcon: ({ color }) => {
+          let iconName;
 
           if (route.name === 'qrcode') {
             iconName = 'qrcode';
@@ -90,7 +102,18 @@ const TabNavigator = ({ navigation }: any) => {
           options={{ tabBarLabel: 'Profile' }}
         />
       )}
-      <Tab.Screen name="notification" component={AlarmScreen} options={{ tabBarLabel: 'News' }} />
+      <Tab.Screen 
+        name="notification" 
+        children={() => { return <AlarmScreen setCount={setCount} />}} 
+        options={{ 
+          tabBarLabel: 'News', 
+          tabBarBadge:()=> { return ( 
+            <View style={{ marginTop: 7, marginRight: 20}}>
+              { count > 0 ? <Badge value={count} status='error' /> : <></> }
+            </View> 
+            )} 
+        }} 
+      />
       <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Privacy' }} />
     </Tab.Navigator>
   );
