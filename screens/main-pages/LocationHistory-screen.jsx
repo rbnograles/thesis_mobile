@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 // native components
-import { Text, View, ScrollView, Alert, RefreshControl } from 'react-native';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Moment from 'moment';
 // stylesheet

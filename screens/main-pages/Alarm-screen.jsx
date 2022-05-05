@@ -1,22 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // native components
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Moment from 'moment';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation, notifContainer } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { checkInternetConnection } from "../../_utils/CheckIfConnectedToInternet";
+import { getAllNotification, updateNotificationCount } from "../../apis/notifications"
 
 Moment.locale('en');
 
-const AlarmScreen = ({ navigation }) => {
+const AlarmScreen = ({ setCount }) => {
+
   const [alarmNotifications, setAlarmNotifications] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const getUsersNotification = async (connectedToNet) => {
+  const userId = await AsyncStorage.getItem('@userRandomeQRID');
+   
+    if(connectedToNet) {
+      try {
+        const data = await getAllNotification(userId);
+        setAlarmNotifications(data.data.data)
+      } catch (error) {
+        setAlarmNotifications([]);
+      }
+    } else {
+      setAlarmNotifications([]);
+    }
+  }
+  
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    wait(2000).then(() => {
+      setRefreshing(false);
+      checkInternetConnection().then(res => getUsersNotification(res));
+    });
+  }, [refreshing]);
+
+  const wait = timeout => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const updateNotifCount = async () => {
+    const userId = await AsyncStorage.getItem('@userRandomeQRID');
+      try {
+        await updateNotificationCount(userId);
+        setCount(0);
+      } catch (error) {
+        console.log(error)
+      }
+  }
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      updateNotifCount();
+    }, []));
+  
+  useEffect(() => {
+    checkInternetConnection().then(res => getUsersNotification(res));    
+  }, []);
+  
   return (
     <View style={landingPagesOrientation.historyContainer}>
-      <ScrollView>
-        <View style={[landingPagesOrientation.innerAdjustementPadding, { marginRight: 35 }]}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View style={[landingPagesOrientation.innerAdjustementPadding, { marginRight: 20 }]}>
           {alarmNotifications.length > 0 && (
-            <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>Alarm Notifications</Text>
+            <Text style={[displayFormContainer.formsHeader, { marginBottom: 15 }]}>News Notifications</Text>
           )}
           {alarmNotifications.length > 0 &&
             alarmNotifications.map((alarm, i) => {
@@ -41,7 +97,6 @@ const AlarmScreen = ({ navigation }) => {
                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: alarm.new ? Colors.accent : 'grey' }}>
                       {alarm.title}
                     </Text>
-                    <Text style={{ color: 'grey' }}>{alarm.time}</Text>
                   </View>
                   <Text style={{ marginBottom: 10, marginTop: 10 }}>{alarm.description}</Text>
                   <Text style={{ marginBottom: 10, color: 'grey' }}>

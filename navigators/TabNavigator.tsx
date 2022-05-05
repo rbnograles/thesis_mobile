@@ -90,7 +90,7 @@ const TabNavigator = ({ navigation }: any) => {
           options={{ tabBarLabel: 'Profile' }}
         />
       )}
-      <Tab.Screen name="notification" component={AlarmScreen} options={{ tabBarLabel: 'Alarm' }} />
+      <Tab.Screen name="notification" component={AlarmScreen} options={{ tabBarLabel: 'News' }} />
       <Tab.Screen name="others" component={SettingsScreen} options={{ tabBarLabel: 'Privacy' }} />
     </Tab.Navigator>
   );
