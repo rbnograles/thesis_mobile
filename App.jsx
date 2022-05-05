@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BackHandler } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { BackHandler, AppState } from 'react-native';
 // screens
 import RootStack from './navigators/RootStack';
 import LoggedInRootStack from './navigators/LoggedInRootStack';
@@ -9,6 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
 
 export default function App() {
+  
+  const appState = useRef(AppState.currentState);
+
   const [appReady, setAppReady] = useState(false);
   const [appOTPReday, setAppOTPRead] = useState(false);
 
@@ -17,6 +20,13 @@ export default function App() {
     BackHandler.exitApp();
     return true;
   };
+
+  const getAllLocalData = async () => {
+    const data = await AsyncStorage.getAllKeys();
+    if(data.length === 0) {
+      setAppOTPRead(false)
+    }
+  }
 
   // this will check if the otp set up is completed or not
   const _otpSetUpChecking = async () => {
@@ -42,9 +52,14 @@ export default function App() {
 
   // react life cycle the runs always when the page is mounted
   useEffect(() => {
+    AppState.addEventListener("change", nextAppState => {
+      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+        getAllLocalData();
+      }
+        appState.current = nextAppState;
+      });
     // read and get the local number stored in the async storage
     _otpSetUpChecking();
-
     // this will run uppon clicking the back button of the phone
     BackHandler.addEventListener('hardwareBackPress', disableBackButton);
   }, []);

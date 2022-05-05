@@ -19,6 +19,7 @@ const SettingsScreen = () => {
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
   const [positiveConfirmVisible, setPositiveModalConfirmVisible] = useState(false);
   const [recoveredConfirmVisible, setRecoveredModalConfirmVisible] = useState(false);
+  const [uniqueID, setUniqueID] = useState(1);
 
   // reset everything
   const clearAsyncStorageData = async () => {

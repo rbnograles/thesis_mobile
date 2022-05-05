@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
@@ -18,6 +18,9 @@ import { _setThisPageToCompleted } from '../../_storages/_state_process';
 import { createUserVisitationHistroy } from '../../apis/qr-code-visitation';
 
 const QRCodeScreen = () => {
+  
+  const appState = useRef(AppState.currentState);
+
   // states
   const [connectedToNet, setConnectedToNet] = useState(false);
   const [renderStatus, setRenderStatus] = useState('0');
@@ -56,14 +59,14 @@ const QRCodeScreen = () => {
     }
   };
 
-  // @auto execute upon screen
-  useEffect(() => {
-    checkInternetConnection().then(res => setConnectedToNet(res));
-    // ask for camera permissions
-    askForCameraPermission();
-    // generations of random user id
-    _getGeneratedQRId();
-  }, []);
+  const _checkIfTheUserHasCurrentLocation = async () => {
+    const data = await AsyncStorage.getItem('@currentScannedLocation');
+    if(data) {
+      setRenderStatus('1')
+      setLocation(data);
+      setModalConfirmVisible(true);
+    }
+  }
 
   // what happens when we scan the bar code
   const handlerBarCodeScanned = async ({ type, data }) => {
@@ -73,6 +76,9 @@ const QRCodeScreen = () => {
     // saving scanned history script starts here
     const date = new Date().toISOString().split('T')[0];
     const time = new Date().toLocaleTimeString().split(':');
+    // This will saved the scanned location locally on the mobile for reference
+    // this will help the system to know if the users visitation status
+    await AsyncStorage.setItem('@currentScannedLocation', data);
     const record = {
       location: data,
       time: `${time[0]}:${time[1]}`,
@@ -110,6 +116,7 @@ const QRCodeScreen = () => {
     };
     try {
       await createUserVisitationHistroy({ ...leaveRecord, userId: qrCodeID, date: date });
+      await AsyncStorage.removeItem('@currentScannedLocation');
     } catch (error) {
       Alert.alert(
         'Scanning Failed',
@@ -126,6 +133,22 @@ const QRCodeScreen = () => {
       );
     }
   };
+
+  // @auto execute upon screen
+  useEffect(() => {
+    checkInternetConnection().then(res => setConnectedToNet(res));
+    // ask for camera permissions
+    askForCameraPermission();
+    // generations of random user id
+    _getGeneratedQRId();
+    // check if the user has a scanned location already
+    AppState.addEventListener("change", nextAppState => {
+      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+        _checkIfTheUserHasCurrentLocation();
+      }
+        appState.current = nextAppState;
+      });
+  }, []);
 
   return (
     <View style={landingPagesOrientation.container}>

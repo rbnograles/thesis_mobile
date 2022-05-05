@@ -12,7 +12,6 @@ import UserTypeSetupScreen from '../screens/main-pages/profile-setup/_usertype-s
 import UserTypeRelatedInfoSetupScreen from '../screens/main-pages/profile-setup/_usertype-related-info-setup-screen';
 // utilities
 import { Colors } from '../styles/styles-colors';
-
 // create navigations
 const Stack = createNativeStackNavigator();
 
