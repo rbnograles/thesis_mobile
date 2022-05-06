@@ -4,7 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { tabNavigation } from '../styles/styles-screens';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../styles/styles-colors';
-import { View } from 'react-native'
+import { View, Dimensions, PixelRatio} from 'react-native'
 import { Badge } from 'react-native-elements';
 
 // components
@@ -16,6 +16,10 @@ import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
 import ProfileScreen from '../screens/main-pages/Profile-screen';
 import AlarmScreen from '../screens/main-pages/Alarm-screen';
 import { getAllNotificationCount } from "../apis/notifications";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const scale = SCREEN_WIDTH / 320;
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -42,6 +46,11 @@ const TabNavigator = ({ navigation }) => {
       } catch (error) {
         setCount(0);
       }
+  }
+
+  const normalize = (size) => {
+    const newSize = size * scale 
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
   }
 
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
@@ -85,7 +94,7 @@ const TabNavigator = ({ navigation }) => {
           alignItems: 'center',
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: normalize(11),
         },
       })}
     >

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState, PixelRatio } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
@@ -16,6 +16,10 @@ import { _setThisPageToCompleted } from '../../_storages/_state_process';
 
 // apis
 import { createUserVisitationHistroy } from '../../apis/qr-code-visitation';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const scale = SCREEN_WIDTH / 320;
 
 const QRCodeScreen = () => {
   
@@ -135,6 +139,11 @@ const QRCodeScreen = () => {
     }
   };
 
+  const normalize = (size) => {
+    const newSize = size * scale 
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+  }
+
   // @auto execute upon screen
   useEffect(() => {
     _checkIfTheUserHasCurrentLocation();
@@ -181,31 +190,40 @@ const QRCodeScreen = () => {
                   // render if the app has the camera permission
                   hasPermissions && (
                     <>
+                    {
+                      console.log(Dimensions.get('window').width)
+                    }
                       <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.primary }}>
+                        <Text style={{ fontSize: normalize(17), fontWeight: '700', color: Colors.primary }}>
                           Place the QR Code in front of the camera
                         </Text>
                       </View>
-                      <View style={{ marginTop: -50 }}>
-                        <View style={styles.barcodebox}>
-                          <BarCodeScanner
-                            style={{
-                              height: Dimensions.get('window').height - 70,
-                              width: Dimensions.get('window').width - 70,
-                            }}
-                            onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
-                          />
-                        </View>
-                        <CustomButton
-                          title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
-                          color={Colors.primary}
-                          textColor="white"
-                          onPress={() => {
-                            setScanned(false);
-                            checkInternetConnection().then(res => setConnectedToNet(res));
+                      <View 
+                        style={{
+                          marginBottom: 20, 
+                          marginTop: 10,
+                          height: Dimensions.get('window').height - 350, 
+                          width: Dimensions.get('screen').width - 70.75,
+                          overflow: 'hidden'
+                        }}
+                      >
+                        <BarCodeScanner
+                          style={{
+                            height: Dimensions.get('screen').height - 350,
+                            width: Dimensions.get('screen').width - 70.75
                           }}
+                          onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
                         />
                       </View>
+                      <CustomButton
+                        title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
+                        color={Colors.primary}
+                        textColor="white"
+                        onPress={() => {
+                          setScanned(false);
+                          checkInternetConnection().then(res => setConnectedToNet(res));
+                        }}
+                      />
                       {/* confirm modal for saving the data */}
                       <Modal
                         animationType="slide"
@@ -322,8 +340,7 @@ const QRCodeScreen = () => {
 const styles = StyleSheet.create({
   barcodebox: {
     marginBottom: 20,
-    height: 500,
-    width: 500,
+    height: Dimensions.get('window').height - 325,
     margin: 0,
     overflow: 'hidden',
   },
