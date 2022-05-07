@@ -162,7 +162,7 @@ const QRCodeScreen = () => {
   }, []);
 
   return (
-    <View style={landingPagesOrientation.container}>
+    <View style={landingPagesOrientation.container2}>
       {
         // This section will render the users QR Code Scanner Screen
         renderStatus === '1' && (
@@ -198,7 +198,11 @@ const QRCodeScreen = () => {
                           Place the QR Code in front of the camera
                         </Text>
                       </View>
-                      <View 
+                      <View style={{
+                          flex: 1,
+                          alignItems: 'center'
+                        }}>
+                        <View 
                         style={{
                           marginBottom: 20, 
                           marginTop: 10,
@@ -215,15 +219,18 @@ const QRCodeScreen = () => {
                           onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
                         />
                       </View>
-                      <CustomButton
-                        title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
-                        color={Colors.primary}
-                        textColor="white"
-                        onPress={() => {
-                          setScanned(false);
-                          checkInternetConnection().then(res => setConnectedToNet(res));
-                        }}
-                      />
+                      <View style={{ marginHorizontal: 35, backgroundColor: 'red', width: '72%'}}>
+                        <CustomButton
+                          title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
+                          color={Colors.primary}
+                          textColor="white"
+                          onPress={() => {
+                            setScanned(false);
+                            checkInternetConnection().then(res => setConnectedToNet(res));
+                          }}
+                        />
+                      </View>
+                      </View>
                       {/* confirm modal for saving the data */}
                       <Modal
                         animationType="slide"
@@ -316,16 +323,18 @@ const QRCodeScreen = () => {
             <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan My QR Code</Text>
           </View>
           {renderQR && (
-            <SvgQRCode
-              size={Dimensions.get('window').width - 70}
-              value={qrCodeID}
-            />
+            <View style={{ paddingHorizontal: 35 }}>
+              <SvgQRCode
+                size={Dimensions.get('window').width - 70}
+                value={qrCodeID}
+              />
+            </View>
           )}
         </>
       )}
-      <SwitchSelector
+      <View style={{ width: '100%', paddingHorizontal: 35, position: 'absolute', bottom: 50}}>
+        <SwitchSelector
         options={options}
-        style={{ width: '100%', position: 'absolute', bottom: 50, marginHorizontal: 40 }}
         textColor={Colors.primary} //'#7a44cf'
         selectedColor={'white'}
         buttonColor={Colors.accent}
@@ -333,6 +342,7 @@ const QRCodeScreen = () => {
         initial={0}
         onPress={value => setRenderStatus(value)}
       />
+      </View>
     </View>
   );
 };
