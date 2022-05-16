@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as Clipboard from 'expo-clipboard';
+import { useRoute } from '@react-navigation/native';
 // native components
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, SafeAreaView, View, TextInput, Image } from 'react-native';
@@ -16,6 +17,7 @@ import LoaderCustom from '../../_utils/LoaderCustom';
 import { verifyOTPCODE, registerMobileNumber } from '../../apis/otp';
 
 const OTPConfirmationScreen = ({ navigation }) => {
+  const route = useRoute();
   // default values
   const [connectedToNet, setConnectedToNet] = useState(false);
   const [firstDigit, setFirstDigit] = useState('');
@@ -76,6 +78,17 @@ const OTPConfirmationScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    // comment this out to remove the auto bypass of otp
+    const text = JSON.stringify(route.params.result.data.otp)
+    if(text.length === 4) { 
+      const splitVal = text.split('')
+      setFirstDigit(splitVal[0])
+      setSecondDigit(splitVal[1])
+      setThirdDigit(splitVal[2])
+      setFourthDigit(splitVal[3])
+    }
+    // code above here is for auto bypass of otp - data is fetched from the backend directly
+    
     // read and get the local number stored in the async storage
     checkInternetConnection().then(res => setConnectedToNet(res));
     connectedToNet && firstDigitRef.current.focus();

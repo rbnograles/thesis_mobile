@@ -80,7 +80,7 @@ const LocationHistoryScreen = () => {
             </View>
           )}
           {historyData.length > 0 &&
-            historyData.map((history, i) => {
+            historyData.reverse().map((history, i) => {
               return (
                 <View key={i}>
                   <Text style={{ fontSize: 20, fontWeight: 'bold' }}>

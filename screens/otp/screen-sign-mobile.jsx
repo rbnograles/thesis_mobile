@@ -32,6 +32,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
 
   const _temporaryStorageForMobileNum = async () => {
     const connectionStatus = await checkInternetConnection();
+    let result = {};
     if (connectionStatus) {
       // this will check if the number is empty or invalid
       if (number.length === 0) {
@@ -47,13 +48,14 @@ const SignInWithMobileScreen = ({ navigation }) => {
           newNumber.shift();
           setEditable(!isEditable);
           // NOTICE: Send data to backend for otp sending
-          await registerMobileNumber({ mobileNumber: newNumber.join('') });
+          result = await registerMobileNumber({ mobileNumber: newNumber.join('') });
+
         } catch (error) {
           setEditable(isEditable);
         }
         // Add Backend api here
         setEditable(isEditable);
-        navigation.navigate('OTPConfirmationScreen');
+        navigation.navigate('OTPConfirmationScreen', { result: result});
       }
     } else {
       setConnectedToNet(connectionStatus);

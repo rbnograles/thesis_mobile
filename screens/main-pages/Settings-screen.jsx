@@ -7,6 +7,7 @@ import { displayFormContainer, landingPagesOrientation, sectionContiner } from '
 import { Colors } from '../../styles/styles-colors';
 import CustomButton from '../../_utils/CustomButton';
 import { updateUserPositiveLogsRecovered, createUserPositiveLogs } from '../../apis/positive-logs';
+import { requestForDeletionOfAccount } from '../../apis/account-deletion';
 import Loader from '../../_utils/Loader';
 import Moment from 'moment';
 
@@ -23,10 +24,12 @@ const SettingsScreen = () => {
   // reset everything
   const clearAsyncStorageData = async () => {
     try {
+      const mobileNumber = await AsyncStorage.getItem('@mobile_num_key');
+      await requestForDeletionOfAccount({ mobileNumber: mobileNumber, deletionDate: new Date(Date.now() + 12096e5).toISOString().split('T')[0] })
       await AsyncStorage.clear();
       BackHandler.exitApp();
     } catch (error) {
-      console.log(error)
+      console.log(error.response)
     }
   };
 
@@ -406,7 +409,7 @@ const SettingsScreen = () => {
               </Text>
             </View>
             <Text style={{ fontSize: 15 }}>
-              By deleting your account all data stored in your mobile device will be lost, after completing the deletion
+              By deleting your account all data stored in your mobile device will be lost, contact tracing logs of your account from the system database will be deleted after a <Text style={{ fontWeight: "bold", color: Colors.red}}>14 day period</Text>. After completing the deletion
               you will be exited from the application!
             </Text>
             <View

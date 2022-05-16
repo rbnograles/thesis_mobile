@@ -13,11 +13,11 @@ import {
   pageCenteredImage,
 } from '../../styles/styles-screens';
 
-const AggreementScreen = ({ navigation }: any) => {
+const AggreementScreen = ({ navigation }) => {
 
   const [isChecked, setChecked] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
-  
+
   return (
     <SafeAreaView style={landingPagesOrientation.container}>
       <View style={pageCenteredImage.container}>
@@ -84,7 +84,7 @@ const AggreementScreen = ({ navigation }: any) => {
                   <Text style={styles.break}>Users of the application will be required to create an account to continue using the application. Personal Information such as their full name, address, mobile number, and affiliation to the location will be stored in the phone’s storage. User’s full name and address will not be collected and saved to the system’s database. This will ensure anonymity of the user’s identity and location.</Text>
                   <Text style={styles.break}>Full information of the user will only be uploaded to the system’s database once they confirm that they are positive of the infectious disease being monitored by the application. User’s identity will not be publicized to other users.</Text>
                   <Text style={{ color: Colors.primary, fontWeight: "bold", fontSize: 18, marginBottom: 10}}>•	Account Deletion</Text>
-                  <Text style={styles.break}>Once a user chooses to delete their account, all information from the system will be deleted permanently.</Text>
+                  <Text style={styles.break}>Once a user chooses to delete their account, all information from the system will be deleted permanently only after 14 days. This is to make sure that you will be notified via SMS Text in case that you have been in close contact with a person who is positive of the virus.</Text>
                   <Text style={{ color: Colors.primary, fontWeight: "bold", fontSize: 18, marginBottom: 10}}>•	Location History</Text>
                   <Text style={styles.break}>User’s location history will be recorded to the admin side but will not display the user’s identity. Visitation history from the user’s application will only be updated when the user has internet/data connection.</Text>
                 </ScrollView>
