@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState, PixelRatio } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState, PixelRatio, BackHandler } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import SvgQRCode from 'react-native-qrcode-svg';
 import SwitchSelector from 'react-native-switch-selector';
@@ -144,8 +144,17 @@ const QRCodeScreen = () => {
     return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
   }
 
+  // handles back button
+  const disableBackButton = () => {
+    BackHandler.exitApp();
+    return true;
+  };
+
   // @auto execute upon screen
   useEffect(() => {
+     // this will run uppon clicking the back button of the phone
+    BackHandler.addEventListener('hardwareBackPress', disableBackButton);
+    // main function stuffs
     _checkIfTheUserHasCurrentLocation();
     checkInternetConnection().then(res => setConnectedToNet(res));
     // ask for camera permissions

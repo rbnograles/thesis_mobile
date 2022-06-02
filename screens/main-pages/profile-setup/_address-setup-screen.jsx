@@ -12,6 +12,7 @@ import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
 import { _setThisPageToCompleted } from '../../../_storages/_state_process';
+import { FontAwesome } from '@expo/vector-icons';
 
 let personalInfoSchema = yup.object().shape({
   lotNumber: yup
@@ -61,7 +62,7 @@ const AddressInformationSetupScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
-        <Text style={formsContainer.formsHeader}>Profile Information</Text>
+        <Text style={formsContainer.formsHeader}><FontAwesome name={"arrow-left"} size={25} onPress={() => { navigation.navigate('MainPages')}} /> Profile Information</Text>
         <Text style={formsContainer.formsSubHeader}>
           This information will be saved only on your device and not on the application's database.
         </Text>

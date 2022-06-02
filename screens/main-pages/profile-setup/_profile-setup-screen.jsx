@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 // native components
 import { Text, View, SafeAreaView, ScrollView } from 'react-native';
+import { checkBox } from '../../../styles/styles-screens';
+import { CheckBox } from 'react-native-elements';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 // stylesheet
@@ -11,6 +13,8 @@ import CustomInputs from '../../../_utils/CustomInputs';
 import CustomButton from '../../../_utils/CustomButton';
 import { Colors } from '../../../styles/styles-colors';
 import { _setThisPageToCompleted } from '../../../_storages/_state_process';
+import { TextInput } from 'react-native-gesture-handler';
+import { FontAwesome } from '@expo/vector-icons';
 
 let personalInfoSchema = yup.object().shape({
   firstName: yup
@@ -29,13 +33,21 @@ let personalInfoSchema = yup.object().shape({
     .string()
     .matches(/[A-Za-z.]/, 'Name extension name must contain only letters')
     .nullable(),
+  age: yup
+    .string()
+    .required('Age is required')
 });
 
 const ProfileInformationSetupScreen = ({ navigation }) => {
+  
+  const [gender, setGender] = useState('');
+  
   return (
     <KeyboardAvoidingWrapper>
       <SafeAreaView style={landingPagesOrientation.container}>
-        <Text style={formsContainer.formsHeader}>Profile Information</Text>
+        <Text style={formsContainer.formsHeader}>
+          <FontAwesome name={"arrow-left"} size={25} onPress={() => { navigation.navigate('MainPages')}} /> Profile Information
+        </Text>
         <Text style={formsContainer.formsSubHeader}>
           This information will be saved only on your device and not on the application's database.
         </Text>
@@ -46,12 +58,13 @@ const ProfileInformationSetupScreen = ({ navigation }) => {
               middleName: '',
               lastName: '',
               nameExtension: '',
+              age: ''
             }}
             validateOnMount={true}
             validationSchema={personalInfoSchema}
             onSubmit={values => {
               // store the data temporarily and remeber that this page is done
-              _setThisPageToCompleted('@profileInfo', JSON.stringify(values));
+              _setThisPageToCompleted('@profileInfo', JSON.stringify({...values, gender: gender }));
               _setThisPageToCompleted('@successProfileInfo', 'true');
               navigation.navigate('AddressSetUp');
             }}
@@ -102,6 +115,53 @@ const ProfileInformationSetupScreen = ({ navigation }) => {
                 {errors.nameExtension && touched.nameExtension && (
                   <Text style={formsContainer.errorMessage}>{errors.nameExtension}</Text>
                 )}
+                <Text>
+                  Age <Text style={{ color: Colors.red }}>{'*'}</Text>
+                </Text>
+                <TextInput
+                  labelTitle="Age"
+                  required={false}
+                  onChangeText={handleChange('age')}
+                  placeHolder=""
+                  onBlur={handleBlur('age')}
+                  style={{
+                    height: 50,
+                    width: '100%',
+                    marginTop: 5,
+                    borderWidth: 1,
+                    fontSize: 18,
+                    borderColor: Colors.inputColor,
+                    backgroundColor: Colors.inputColor,
+                    borderRadius: 5,
+                    padding: 10,
+                  }}
+                  keyboardType="numeric"
+                  value={values.age}
+                />
+                {errors.age && touched.age && (
+                  <Text style={formsContainer.errorMessage}>{errors.age}</Text>
+                )}
+                <View style={{ marginTop: 5 }}>
+                  <Text>Gender <Text style={{ color: Colors.red }}>{'*'}</Text></Text>
+                  <CheckBox
+                    checked={gender === 'Male'}
+                    checkedIcon="dot-circle-o"
+                    uncheckedIcon="circle-o"
+                    checkedColor={Colors.primary}
+                    onPress={() => setGender('Male')}
+                    containerStyle={[checkBox.radioOptions, { marginVertical: 2, marginLeft: -2 }]}
+                    title="Male"
+                  />
+                  <CheckBox
+                    checked={gender === 'Female'}
+                    checkedIcon="dot-circle-o"
+                    uncheckedIcon="circle-o"
+                    checkedColor={Colors.primary}
+                    onPress={() => setGender('Female')}
+                    containerStyle={[checkBox.radioOptions, { marginVertical: 7, marginLeft: -2 }]}
+                    title="Female"
+                  />
+                  </View>
                 <View style={{ marginTop: 20 }}>
                   <CustomButton color={Colors.primary} textColor="white" onPress={handleSubmit} title="Next" />
                 </View>

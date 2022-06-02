@@ -69,6 +69,7 @@ const TabNavigator = ({ navigation }) => {
       style={tabNavigation.container}
       initialRouteName="qrcode"
       screenOptions={({ route }) => ({
+        tabBarPressColor: Colors.primary,
         tabBarIcon: ({ color }) => {
           let iconName;
 

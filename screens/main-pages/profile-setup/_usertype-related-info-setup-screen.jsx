@@ -40,7 +40,7 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
     <SafeAreaView style={landingPagesOrientation.container}>
       <Text style={formsContainer.formsHeader}>Profile Information Summary</Text>
       <Text style={formsContainer.formsSubHeader}>
-        This information will be keep private and will not be shared to any third parties or individiual.
+        This information will be kept private and will not be shared to any third parties or individual.
       </Text>
       <ScrollView>
         <View style={{ marginTop: 10, marginBottom: 20 }}>
@@ -75,6 +75,16 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
               labelTitle="Suffix"
               required={false}
               value={prevInfo.nameExtension}
+            />
+            <CustomInputs
+              labelTitle="Age"
+              required={false}
+              value={prevInfo.age}
+            />
+            <CustomInputs
+              labelTitle="Gender"
+              required={false}
+              value={prevInfo.gender}
             />
           </View>
           <View style={{ marginBottom: 15 }}>

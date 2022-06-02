@@ -193,7 +193,7 @@ const SettingsScreen = () => {
             </Text>
             <Text style={sectionContiner.sectionDescription}>
               You are advised to follow the 14 day <Text style={{ color: Colors.green, fontWeight: "bold"}}>({ Moment(positiveReportDate).format('MMMM DD, YYYY') + " - " + Moment(dateAfter14Days).format('MMMM DD, YYYY') })</Text> quarantine protocol mandated by the government. 
-              You can <Text style={{ fontWeight: "bold", color: Colors.green}}> can press the button below</Text>  after the 14 day quarantine protocol is over and
+              You can <Text style={{ fontWeight: "bold", color: Colors.green}}> press the button below</Text>  after the 14 day quarantine protocol is over and
               the health officials gives you the signal that you have recovered from the virus. 
             </Text>
             {
