@@ -1,4 +1,5 @@
 import React from 'react';
+import { StackActions } from '@react-navigation/native';
 // native components
 import { Text, SafeAreaView, View, Image } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
@@ -28,7 +29,7 @@ const ScanQRScreen = ({ navigation }: any) => {
           title="Continue"
           color="white"
           textColor={Colors.primary}
-          onPress={() => navigation.navigate('LocationHistoryScreen')}
+          onPress={() => navigation.dispatch(StackActions.replace('LocationHistoryScreen'))}
         />
       </View>
     </SafeAreaView>

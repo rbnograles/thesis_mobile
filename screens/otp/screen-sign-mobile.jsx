@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 // native components
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackActions } from '@react-navigation/native';
 import { Text, SafeAreaView, View, TextInput, Image } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 import { Feather } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
 // stylesheet
 import { landingPagesOrientation, buttonOrientation, pageSpecialCenteredImage } from '../../styles/styles-screens';
@@ -55,7 +56,7 @@ const SignInWithMobileScreen = ({ navigation }) => {
         }
         // Add Backend api here
         setEditable(isEditable);
-        navigation.navigate('OTPConfirmationScreen', { result: result});
+        navigation.dispatch(StackActions.replace('OTPConfirmationScreen', { result: result}));
       }
     } else {
       setConnectedToNet(connectionStatus);

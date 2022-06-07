@@ -1,6 +1,7 @@
-import { Colors } from '../../styles/styles-colors';
 import React, { useState } from 'react';
 // native components
+import { Colors } from '../../styles/styles-colors';
+import { StackActions } from '@react-navigation/native';
 import { Text, SafeAreaView, View, Image, Modal, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -53,7 +54,7 @@ const AggreementScreen = ({ navigation }) => {
           title="Continue"
           buttonStyle={buttonOrientation.landingButtons}
           disabled={!isChecked}
-          onPress={() => navigation.navigate('SafetyScreen')}
+          onPress={() => navigation.dispatch(StackActions.replace('SafetyScreen'))}
         />
       </View>
 

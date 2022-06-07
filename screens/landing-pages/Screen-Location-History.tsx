@@ -1,5 +1,6 @@
 import React from 'react';
 // native components
+import { StackActions } from '@react-navigation/native';
 import { Text, SafeAreaView, View, Image } from 'react-native';
 import { Colors } from '../../styles/styles-colors';
 // stylesheet
@@ -28,7 +29,7 @@ const LocationHistoryScreen = ({ navigation }: any) => {
           title="Continue"
           color="white"
           textColor={Colors.primary}
-          onPress={() => navigation.navigate('SignInWithMobileScreen')}
+          onPress={() => navigation.dispatch(StackActions.replace('SignInWithMobileScreen'))}
         />
       </View>
     </SafeAreaView>

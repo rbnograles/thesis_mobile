@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as Clipboard from 'expo-clipboard';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, StackActions } from '@react-navigation/native';
 // native components
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, SafeAreaView, View, TextInput, Image } from 'react-native';
@@ -126,7 +126,7 @@ const OTPConfirmationScreen = ({ navigation }) => {
           _setThisPageToCompleted('@otpPageSuccessful', 'true');
           _setThisPageToCompleted('@userRandomeQRID', data.data.result.result._id);
           // move to the landing screen
-          navigation.navigate('MainPages');
+          navigation.dispatch(StackActions.replace('MainPages'));
         } catch (error) {
           setEditable(true);
           setError(error.response.data.message);

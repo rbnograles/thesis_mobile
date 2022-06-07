@@ -14,13 +14,6 @@ export default function App() {
 
   const [appReady, setAppReady] = useState(false);
   const [appOTPReday, setAppOTPRead] = useState(false);
-
-  // handles back button
-  const disableBackButton = () => {
-    BackHandler.exitApp();
-    return true;
-  };
-
   const getAllLocalData = async () => {
     const data = await AsyncStorage.getAllKeys();
     if(data.length === 0) {
@@ -60,15 +53,13 @@ export default function App() {
       });
     // read and get the local number stored in the async storage
     _otpSetUpChecking();
-    // this will run uppon clicking the back button of the phone
-    BackHandler.addEventListener('hardwareBackPress', disableBackButton);
   }, []);
 
-  // this section will ensire that the page rendering wont overlap while waiting for the proper state to complete
+  // this section will ensure that the page rendering wont overlap while waiting for the proper state to complete
   if (!appReady) {
     return <AppLoading startAsync={checkIfAppReady} onFinish={() => setAppReady(true)} onError={console.warn()} />;
   }
-  // this section will be render of the user is new
+  // this section will be render if the user is new
   if (!appOTPReday) {
     return <RootStack />;
   }

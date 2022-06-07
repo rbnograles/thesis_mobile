@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // native components
 import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState, PixelRatio, BackHandler } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import SvgQRCode from 'react-native-qrcode-svg';
+
 import SwitchSelector from 'react-native-switch-selector';
 // stylesheet
 import CustomButton from '../../_utils/CustomButton';
@@ -13,18 +13,20 @@ import { Colors } from '../../styles/styles-colors';
 import { FontAwesome } from '@expo/vector-icons';
 import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
-
 // apis
 import { createUserVisitationHistroy } from '../../apis/qr-code-visitation';
+import QRScanner from './QRComponents/QRScanner';
+import QRCodeGenerator from './QRComponents/QRCodeGenerator';
+import NoInternetConnection from './QRComponents/NoInternetConnection';
+import ScanConfirmModal from './QRComponents/ScanConfirmModal';
+import LeaveRecord from './QRComponents/LeaveRecord';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
 const scale = SCREEN_WIDTH / 320;
 
 const QRCodeScreen = () => {
   
   const appState = useRef(AppState.currentState);
-
   // states
   const [connectedToNet, setConnectedToNet] = useState(false);
   const [renderStatus, setRenderStatus] = useState('0');
@@ -34,7 +36,8 @@ const QRCodeScreen = () => {
   const [qrCodeID, setQRCodeID] = useState('');
   const [renderQR, setRenderQR] = useState(false);
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
-
+  const [hasCurrentLocation, setHasCurrentLocation] = useState(false);
+ 
   const options = [
     { label: 'Your QR Code', value: '0' },
     { label: 'Scan A Place', value: '1' },
@@ -68,7 +71,7 @@ const QRCodeScreen = () => {
     if(data) {
       setRenderStatus('1')
       setLocation(data);
-      setModalConfirmVisible(true);
+      setHasCurrentLocation(true);
       setScanned(true);
     }
   }
@@ -152,13 +155,14 @@ const QRCodeScreen = () => {
 
   // @auto execute upon screen
   useEffect(() => {
+    // ask for camera permissions
+    askForCameraPermission();
      // this will run uppon clicking the back button of the phone
     BackHandler.addEventListener('hardwareBackPress', disableBackButton);
     // main function stuffs
     _checkIfTheUserHasCurrentLocation();
+    // check if there is internet connection
     checkInternetConnection().then(res => setConnectedToNet(res));
-    // ask for camera permissions
-    askForCameraPermission();
     // generations of random user id
     _getGeneratedQRId();
     // check if the user has a scanned location already
@@ -177,8 +181,7 @@ const QRCodeScreen = () => {
         renderStatus === '1' && (
         <>
           {
-            connectedToNet ? (
-              <>
+            connectedToNet ? (<>
                 {
                   // render when the app is installed the first time
                   !hasPermissions && (
@@ -197,205 +200,61 @@ const QRCodeScreen = () => {
                 }
                 {
                   // render if the app has the camera permission
-                  hasPermissions && (
-                    <>
-                    {
-                      console.log(Dimensions.get('window').width)
-                    }
-                      <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: normalize(17), fontWeight: '700', color: Colors.primary }}>
-                          Place the QR Code in front of the camera
-                        </Text>
-                      </View>
-                      <View style={{
-                          flex: 1,
-                          alignItems: 'center'
-                        }}>
-                        <View 
-                        style={{
-                          marginBottom: 20, 
-                          marginTop: 10,
-                          height: Dimensions.get('window').height - 350, 
-                          width: Dimensions.get('screen').width - 70.75,
-                          overflow: 'hidden'
-                        }}
-                      >
-                        <BarCodeScanner
-                          style={{
-                            height: Dimensions.get('screen').height - 350,
-                            width: Dimensions.get('screen').width - 70.75
-                          }}
-                          onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
-                        />
-                      </View>
-                      <View style={{ marginHorizontal: 35, backgroundColor: 'red', width: '72%'}}>
-                        <CustomButton
-                          title={scanned ? 'Scan QR Code Again' : 'Scanning...'}
-                          color={Colors.primary}
-                          textColor="white"
-                          onPress={() => {
-                            setScanned(false);
-                            checkInternetConnection().then(res => setConnectedToNet(res));
-                          }}
-                        />
-                      </View>
-                      </View>
-                      {/* confirm modal for saving the data */}
-                      <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalConfirmVisible}
-                        onRequestClose={() => {
-                          setModalConfirmVisible(!modalConfirmVisible);
-                        }}
-                      >
-                        <View style={styles.centeredView}>
-                          <View style={[styles.modalView]}>
-                            <View>
-                              <Text style={[styles.modalText, { marginBottom: 20 }]}>Data has been recorded!</Text>
-                            </View>
-                            <FontAwesome name="check-circle" color={Colors.accent} size={100} />
-                            <View>
-                              <Text style={styles.modalText}>You have scanned the venue</Text>
-                            </View>
-                            <Text style={styles.locationText}>{location}</Text>
-                            <View
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                width: '100%',
-                                marginTop: 15,
-                              }}
-                            >
-                              {/* leave button */}
-                              <TouchableOpacity
-                                style={{ width: '100%' }}
-                                onPress={() => {
-                                  handleLeavingEventPlace();
-                                  setModalConfirmVisible(!modalConfirmVisible);
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    backgroundColor: Colors.accent,
-                                    height: 50,
-                                    marginLeft: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 3,
-                                  }}
-                                >
-                                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Leave</Text>
-                                </View>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        </View>
-                      </Modal>
-                    </>
-                  )
+                  hasPermissions && 
+                  <>
+                    <LeaveRecord
+                      hasCurrentLocation={hasCurrentLocation}
+                      handleLeavingEventPlace={handleLeavingEventPlace}
+                      setHasCurrentLocation={setHasCurrentLocation}
+                      location={location}
+                    />
+                    <QRScanner
+                      scanned={scanned}
+                      hasCurrentLocation={hasCurrentLocation}
+                      handlerBarCodeScanned={handlerBarCodeScanned}
+                      normalize={normalize}
+                      checkInternetConnection={checkInternetConnection}
+                      setConnectedToNet={setConnectedToNet}
+                      setScanned={setScanned}
+                    />
+                    <ScanConfirmModal
+                      setModalConfirmVisible={setModalConfirmVisible}
+                      modalConfirmVisible={modalConfirmVisible}
+                      location={location}
+                      handleLeavingEventPlace={handleLeavingEventPlace}
+                      setHasCurrentLocation={setHasCurrentLocation}
+                      hasCurrentLocation={hasCurrentLocation}
+                    />
+                  </>
                 }
-              </>
-            ) 
+              </>) 
             : 
-              <>
-                <View
-                  style={[
-                    landingPagesOrientation.textContainer,
-                    landingPagesOrientation.textContaineredCenter,
-                    landingPagesOrientation.otpContianer,{
-                      marginTop: "40%",
-                      marginBottom: 20
-                    }
-                  ]}
-                >
-                  <Feather name="wifi-off" size={90} color={Colors.primary} />
-                  <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 17, fontWeight: '700' }}>
-                    Please make sure that you are connected to a stable internet connection in order to continue.
-                  </Text>
-                </View>
-                <CustomButton
-                  title="Reload page"
-                  color={'grey'}
-                  textColor={Colors.lightGrey}
-                  onPress={() => checkInternetConnection().then(res => setConnectedToNet(res))}
-                />
-              </>
+              <NoInternetConnection
+                setConnectedToNet={setConnectedToNet}
+              />
           }
         </>
       )}
       {/* This section has a logic of which if the render status is 0 it will render the users QR Code */}
-      {renderStatus === '0' && (
-        <>
-          <View style={{ alignItems: 'center', marginBottom: 30 }}>
-            <Text style={{ fontSize: 24, fontWeight: '700', color: Colors.primary }}>Scan My QR Code</Text>
-          </View>
-          {renderQR && (
-            <View style={{ paddingHorizontal: 35 }}>
-              <SvgQRCode
-                size={Dimensions.get('window').width - 70}
-                value={qrCodeID}
-              />
-            </View>
-          )}
-        </>
-      )}
-      <View style={{ width: '100%', paddingHorizontal: 35, position: 'absolute', bottom: 50}}>
+      <QRCodeGenerator
+        renderStatus={renderStatus}
+        qrCodeID={qrCodeID}
+        renderQR={renderQR}
+        normalize={normalize}
+      />
+      <View style={{ width: '100%', paddingHorizontal: 35, position: 'absolute', bottom: 50 }}>
         <SwitchSelector
-        options={options}
-        textColor={Colors.primary} //'#7a44cf'
-        selectedColor={'white'}
-        buttonColor={Colors.accent}
-        borderColor={Colors.primary}
-        initial={0}
+          options={options}
+          textColor={Colors.primary} //'#7a44cf'
+          selectedColor={'white'}
+          buttonColor={Colors.accent}
+          borderColor={Colors.primary}
+          initial={Number(renderStatus)}
         onPress={value => setRenderStatus(value)}
       />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  barcodebox: {
-    marginBottom: 20,
-    height: Dimensions.get('window').height - 325,
-    margin: 0,
-    overflow: 'hidden',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: '#000000AA',
-  },
-  locationText: {
-    color: Colors.primary,
-    fontSize: 25,
-    fontWeight: '700',
-    marginBottom: 10,
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 7,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: Colors.primary,
-    elevation: 5,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    justifyContent: 'center',
-  },
-  modalText: {
-    fontSize: 18,
-    marginTop: 25,
-    marginBottom: 10,
-    fontWeight: '700',
-    width: '100%',
-  },
-});
 
 export default QRCodeScreen;
