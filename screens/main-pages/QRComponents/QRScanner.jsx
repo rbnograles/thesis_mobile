@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Text, View, StyleSheet } from 'react-native';
+import { Camera } from 'expo-camera';
 import { Colors } from '../../../styles/styles-colors';
 import CustomButton from '../../../_utils/CustomButton';
 
@@ -21,11 +21,9 @@ const QRScanner = ({
                 style={{
                     flex: 1
                 }}>
-                    <BarCodeScanner
-                    style={{
-                        height: "100%",
-                        width: "100%"
-                    }}
+                    <Camera
+                    ratio='16:9'
+                    style={StyleSheet.absoluteFillObject}
                     onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
                     >
                     <Text style={{ textAlign: "center", fontSize: normalize(17), fontWeight: '700', color: "white", marginTop: 20 }}>
@@ -42,7 +40,7 @@ const QRScanner = ({
                         }}
                         />
                         </View>
-                    </BarCodeScanner>
+                    </Camera>
                 </View>
             )}
         </>

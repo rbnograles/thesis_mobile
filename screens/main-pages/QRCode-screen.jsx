@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 // native components
-import { Text, View, Dimensions, StyleSheet, Modal, TouchableOpacity, Alert, AppState, PixelRatio, BackHandler } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Text, View, Dimensions, Alert, AppState, PixelRatio, BackHandler } from 'react-native';
+import { Camera } from 'expo-camera';
 
 import SwitchSelector from 'react-native-switch-selector';
 // stylesheet
 import CustomButton from '../../_utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { landingPagesOrientation } from '../../styles/styles-screens';
-import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../styles/styles-colors';
-import { FontAwesome } from '@expo/vector-icons';
 import { checkInternetConnection } from '../../_utils/CheckIfConnectedToInternet';
 import { _setThisPageToCompleted } from '../../_storages/_state_process';
 // apis
@@ -45,7 +43,7 @@ const QRCodeScreen = () => {
 
   const askForCameraPermission = () => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   };
