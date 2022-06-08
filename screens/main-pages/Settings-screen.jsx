@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 // native components
-import { Text, View, Modal, TouchableOpacity, StyleSheet, BackHandler, Alert } from 'react-native';
+import Loader from '../../_utils/Loader';
+import { Text, View, Modal, TouchableOpacity, StyleSheet, BackHandler, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // stylesheet
 import { displayFormContainer, landingPagesOrientation, sectionContiner } from '../../styles/styles-screens';
 import { Colors } from '../../styles/styles-colors';
-import CustomButton from '../../_utils/CustomButton';
-import { updateUserPositiveLogsRecovered, createUserPositiveLogs } from '../../apis/positive-logs';
+import { updateUserPositiveLogsRecovered, createUserPositiveLogs, getAllMyReports } from '../../apis/positive-logs';
 import { requestForDeletionOfAccount } from '../../apis/account-deletion';
-import Loader from '../../_utils/Loader';
-import Moment from 'moment';
+import { getAllDiseases } from '../../apis/diseases';
+import { CheckBox, ListItem, Icon } from 'react-native-elements';
+import DiseaseStatusAlert from './SettingsComponents/DiseaseStatusAlert';
+import RecovereyStatusUpdate from './SettingsComponents/RecovereyStatusUpdate';
+import DeleteAccount from './SettingsComponents/DeleteAccount';
 
 const SettingsScreen = () => {
 
@@ -20,6 +23,31 @@ const SettingsScreen = () => {
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false);
   const [positiveConfirmVisible, setPositiveModalConfirmVisible] = useState(false);
   const [recoveredConfirmVisible, setRecoveredModalConfirmVisible] = useState(false);
+  const [diseases, setDiseases] = useState([]);
+  const [selectedDisease, setSelectedDisease] = useState([]);
+  const [recoveredList, setRecoveredList] = useState([])
+  const [currentReport, setCurrentReport] = useState([])
+  const [isExpandedDisease, setIsExpandedDisease] = useState(true);
+  const [isExpandedRecover, setIsExpandedRecover] = useState(false);
+  const [isExpandedDelete, setisExpandedDelete] = useState(false);
+
+  const addDiseaseToList = (disease) => {
+    if(selectedDisease.includes(disease)) {
+      const data = selectedDisease.filter(diseases => { return diseases !== disease })
+      setSelectedDisease(data)
+    } else {
+      setSelectedDisease([...selectedDisease, disease])
+    }
+  }
+
+  const addRecoveredList = (id) => {
+    if(recoveredList.includes(id)) {
+      const data = recoveredList.filter(recoveryId => { return recoveryId !== id })
+      setRecoveredList(data)
+    } else {
+      setRecoveredList([...recoveredList, id])
+    }
+  }
 
   // reset everything
   const clearAsyncStorageData = async () => {
@@ -33,17 +61,40 @@ const SettingsScreen = () => {
     }
   };
 
+  const getAllDiseasesList  = async () => {
+    try {
+      const data = await getAllDiseases();
+      setDiseases(data.data.data);
+    } catch (error) {
+      setDiseases([]);
+    }
+  }
+
+  const getAllUserReports = async () => {
+    try {
+      const mobileNumber = await AsyncStorage.getItem('@mobile_num_key');
+      let newNumber = mobileNumber.split('');
+      newNumber.shift();
+      const data = await getAllMyReports(`+63${newNumber.join('')}`);
+      // sets the current date as positive report date
+      await AsyncStorage.setItem('@positiveReportDate', data.data.data[0].date);
+      await AsyncStorage.setItem('@dateAfter14Days', new Date(new Date(data.data.data[0].date).getTime() + 12096e5).toISOString().split('T')[0]);
+      setPositiveReportDate(data.data.data[0].date);
+      setDateAfter14Days(new Date(new Date(data.data.data[0].date).getTime() + 12096e5).toISOString().split('T')[0]);
+      setCurrentReport(data.data.data)
+      return data.data.data;
+    } catch (error) {
+      setCurrentReport([])
+    }
+  }
+
   const getUserProfileData = async () => {
     // get the stored data and render to the fields
     try {
       const data = await AsyncStorage.getItem('@profileInfo');
       const value = await AsyncStorage.getItem('@mobile_num_key');
-      const positiveDate = await AsyncStorage.getItem('@positiveReportDate');
-      const dateAfter14Days = await AsyncStorage.getItem('@dateAfter14Days');
       const newdata = JSON.parse(data);
       setPrevInfo({ mobileNumber: value, ...newdata });
-      setPositiveReportDate(positiveDate);
-      setDateAfter14Days(dateAfter14Days);
     } catch (error) {
       Alert.alert(
       'Error',
@@ -116,17 +167,17 @@ const SettingsScreen = () => {
       const newNumber = prevInfo.mobileNumber.split('');
       newNumber.shift();
       // send api
-      console.log(newNumber)
-      await createUserPositiveLogs({
-        ...prevInfo,
-        mobileNumber: `+63${newNumber.join('')}`,
-        date: new Date().toISOString().split('T')[0],
-      });
-      // sets the current date as positive report date
-      await AsyncStorage.setItem('@positiveReportDate', new Date().toISOString().split('T')[0]);
-      await AsyncStorage.setItem('@dateAfter14Days', new Date(Date.now() + 12096e5).toISOString().split('T')[0]);
-      setPositiveReportDate(new Date().toISOString().split('T')[0]);
-      setDateAfter14Days(new Date(Date.now() + 12096e5).toISOString().split('T')[0]);
+      for(let i =0; i < selectedDisease.length; i++) {
+        await createUserPositiveLogs({
+          ...prevInfo,
+          disease: selectedDisease[i],
+          mobileNumber: `+63${newNumber.join('')}`,
+          date: new Date().toISOString().split('T')[0],
+        });
+      }
+
+      getAllUserReports();
+
       // close modal, alert 
       setPositiveModalConfirmVisible(!positiveConfirmVisible);
       showSuccessAlert();
@@ -140,16 +191,21 @@ const SettingsScreen = () => {
   const updateHealthStatus = async () => {
     setIsUpdating(true);
     try {
-      // prepare the number format for uploading to datebase
-      const newNumber = prevInfo.mobileNumber.split('');
-      newNumber.shift();
       // send api
-      await updateUserPositiveLogsRecovered({ mobileNumber: `+63${newNumber.join('')}`});
-      await AsyncStorage.removeItem('@positiveReportDate');
-      await AsyncStorage.removeItem('@dateAfter14Days');
-      setPositiveReportDate('');
-      setDateAfter14Days('');
+      for(let i = 0; i < recoveredList.length; i++) {
+        await updateUserPositiveLogsRecovered(recoveredList[i]);
+      }
+      // execute the fetching again
+      const data = getAllUserReports();
+
+      if (data.length === 0) {
+        await AsyncStorage.removeItem('@positiveReportDate');
+        await AsyncStorage.removeItem('@dateAfter14Days');
+        setPositiveReportDate('');
+        setDateAfter14Days('');
+      }
       setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
+      setRecoveredList([]);
       showSuccessAlert();
       setIsUpdating(false);
     } catch (error) {
@@ -161,248 +217,332 @@ const SettingsScreen = () => {
 
   // @auto execute upon screen
   useEffect(() => {
+    // get all diseases monitored by the system
+    getAllDiseasesList();
     // get stored profile data
     getUserProfileData();
+    // get all report from db and render it on user side
+    getAllUserReports();
   }, []);
 
   return (
-    <View style={landingPagesOrientation.container}>
-      <Text style={displayFormContainer.formsHeader}>Account Privacy</Text>
-      <View style={sectionContiner.section}>
-        <Text style={sectionContiner.sectionHeader}>COVID-19 Status Alert</Text>
-        {
-          !positiveReportDate ? <>
-            <Text style={sectionContiner.sectionDescription}>
-              If you are diagnosed with COVID-19, please click the "I am positive" button. This will upload your personal
-              information provided to alert the community of a possible contact. If not done immediately, an authorized
-              person from the community will obligate you to upload your location history.
-            </Text>
-            <CustomButton
-              title="I am positive of COVID-19"
-              color={Colors.red}
-              textColor="white"
-              onPress={() => setPositiveModalConfirmVisible(true)}
-            />
-          </>
-          :
+    <View style={[landingPagesOrientation.container2 ]}>
+      <Text style={[displayFormContainer.formsHeader, { marginHorizontal: 20, marginVertical: 20 }]}>Account Status and Privacy</Text>
+      {/* Disease List */}
+      <ListItem.Accordion
+        content={
           <>
-            <Text style={sectionContiner.sectionDescription}>
-              <Text style={{ color: Colors.red, fontWeight: "bold"}}>Notice:</Text> You have reported that you are positive of COVID-19 on <Text style={{ color: Colors.red, fontWeight: "bold"}}>
-                {Moment(positiveReportDate).format('MMMM DD, YYYY')}
-              </Text>.
-            </Text>
-            <Text style={sectionContiner.sectionDescription}>
-              You are advised to follow the 14 day <Text style={{ color: Colors.green, fontWeight: "bold"}}>({ Moment(positiveReportDate).format('MMMM DD, YYYY') + " - " + Moment(dateAfter14Days).format('MMMM DD, YYYY') })</Text> quarantine protocol mandated by the government. 
-              You can <Text style={{ fontWeight: "bold", color: Colors.green}}> press the button below</Text>  after the 14 day quarantine protocol is over and
-              the health officials gives you the signal that you have recovered from the virus. 
-            </Text>
-            {
-              new Date().toISOString().split('T')[0] === dateAfter14Days ? 
-              <CustomButton
-                title="I have recovered from COVID-19"
-                color={Colors.green}
-                textColor="white"
-                onPress={() => setRecoveredModalConfirmVisible(true)}
-              />
-              :
-              <CustomButton
-                title="I have recovered from Covid-19"
-                color={Colors.grey}
-                textColor="white"
-                onPress={() => {}}
-              />
-            }
+            <Icon name="notification-important" size={20} color={Colors.red} />
+            <ListItem.Content>
+              <ListItem.Title style={[sectionContiner.sectionHeader, { color: Colors.red }]}>
+                Disease Status Alert
+              </ListItem.Title>
+            </ListItem.Content>
           </>
-          
         }
-      </View>
-      <View style={sectionContiner.section}>
-        <Text style={sectionContiner.sectionHeader}>Delete your account</Text>
-        <Text style={sectionContiner.sectionDescription}>
-          If you chose to delete your account, all data from this account will be deleted from the database and your
-          mobile device.
-        </Text>
-        <CustomButton
-          title="Delete Account"
-          color={Colors.red}
-          textColor="white"
-          onPress={() => setModalConfirmVisible(true)}
-        />
-      </View>
-      {/* confirm modal for saving the data */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={positiveConfirmVisible}
-        onRequestClose={() => {
-          setPositiveModalConfirmVisible(!positiveConfirmVisible);
+        topDivider
+        containerStyle={{ backgroundColor: "transparent" }}
+        isExpanded={isExpandedDisease}
+        onPress={() => { 
+          setIsExpandedDisease(!isExpandedDisease);
+          setIsExpandedRecover(false);
+          setisExpandedDelete(false);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={[styles.modalText, { color: Colors.red }]}>COVID-19 Health Notice</Text>
+      <ListItem containerStyle={{ backgroundColor: "transparent"}} bottomDivider>
+        <ListItem.Content>
+          <DiseaseStatusAlert
+            diseases={diseases}
+            setPositiveModalConfirmVisible={setPositiveModalConfirmVisible}
+          />
+        </ListItem.Content>
+      </ListItem> 
+    </ListItem.Accordion>
+    {/* Recover */}
+    <ListItem.Accordion
+      content={
+          <>
+            <Icon name="add-alert" size={20} color={Colors.accent} />
+            <ListItem.Content>
+              <ListItem.Title style={[sectionContiner.sectionHeader, { color: Colors.accent }]}>
+                Recovery Status Update
+              </ListItem.Title>
+            </ListItem.Content>
+          </>
+      }
+      topDivider
+      containerStyle={{ backgroundColor: "transparent"}}
+      isExpanded={isExpandedRecover}
+      onPress={() => { 
+        setIsExpandedRecover(!isExpandedRecover)
+        setIsExpandedDisease(false);
+        setisExpandedDelete(false);
+      }}
+    >
+      <ListItem containerStyle={{ backgroundColor: "transparent"}} bottomDivider>
+        <ListItem.Content>
+          {
+            currentReport.length > 0 ? 
+            <RecovereyStatusUpdate
+              currentReport={currentReport}
+              positiveReportDate={positiveReportDate}
+              dateAfter14Days={dateAfter14Days}
+              setRecoveredModalConfirmVisible={setRecoveredModalConfirmVisible}
+            />
+            : <Text style={{ fontWeight: "bold", fontSize: 17}}>There are no reports to show.</Text>
+          }
+        </ListItem.Content>
+      </ListItem> 
+    </ListItem.Accordion>
+    {/* Delete Account */}
+    <ListItem.Accordion
+      content={
+          <>
+            <Icon name="delete" size={20} color={Colors.red} />
+            <ListItem.Content>
+              <ListItem.Title style={[sectionContiner.sectionHeader, { color: Colors.red }]}>
+                Delete Account
+              </ListItem.Title>
+            </ListItem.Content>
+          </>
+      }
+      containerStyle={{ backgroundColor: "transparent"}}
+      isExpanded={isExpandedDelete}
+      topDivider
+      bottomDivider={!isExpandedDelete ? true : false}
+      onPress={() => { 
+        setIsExpandedDisease(false);
+        setIsExpandedRecover(false);
+        setisExpandedDelete(!isExpandedDelete)
+      }}
+    >
+      <ListItem containerStyle={{ backgroundColor: "transparent"}} bottomDivider>
+        <ListItem.Content>
+          <DeleteAccount
+            setModalConfirmVisible={setModalConfirmVisible}
+          />
+        </ListItem.Content>
+      </ListItem> 
+    </ListItem.Accordion>    
+    {/* confirm modal for saving the data */}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={positiveConfirmVisible}
+      onRequestClose={() => {
+        setPositiveModalConfirmVisible(!positiveConfirmVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={[styles.modalText, { color: Colors.red }]}>Health Notice Report</Text>
+          </View>
+            <View style={{ height: 160, width: '100%', marginBottom: 10, backgroundColor: Colors.lightGrey, borderRadius: 5 }}>
+              <Text style={{ marginVertical: 7, marginHorizontal: 10}}>Please Select the disease that you are positive of :</Text>
+              <ScrollView >
+                {
+                  diseases.filter(disease => currentReport.some(key => { return disease.name !== key.disease }))
+                  .map((disease, i) => {
+                    return(
+                          <CheckBox
+                            key={i}
+                            title={disease.name}
+                            checked={selectedDisease.includes(disease.name) ? true : false}
+                            onPress={() => { addDiseaseToList(disease.name) }}
+                          />
+                    )
+                  })
+                }
+              </ScrollView>
             </View>
-            <Text style={{ fontSize: 15 }}>
-              By clicking this button, you are stating that you are{' '}
-              <Text style={[{ color: Colors.red }]}>Positive of COVID-19</Text>, this will notify the system
-              administrator about your health status. A contact tracing will happen shortly after the upload.
-            </Text>
-            <Text style={{ fontSize: 15, marginTop: 10 }}>
-              All of YOUR information and visitation history will be collected by the system for health profiling and
-              contact tracing.
-            </Text>
-            <Text style={{ fontSize: 15, marginTop: 10 }}>
-              If you are unsure of your health status, please visit a health center/hospital for a COVID-19 test first,
-              before you proceed.{' '}
-              <Text style={[{ color: Colors.red }]}>
-                False Information will be met with a sanction from the management.
-              </Text>
-            </Text>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '100%',
-                marginTop: 15,
+            {
+              selectedDisease.length > 0 && (
+              <>
+                <Text style={{ fontSize: 15 }}>
+                  By clicking <Text style={{ color: Colors.red, fontWeight: "bold"}}>Proceed</Text>, you are stating that you are{' '}
+                  <Text style={[{ color: Colors.red, fontWeight: "bold" }]}>Positive of the selected disease/s above</Text>, this will notify the system
+                  administrator about your health status. A contact tracing will happen shortly after the upload.
+                </Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  All of YOUR information and visitation history will be collected by the system for health profiling and
+                  contact tracing.
+                </Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  If you are unsure of your health status, please visit a health center/hospital for a test first,
+                  before you proceed.{' '}
+                </Text>
+                <Text style={{ color: Colors.red, fontSize: 15, marginTop: 10, fontWeight: "bold" }}>
+                  False Information will be met with sanction from the management.
+                </Text>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    marginTop: 15,
+                  }}
+                >
+                  {
+                    !updating ? <>
+                    <TouchableOpacity
+                    style={{ width: '50%' }}
+                    onPress={() => {
+                      setPositiveModalConfirmVisible(!positiveConfirmVisible);
+                      setSelectedDisease([]);
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: Colors.lightGrey,
+                        height: 50,
+                        justifyContent: 'center',
+                        marginRight: 10,
+                        alignItems: 'center',
+                        borderRadius: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 16, fontWeight: '700' }}>Cancel</Text>
+                    </View>
+                  </TouchableOpacity>
+                  {/* yes button */}
+                  <TouchableOpacity
+                    style={{ width: '50%' }}
+                    onPress={() => {
+                      uploadPositiveInformationData();
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: Colors.red,
+                        height: 50,
+                        marginLeft: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 3,
+                      }}
+                    >
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
+                    </View>
+                  </TouchableOpacity></>: <Loader/>
+                  }
+                </View>
+              </>)
+            }
+        </View>
+      </View>
+    </Modal>
+    {/* Recovery modal */}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={recoveredConfirmVisible}
+      onRequestClose={() => {
+        setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={[styles.modalText, { color: Colors.green }]}>Recovery Status Update</Text>
+          </View>
+          <View style={{ height: 160, width: '100%', marginBottom: 10, backgroundColor: Colors.lightGrey, borderRadius: 5 }}>
+            <Text style={{ marginVertical: 7, marginHorizontal: 10}}>Please select the disease that you <Text style={{ color: Colors.accent, fontWeight: "bold"}}>RECOVERED</Text> from :</Text>
+            <ScrollView >
+              {
+                currentReport.map((disease, i) => {
+                  return(
+                        <CheckBox
+                          key={i}
+                          title={disease.disease}
+                          checked={recoveredList.includes(disease._id) ? true : false}
+                          onPress={() => { addRecoveredList(disease._id) }}
+                        />
+                  )
+                })
+              }
+            </ScrollView>
+          </View>
+          <Text style={{ fontSize: 15 }}>
+            By clicking this button, you are stating that you are a{' '}
+            <Text style={[{ color: Colors.green }]}>Recovered Patient</Text>, this will notify the system
+            administrator about your health status.
+          </Text>
+          <Text style={{ fontSize: 15, marginTop: 10 }}>
+            If you are unsure of your health status, please visit a health center/hospital for a test first,
+            before you proceed.{' '}
+          </Text>
+          <Text style={{ color: Colors.red, fontSize: 15, marginTop: 10, fontWeight: "bold" }}>
+            False Information will be met with sanction from the management.
+          </Text>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              marginTop: 15,
+            }}
+          >
+            {
+              !updating ? <>
+              <TouchableOpacity
+              style={{ width: '50%' }}
+              onPress={() => {
+                setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
+                setRecoveredList([]);
               }}
             >
-              {
-                !updating ? <>
-                <TouchableOpacity
-                style={{ width: '50%' }}
-                onPress={() => setPositiveModalConfirmVisible(!positiveConfirmVisible)}
-              >
-                <View
-                  style={{
-                    backgroundColor: Colors.lightGrey,
-                    height: 50,
-                    justifyContent: 'center',
-                    marginRight: 10,
-                    alignItems: 'center',
-                    borderRadius: 3,
-                  }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '700' }}>Cancel</Text>
-                </View>
-              </TouchableOpacity>
-              {/* yes button */}
-              <TouchableOpacity
-                style={{ width: '50%' }}
-                onPress={() => {
-                  uploadPositiveInformationData();
+              <View
+                style={{
+                  backgroundColor: Colors.lightGrey,
+                  height: 50,
+                  justifyContent: 'center',
+                  marginRight: 10,
+                  alignItems: 'center',
+                  borderRadius: 3,
                 }}
               >
-                <View
-                  style={{
-                    backgroundColor: Colors.red,
-                    height: 50,
-                    marginLeft: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 3,
-                  }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
-                </View>
-              </TouchableOpacity></>: <Loader/>
-              }
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={recoveredConfirmVisible}
-        onRequestClose={() => {
-          setRecoveredModalConfirmVisible(!recoveredConfirmVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={[styles.modalText, { color: Colors.green }]}>Recovered from COVID-19 Health Notice</Text>
-            </View>
-            <Text style={{ fontSize: 15 }}>
-              By clicking this button, you are stating that you are a{' '}
-              <Text style={[{ color: Colors.green }]}>COVID-19 Recovered Patient</Text>, this will notify the system
-              administrator about your health status.
-            </Text>
-            <Text style={{ fontSize: 15, marginTop: 10 }}>
-              If you are unsure of your health status, please visit a health center/hospital for a COVID-19 test first,
-              before you proceed.{' '}
-              <Text style={[{ color: Colors.red }]}>
-                False Information will be meet with a sanction from the management.
-              </Text>
-            </Text>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '100%',
-                marginTop: 15,
+                <Text style={{ fontSize: 16, fontWeight: '700' }}>Cancel</Text>
+              </View>
+            </TouchableOpacity>
+            {/* yes button */}
+            <TouchableOpacity
+              style={{ width: '50%' }}
+              onPress={() => {
+                updateHealthStatus();
               }}
             >
-              {
-                !updating ? <>
-                <TouchableOpacity
-                style={{ width: '50%' }}
-                onPress={() => setRecoveredModalConfirmVisible(!recoveredConfirmVisible)}
-              >
-                <View
-                  style={{
-                    backgroundColor: Colors.lightGrey,
-                    height: 50,
-                    justifyContent: 'center',
-                    marginRight: 10,
-                    alignItems: 'center',
-                    borderRadius: 3,
-                  }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '700' }}>Cancel</Text>
-                </View>
-              </TouchableOpacity>
-              {/* yes button */}
-              <TouchableOpacity
-                style={{ width: '50%' }}
-                onPress={() => {
-                  updateHealthStatus();
+              <View
+                style={{
+                  backgroundColor: Colors.green,
+                  height: 50,
+                  marginLeft: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 3,
                 }}
               >
-                <View
-                  style={{
-                    backgroundColor: Colors.green,
-                    height: 50,
-                    marginLeft: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 3,
-                  }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
-                </View>
-              </TouchableOpacity></>: <Loader/>
-              }
-            </View>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>Proceed</Text>
+              </View>
+            </TouchableOpacity></>: <Loader/>
+            }
           </View>
         </View>
-      </Modal>
-
-      {/* confirm modal for saving the data */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalConfirmVisible}
-        onRequestClose={() => {
-          setModalConfirmVisible(!modalConfirmVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
+      </View>
+    </Modal>
+    {/* confirm modal for deletion of account */}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalConfirmVisible}
+      onRequestClose={() => {
+        setModalConfirmVisible(!modalConfirmVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={[styles.modalView, { alignItems: 'flex-start' }]}>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={[styles.modalText, { color: Colors.red }]}>
                 Are you sure you want to delete your account?
@@ -491,6 +631,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     width: '100%',
   },
+  diseaseList : {
+    fontSize: 17,
+    marginTop: 4, 
+    marginLeft: 4, 
+    fontWeight: "bold", 
+    color: "red", 
+  }
 });
 
 export default SettingsScreen;

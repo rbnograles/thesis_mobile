@@ -32,9 +32,8 @@ export const pageSpecialCenteredImage = StyleSheet.create({
 export const landingPagesOrientation = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
-    marginTop: 10,
-    paddingHorizontal: 35,
+    marginTop: 20,
+    marginHorizontal: 35,
     position: 'relative',
   },
   container2: {
@@ -243,7 +242,7 @@ export const sectionContiner = StyleSheet.create({
   sectionHeader: {
     fontSize: 20,
     fontWeight: '700',
-    marginBottom: 5,
+    marginLeft: 5,
   },
   sectionDescription: {
     fontSize: 15,

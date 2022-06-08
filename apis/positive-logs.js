@@ -6,7 +6,10 @@ export const createUserPositiveLogs = data => {
   return axios.post(`${baseUrl}/api/public/positive-log`, data);
 };
 
-export const updateUserPositiveLogsRecovered = data => {
-  return axios.put(`${baseUrl}/api/public/positive-log/recovered`, data);
+export const updateUserPositiveLogsRecovered = id => {
+  return axios.put(`${baseUrl}/api/public/positive-log/recovered/${id}`);
 };
 
+export const getAllMyReports = id => {
+  return axios.get(`${baseUrl}/api/public/positive-log/close-contacts/reports/${id}`);
+}

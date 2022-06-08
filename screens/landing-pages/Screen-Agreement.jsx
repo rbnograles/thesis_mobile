@@ -26,7 +26,7 @@ const AggreementScreen = ({ navigation }) => {
       <View style={landingPagesOrientation.textContainer}>
         <Text style={landingPagesOrientation.header}>Welcome to JuanBreath contact tracing mobile application</Text>
         <Text style={landingPagesOrientation.subHeader}>
-          This application aims to help reduce the number of cases of COVID-19 in the community / campus by indentifying
+          This application aims to help reduce the number of cases of pandemic virus in the community / campus by indentifying
           close contact using contact tracing.
         </Text>
       </View>
