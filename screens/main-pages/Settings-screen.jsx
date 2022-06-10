@@ -209,10 +209,22 @@ const SettingsScreen = () => {
       showSuccessAlert();
       setIsUpdating(false);
     } catch (error) {
-      console.log(error.response);
       showFailedAlert();
       setIsUpdating(false);
     }
+  }
+
+  const filterDiseaseData = () => {
+    const filteredData = diseases.filter(disease => {
+      if(currentReport.length > 0) {
+        // this will check if the user has reported all disease available
+        return currentReport.some( key => { return (currentReport !== 0 && currentReport.length === diseases.length) ? null : disease.name !== key.disease })
+      } else {
+        return disease.name
+      }
+    })
+
+    return filteredData;
   }
 
   // @auto execute upon screen
@@ -338,27 +350,30 @@ const SettingsScreen = () => {
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={[styles.modalText, { color: Colors.red }]}>Health Notice Report</Text>
           </View>
-            <View style={{ height: 160, width: '100%', marginBottom: 10, backgroundColor: Colors.lightGrey, borderRadius: 5 }}>
-              <Text style={{ marginVertical: 7, marginHorizontal: 10}}>Please Select the disease that you are positive of :</Text>
-              <ScrollView >
-                {(diseases.filter(disease => {
-                    if(currentReport.length > 0) {
-                      return currentReport.some(key => { return disease.name !== key.disease })
-                    }else {
-                      return disease.name
-                    }
-                  }).map((disease, i) => {
-                    return(
+            {
+              filterDiseaseData().length === 0 && <Text style={{ fontSize: 20}}>There are no disease to be reported.</Text>
+            }
+            {
+              filterDiseaseData().length > 0 && (
+                <View style={{ height: 160, width: '100%', marginBottom: 10, backgroundColor: Colors.lightGrey, borderRadius: 5 }}>
+                  <Text style={{ marginVertical: 7, marginHorizontal: 10}}>Please Select the disease that you are positive of :</Text>
+                  <ScrollView >
+                    {
+                      filterDiseaseData().map((disease, i) => {
+                        return(
                           <CheckBox
                             key={i}
                             title={disease.name}
                             checked={selectedDisease.includes(disease.name) ? true : false}
                             onPress={() => { addDiseaseToList(disease.name) }}
                           />
-                    )
-                  }))}
-              </ScrollView>
-            </View>
+                        )
+                      })
+                    }
+                  </ScrollView>
+                </View>
+              )
+            }
             {
               selectedDisease.length > 0 && (
               <>
