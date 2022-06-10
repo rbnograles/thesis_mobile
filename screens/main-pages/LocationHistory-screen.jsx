@@ -23,8 +23,9 @@ const LocationHistoryScreen = () => {
     if(connectedToNet) {
       try {
         const data = await getUsersVisitationHistroy(userId);
-        setVisitationHistroy(data.data.data)
-        await AsyncStorage.setItem('@savedVisitationHistory', JSON.stringify(data.data.data))
+        const visitationData = data.data.data.reverse();
+        setVisitationHistroy(visitationData)
+        await AsyncStorage.setItem('@savedVisitationHistory', JSON.stringify(visitationData))
         await AsyncStorage.setItem('@lastUpdateDateForVisitationHistroy', new Date().toISOString().split('T')[0]);
         setLastUpdateDate(new Date().toISOString().split('T')[0]);
       } catch (error) {
@@ -33,7 +34,8 @@ const LocationHistoryScreen = () => {
     } else {
       const data = await AsyncStorage.getItem('@savedVisitationHistory');
       const parsedValue = JSON.parse(data)
-      setVisitationHistroy(parsedValue !== null ? parsedValue: []);
+      console.log(parsedValue)
+      setVisitationHistroy(parsedValue !== null ? parsedValue : []);
     }
   }
 
@@ -80,7 +82,7 @@ const LocationHistoryScreen = () => {
             </View>
           )}
           {historyData.length > 0 &&
-            historyData.reverse().map((history, i) => {
+            historyData.map((history, i) => {
               return (
                 <View key={i}>
                   <Text style={{ fontSize: 20, fontWeight: 'bold' }}>

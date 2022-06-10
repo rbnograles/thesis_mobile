@@ -33,7 +33,7 @@ export const landingPagesOrientation = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    marginHorizontal: 35,
+    paddingHorizontal: 30,
     position: 'relative',
   },
   container2: {
