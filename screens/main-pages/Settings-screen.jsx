@@ -177,7 +177,7 @@ const SettingsScreen = () => {
       }
 
       getAllUserReports();
-
+      setSelectedDisease([]);
       // close modal, alert 
       setPositiveModalConfirmVisible(!positiveConfirmVisible);
       showSuccessAlert();
@@ -341,9 +341,13 @@ const SettingsScreen = () => {
             <View style={{ height: 160, width: '100%', marginBottom: 10, backgroundColor: Colors.lightGrey, borderRadius: 5 }}>
               <Text style={{ marginVertical: 7, marginHorizontal: 10}}>Please Select the disease that you are positive of :</Text>
               <ScrollView >
-                {
-                  diseases.filter(disease => currentReport.some(key => { return disease.name !== key.disease }))
-                  .map((disease, i) => {
+                {(diseases.filter(disease => {
+                    if(currentReport.length > 0) {
+                      return currentReport.some(key => { return disease.name !== key.disease })
+                    }else {
+                      return disease.name
+                    }
+                  }).map((disease, i) => {
                     return(
                           <CheckBox
                             key={i}
@@ -352,8 +356,7 @@ const SettingsScreen = () => {
                             onPress={() => { addDiseaseToList(disease.name) }}
                           />
                     )
-                  })
-                }
+                  }))}
               </ScrollView>
             </View>
             {
