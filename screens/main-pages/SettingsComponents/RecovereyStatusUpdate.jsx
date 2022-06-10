@@ -12,6 +12,10 @@ const RecovereyStatusUpdate = ({
     positiveReportDate,
     currentReport
 }) => {
+
+    let currentDate = new Date();
+    dateAfter14Days = new Date(dateAfter14Days);
+
     return (
         <View>
             <Text style={sectionContiner.sectionDescription}>
@@ -45,7 +49,7 @@ const RecovereyStatusUpdate = ({
             </View>
             <View style={{ marginTop: 10}}>
                 {
-                    new Date().toISOString().split('T')[0] === dateAfter14Days 
+                    dateAfter14Days <= currentDate 
                     ? 
                         <CustomButton
                             title="Update Recovery Status"
