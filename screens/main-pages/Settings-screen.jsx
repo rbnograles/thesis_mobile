@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // native components
+import * as Location from 'expo-location';
 import Loader from '../../_utils/Loader';
 import { Text, View, Modal, TouchableOpacity, StyleSheet, BackHandler, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,6 +16,21 @@ import RecovereyStatusUpdate from './SettingsComponents/RecovereyStatusUpdate';
 import DeleteAccount from './SettingsComponents/DeleteAccount';
 
 const SettingsScreen = () => {
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  const askLocationPermission = () => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }
 
   const [positiveReportDate, setPositiveReportDate] = useState('');
   const [dateAfter14Days, setDateAfter14Days] = useState('');
@@ -170,6 +186,8 @@ const SettingsScreen = () => {
       for(let i =0; i < selectedDisease.length; i++) {
         await createUserPositiveLogs({
           ...prevInfo,
+          lng: location.coords.longitude,
+          lat: location.coords.latitude,
           disease: selectedDisease[i],
           mobileNumber: `+63${newNumber.join('')}`,
           date: new Date().toISOString().split('T')[0],
@@ -229,6 +247,8 @@ const SettingsScreen = () => {
 
   // @auto execute upon screen
   useEffect(() => {
+    // get permission to access location
+    askLocationPermission();
     // get all diseases monitored by the system
     getAllDiseasesList();
     // get stored profile data

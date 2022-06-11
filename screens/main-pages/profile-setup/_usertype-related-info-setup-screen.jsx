@@ -40,7 +40,7 @@ const UserTypeRelatedInfoSetupScreen = ({ route, navigation }) => {
     <SafeAreaView style={landingPagesOrientation.container}>
       <Text style={formsContainer.formsHeader}>Profile Information Summary</Text>
       <Text style={formsContainer.formsSubHeader}>
-        This information will be kept private and will not be shared to any third parties or individual.
+        Please review your submitted information and confirm that it is correct.
       </Text>
       <ScrollView>
         <View style={{ marginTop: 10, marginBottom: 20 }}>
