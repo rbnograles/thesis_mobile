@@ -79,14 +79,14 @@ const OTPConfirmationScreen = ({ navigation }) => {
 
   useEffect(() => {
     // comment this out to remove the auto bypass of otp
-    const text = JSON.stringify(route.params.result.data.otp)
-    if(text.length === 4) { 
-      const splitVal = text.split('')
-      setFirstDigit(splitVal[0])
-      setSecondDigit(splitVal[1])
-      setThirdDigit(splitVal[2])
-      setFourthDigit(splitVal[3])
-    }
+    // const text = JSON.stringify(route.params.result.data.otp)
+    // if(text.length === 4) { 
+    //   const splitVal = text.split('')
+    //   setFirstDigit(splitVal[0])
+    //   setSecondDigit(splitVal[1])
+    //   setThirdDigit(splitVal[2])
+    //   setFourthDigit(splitVal[3])
+    // }
     // code above here is for auto bypass of otp - data is fetched from the backend directly
     
     // read and get the local number stored in the async storage
