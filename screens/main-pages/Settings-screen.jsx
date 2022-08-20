@@ -258,7 +258,7 @@ const SettingsScreen = () => {
   }, []);
 
   return (
-    <View style={[landingPagesOrientation.container2 ]}>
+    <View style={[landingPagesOrientation.container2, { marginTop: 30 }]}>
       <Text style={[displayFormContainer.formsHeader, { marginHorizontal: 20, marginVertical: 20 }]}>Account Status and Privacy</Text>
       {/* Disease List */}
       <ListItem.Accordion

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { tabNavigation } from '../styles/styles-screens';
-import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../styles/styles-colors';
-import { View, Dimensions, PixelRatio } from 'react-native'
+import { View } from 'react-native'
 // components
 import QRScreen from '../screens/main-pages/QRCode-screen';
 import LocationHistoryScreen from '../screens/main-pages/LocationHistory-screen';
@@ -14,11 +14,7 @@ import SuccessPromptScreen from '../screens/landing-pages/Success-Prompt';
 import ProfileScreen from '../screens/main-pages/Profile-screen';
 import AlarmScreen from '../screens/main-pages/Alarm-screen';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-const scale = SCREEN_WIDTH / 320;
-
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({ navigation }) => {
   const [isSetUp, setIsSetUp] = useState(true);
@@ -44,12 +40,6 @@ const TabNavigator = ({ navigation }) => {
         setCount(0);
       }
   }
-
-  const normalize = (size) => {
-    const newSize = size * scale 
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
-  }
-
   // this function is a react native lifecycle method that will run when a component is mounted / loaded
   useEffect(() => {
     getUsersVisitationLogsPersonal();
@@ -67,22 +57,22 @@ const TabNavigator = ({ navigation }) => {
       initialRouteName="profile"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
-          let iconName;
-
           if (route.name === 'qrcode') {
-            iconName = 'qrcode';
+            return <AntDesign name="qrcode" size={21} color={color} />;
           } else if (route.name === 'visithistory') {
-            iconName = 'location-arrow';
+            return <FontAwesome name="history" size={21} color={color} />;
           } else if (route.name === 'profile') {
-            iconName = 'user';
+            return <AntDesign name="user" size={21} color={color} />;
           } else if (route.name === 'notification') {
-            iconName = 'bell';
+            return <AntDesign name="bells" size={21} color={color} />;
           } else {
-            iconName = 'cogs';
-          }
-
-          // You can return any component that you like here!
-          return <FontAwesome name={iconName} size={21} color={color} />;
+            return <FontAwesome name="cogs" size={21} color={color} />;
+          }          
+        },
+        headerShown: false,
+        tabBarStyle: {
+          paddingVertical: 5,
+          height: 60
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.darkLight,
@@ -91,7 +81,9 @@ const TabNavigator = ({ navigation }) => {
           alignItems: 'center',
         },
         tabBarLabelStyle: {
-          fontSize: normalize(12),
+          fontSize: 14,
+          fontWeight: "600",
+          marginBottom: 5
         },
       })}
     >

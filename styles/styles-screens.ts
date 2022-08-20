@@ -32,7 +32,7 @@ export const pageSpecialCenteredImage = StyleSheet.create({
 export const landingPagesOrientation = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 50,
     paddingHorizontal: 30,
     position: 'relative',
   },
@@ -42,6 +42,7 @@ export const landingPagesOrientation = StyleSheet.create({
   },
   historyContainer: {
     flex: 1,
+    marginTop: 20,
     position: 'relative',
   },
   innerAdjustementPadding: {
@@ -163,6 +164,7 @@ export const tabNavigation = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
     backgroundColor: Colors.primary,
     position: 'relative',
+    elevation: 5
   },
 });
 

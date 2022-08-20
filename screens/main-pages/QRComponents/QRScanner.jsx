@@ -19,15 +19,23 @@ const QRScanner = ({
             !hasCurrentLocation && (
                 <View 
                 style={{
-                    flex: 1
+                    flex: 1,
                 }}>
                     <Camera
                     ratio='16:9'
                     style={StyleSheet.absoluteFillObject}
                     onBarCodeScanned={scanned ? undefined : handlerBarCodeScanned}
                     >
-                    <Text style={{ textAlign: "center", fontSize: normalize(17), fontWeight: '700', color: "white", marginTop: 20 }}>
-                        Place the QR Code in front of the camera
+                    <Text 
+                        style={{ 
+                            textAlign: "center", 
+                            fontSize: 21, 
+                            fontWeight: '700', 
+                            color: "white", 
+                            marginTop: 60 
+                        }}
+                    >
+                        Place the QR Code in front of the Camera
                     </Text>
                     <View style={{  width: '100%', paddingHorizontal: 35, position: 'absolute', bottom: 150 }}>
                         <CustomButton

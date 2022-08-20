@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../../../styles/styles-colors';
 
@@ -13,7 +13,7 @@ const LeaveRecord = ({
         <View style={{ alignItems: "center"}}>
         {
             hasCurrentLocation && (
-            <View style={{ width: 300, alignItems: "center", marginTop: 50  }}>
+            <View style={{ width: 300, alignItems: "center", marginTop: 60  }}>
                 <View>
                     <Text style={{ marginBottom: 20, fontSize: 30, fontWeight: "bold", color: Colors.primary }}>Checkpoint!</Text>
                 </View>

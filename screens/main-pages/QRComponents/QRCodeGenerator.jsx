@@ -8,7 +8,7 @@ const QRCodeGenerator = ({ renderStatus, normalize, qrCodeID, renderQR }) => {
         <>
             {renderStatus === '0' && (
                 <>
-                    <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 30 }}>
+                    <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 70 }}>
                         <Text style={{ fontSize: 30, fontWeight: '700', color: Colors.primary }}>Scan My QR Code</Text>
                     </View>
                     {

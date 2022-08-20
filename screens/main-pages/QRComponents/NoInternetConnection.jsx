@@ -8,7 +8,7 @@ import CustomButton from '../../../_utils/CustomButton';
 
 const NoInternetConnection = ({ setConnectedToNet }) => {
     return (
-        <View style={{ paddingHorizontal: 25}}>
+        <View style={{ paddingHorizontal: 25, marginTop: 60}}>
             <View
                 style={[
                 landingPagesOrientation.textContainer,
